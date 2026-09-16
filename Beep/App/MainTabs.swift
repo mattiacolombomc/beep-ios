@@ -18,7 +18,7 @@ struct MainTabs: View {
         .filePresenters()
         .task {
             // Refresh the index on launch if it's stale (> 15 min) or empty.
-            if let client = session.client, let user = session.user, user.id != 0 {
+            if !DemoData.isEnabled, let client = session.client, let user = session.user, user.id != 0 {
                 if sync.lastSyncAt.map({ Date.now.timeIntervalSince($0) > 15 * 60 }) ?? true {
                     _ = await sync.syncAll(client: client, userID: user.id)
                 }

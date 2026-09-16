@@ -25,3 +25,9 @@ fastlane/.env
 # Bundler
 vendor/
 .bundle/
+# fastlane secrets and outputs
+fastlane/.env.*
+!fastlane/.env.example
+fastlane/README.md
+*.pkg
+*.app

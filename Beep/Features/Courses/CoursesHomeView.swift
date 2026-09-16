@@ -10,6 +10,7 @@ struct CoursesHomeView: View {
         if sizeClass == .regular {
             NavigationSplitView {
                 CoursesListView(selection: $selection)
+                    .navigationSplitViewColumnWidth(min: 340, ideal: 400, max: 520)
             } detail: {
                 if let selection {
                     CourseDetailView(courseID: selection)
@@ -150,6 +151,7 @@ struct CoursesListView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Courses")
+        .navigationBarTitleDisplayMode(.large)
         .searchable(text: $query, prompt: "Course, code or professor")
         .searchToolbarBehavior(.minimize)
         .refreshable { await syncNow() }
