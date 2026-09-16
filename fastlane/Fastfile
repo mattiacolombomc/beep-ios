@@ -171,8 +171,7 @@ def ensure_beta_app_info(api_key)
     Spaceship::ConnectAPI.post_beta_app_localizations(app_id: app.id, attributes: attrs.merge(locale: app.primary_locale || "it"))
     UI.message("Created beta app localization")
   else
-    locs.each { |l| l.update(attributes: attrs) }
-    UI.message("Updated #{locs.size} beta app localization(s)")
+    UI.message("Beta app localization already present (#{locs.size}), leaving it as is")
   end
 end
 
