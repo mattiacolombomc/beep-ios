@@ -189,6 +189,7 @@ lane :distribute_external do |options|
     distribute_only:    true,
     distribute_external: true,
     notify_external_testers: true,
+    build_number:       options[:build],   # e.g. build:4; nil = latest processed build
     groups:             [group],
     changelog:          options[:changelog] || "Prima beta di Beep: sync WeBeep, download automatici, ricerca file, notifiche.",
     beta_app_description: "Beep tiene sincronizzati i file dei tuoi corsi WeBeep (Politecnico di Milano): download automatici, novità, ricerca nei file, annunci e notifiche. Client non ufficiale, richiede un account Polimi.",
