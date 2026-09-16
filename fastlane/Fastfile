@@ -46,6 +46,20 @@ def bump_build_to_latest_plus_one(api_key:)
   next_build
 end
 
+# Cloud signing straight from the ASC API key: no Xcode account session, no local distribution cert.
+def auth_xcargs
+  key_id    = ENV.fetch("ASC_KEY_ID")
+  issuer_id = ENV.fetch("ASC_ISSUER_ID")
+  path = ENV["ASC_KEY_PATH"]
+  if (content = ENV["ASC_KEY_CONTENT"]) && !content.strip.empty?
+    path = File.join(Dir.tmpdir, "AuthKey_#{key_id}.p8")
+    File.write(path, content)
+    File.chmod(0600, path)
+  end
+  "-allowProvisioningUpdates -allowProvisioningDeviceRegistration " \
+  "-authenticationKeyPath #{File.expand_path(path)} -authenticationKeyID #{key_id} -authenticationKeyIssuerID #{issuer_id}"
+end
+
 def commit_and_push(message)
   paths = ["#{PROJECT}/project.pbxproj", PROJECT_YML]
   git_add(path: paths)
@@ -77,7 +91,7 @@ lane :beta_ios do
     clean:                 true,
     silent:                true,
     suppress_xcode_output: true,
-    xcargs:                "-allowProvisioningUpdates"
+    xcargs:                auth_xcargs
   )
   upload_to_testflight(
     api_key:                           api_key,
