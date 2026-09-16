@@ -220,7 +220,7 @@ lane :internal_testers do |options|
     body = { data: { type: "betaGroups",
                      attributes: { name: "Team", isInternalGroup: true, hasAccessToAllBuilds: true },
                      relationships: { app: { data: { type: "apps", id: app.id } } } } }
-    group = Spaceship::ConnectAPI::TestFlight::Client.instance.post("betaGroups", body).to_models.first
+    group = Spaceship::ConnectAPI.test_flight_request_client.post("v1/betaGroups", body).to_models.first
     UI.message("Created internal group 'Team'")
   end
   UI.message("Internal group: #{group.name} (all builds: #{group.has_access_to_all_builds})")
