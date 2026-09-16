@@ -240,3 +240,26 @@ lane :internal_testers do |options|
     UI.success("#{email} already in #{group.name}")
   end
 end
+
+desc "List TestFlight builds with their Beta App Review state"
+lane :review_status do
+  api_key = asc_api_key
+  Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.create(**api_key)
+  app = Spaceship::ConnectAPI::App.find(APP_BUNDLE)
+  builds = Spaceship::ConnectAPI::Build.all(app_id: app.id, includes: "betaAppReviewSubmission,preReleaseVersion", sort: "-uploadedDate", limit: 20)
+  builds.each do |b|
+    state = b.beta_app_review_submission&.beta_review_state || "-"
+    UI.message("#{b.pre_release_version&.version} (#{b.version})  processing=#{b.processing_state}  expired=#{b.expired}  review=#{state}")
+  end
+end
+
+desc "Withdraw a build from TestFlight (also cancels its beta review): fastlane expire_build build:3"
+lane :expire_build do |options|
+  api_key = asc_api_key
+  Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.create(**api_key)
+  app = Spaceship::ConnectAPI::App.find(APP_BUNDLE)
+  number = options[:build] or UI.user_error!("Pass build:N")
+  build = Spaceship::ConnectAPI::Build.all(app_id: app.id, build_number: number.to_s).first or UI.user_error!("Build #{number} not found")
+  build.expire!
+  UI.success("Build #{number} expired")
+end
