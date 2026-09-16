@@ -11,6 +11,7 @@
 		08565BE1761ADCDA22C31FD1 /* FilePresenters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF0B94F1558DB6DA49A610F /* FilePresenters.swift */; };
 		0B1704EAB59D17E78F41D5E3 /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6239253FDE3EEE913FFD0B /* PageView.swift */; };
 		0BFCB4E536F0DEF226744E67 /* SiteInfoDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FEEA578AD0563216F3CD65A /* SiteInfoDTO.swift */; };
+		0CF9676D80128A69E4A005FA /* WebSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2C85291D5C3B76770B43878 /* WebSession.swift */; };
 		0D72B8BE8B5051A98E928CCD /* FileURLTokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50A3A42D947FB5BA2B6AFB70 /* FileURLTokenizer.swift */; };
 		0F71D99FFD4B012266DCCA65 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058D5135C8218E91EC87E438 /* RootView.swift */; };
 		11495C7A826FF7BEB50F7C0D /* AppSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED2785533331D773CF0D25D5 /* AppSession.swift */; };
@@ -203,6 +204,7 @@
 		CE09B0D0E5769EBAB31D00DD /* NotificationDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDTO.swift; sourceTree = "<group>"; };
 		CFC5102FB94F5091EBB3B0D2 /* BeepWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepWidgetBundle.swift; sourceTree = "<group>"; };
 		D0A9F48A8D454DFCDEA10154 /* CatalogSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSearchView.swift; sourceTree = "<group>"; };
+		D2C85291D5C3B76770B43878 /* WebSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSession.swift; sourceTree = "<group>"; };
 		D5DDC33A2E7014A4565C4823 /* Beep.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Beep.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8A86362F900DB06EED974BA /* LoginFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFlowTests.swift; sourceTree = "<group>"; };
 		E5859EC2B8B8ECA33F4EA63B /* MoodleClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodleClientTests.swift; sourceTree = "<group>"; };
@@ -507,6 +509,7 @@
 				57DE24B0F8748037EA115797 /* LoginWebView.swift */,
 				CAA184C5F47F6D595DF12167 /* TokenRenewer.swift */,
 				93D27EFC0A024C85307150D7 /* TokenStore.swift */,
+				D2C85291D5C3B76770B43878 /* WebSession.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -756,6 +759,7 @@
 				1B6FDB6FF3E0BB4693BB3D08 /* Theme.swift in Sources */,
 				4141E0AE22FD7B8AFB1B9418 /* TokenRenewer.swift in Sources */,
 				17573A8A9558E9750026F483 /* TokenStore.swift in Sources */,
+				0CF9676D80128A69E4A005FA /* WebSession.swift in Sources */,
 				DAA031E7642FE2F986BBB0A4 /* WelcomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

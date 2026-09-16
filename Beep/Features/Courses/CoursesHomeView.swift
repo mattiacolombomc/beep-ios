@@ -71,6 +71,7 @@ struct CoursesListView: View {
     @State private var expandedYears: Set<String> = []
     @State private var archiveTarget: Course?
     @State private var renameTarget: Course?
+    @State private var unenrolTarget: Course?
     @State private var showCatalog = false
     @State private var showSettings = false
     @State private var showNotifications = false
@@ -203,6 +204,7 @@ struct CoursesListView: View {
         .sheet(isPresented: $showNotifications) { NotificationsView() }
         .archiveDialog(course: $archiveTarget)
         .renameFolderDialog(course: $renameTarget)
+        .unenrolDialog(course: $unenrolTarget)
         .navigationDestination(isPresented: $showCatalog) { CatalogSearchView(initialQuery: "") }
     }
 
@@ -214,7 +216,7 @@ struct CoursesListView: View {
             CourseRow(course: course)
                 .tag(course.id)
                 .modifier(RowLink(id: course.id, isSplit: sizeClass == .regular))
-                .contextMenu { CourseContextMenu(course: course, onArchive: { archiveTarget = course }, onRename: { renameTarget = course }) }
+                .contextMenu { CourseContextMenu(course: course, onArchive: { archiveTarget = course }, onRename: { renameTarget = course }, onUnenrol: { unenrolTarget = course }) }
                 .swipeActions(edge: .trailing) {
                     if course.isArchived {
                         Button { course.isArchived = false } label: { Label("Unarchive", systemImage: "tray.and.arrow.up") }
@@ -330,6 +332,7 @@ struct CourseContextMenu: View {
     @Bindable var course: Course
     var onArchive: (() -> Void)? = nil
     var onRename: (() -> Void)? = nil
+    var onUnenrol: (() -> Void)? = nil
     @Environment(\.openURL) private var openURL
 
     var body: some View {
@@ -349,7 +352,62 @@ struct CourseContextMenu: View {
         } label: {
             Label("Open on WeBeep", systemImage: "safari")
         }
+        if let onUnenrol {
+            Button(role: .destructive, action: onUnenrol) { Label("Unenrol from WeBeep…", systemImage: "person.crop.circle.badge.minus") }
+        }
     }
+}
+
+/// Leave a course on WeBeep (self-enrolment only), then drop it locally.
+private struct UnenrolDialog: ViewModifier {
+    @Binding var course: Course?
+    @Environment(AppSession.self) private var session
+    @Environment(SyncEngine.self) private var sync
+    @Environment(FileOpener.self) private var opener
+    @Environment(\.modelContext) private var context
+    @State private var working = false
+    @State private var message: String?
+
+    func body(content: Content) -> some View {
+        content
+            .confirmationDialog(course.map { Text("Leave \u{201C}\($0.title)\u{201D} on WeBeep?") } ?? Text(""),
+                                isPresented: Binding(get: { course != nil && !working }, set: { if !$0 { course = nil } }), titleVisibility: .visible) {
+                if let c = course {
+                    Button("Unenrol and keep files", role: .destructive) { Task { await run(c, deleteFiles: false) } }
+                    if c.files.contains(where: \.isDownloaded) {
+                        Button("Unenrol and delete files", role: .destructive) { Task { await run(c, deleteFiles: true) } }
+                    }
+                }
+            } message: {
+                Text("This is the same as “Unenrol me” on the WeBeep website. Only courses with self-enrolment allow it; you can enrol again from the catalogue.")
+            }
+            .overlay {
+                if working {
+                    ProgressView("Talking to WeBeep…").padding(Theme.Spacing.l).background(.regularMaterial, in: .rect(cornerRadius: Theme.cardRadius))
+                }
+            }
+            .alert("Unenrolment", isPresented: Binding(get: { message != nil }, set: { if !$0 { message = nil } })) {
+                Button("OK", role: .cancel) {}
+            } message: { Text(message ?? "") }
+    }
+
+    private func run(_ c: Course, deleteFiles: Bool) async {
+        working = true
+        defer { working = false; course = nil }
+        do {
+            try await Unenroller.unenrol(course: c, session: session)
+            if deleteFiles { for f in c.files where f.isDownloaded { opener.removeLocal(f) } }
+            context.delete(c)
+            try? context.save()
+            message = String(localized: "Done. You are no longer enrolled in \(c.title).")
+        } catch {
+            message = String(describing: error)
+        }
+    }
+}
+
+extension View {
+    func unenrolDialog(course: Binding<Course?>) -> some View { modifier(UnenrolDialog(course: course)) }
 }
 
 

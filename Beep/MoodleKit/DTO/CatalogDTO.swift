@@ -25,3 +25,12 @@ struct EnrolResultDTO: Decodable, Sendable, Equatable {
     let status: Bool
     let warnings: [Warning]?
 }
+
+/// `core_enrol_get_course_enrolment_methods`
+struct EnrolmentMethodDTO: Decodable, Sendable, Equatable {
+    let id: Int
+    let courseid: Int
+    let type: String
+    let name: String?
+    let status: String?
+}

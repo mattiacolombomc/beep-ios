@@ -145,6 +145,10 @@ extension MoodleClient {
                        as: CatalogSearchDTO.self)
     }
 
+    func enrolmentMethods(courseID: Int) async throws -> [EnrolmentMethodDTO] {
+        try await call("core_enrol_get_course_enrolment_methods", parameters: [("courseid", String(courseID))], as: [EnrolmentMethodDTO].self)
+    }
+
     /// Self-enrolment without a key. Courses with an enrolment key are refused by Moodle.
     func enrolSelf(courseID: Int) async throws -> EnrolResultDTO {
         try await call("enrol_self_enrol_user", parameters: [("courseid", String(courseID))], post: true, as: EnrolResultDTO.self)
