@@ -17,6 +17,7 @@ struct CatalogSearchView: View {
     @State private var enrolTarget: CatalogCourseDTO?
     @State private var enrolling: Int?
     @State private var enrolMessage: String?
+    @FocusState private var focused: Bool
 
     init(initialQuery: String) {
         self.initialQuery = initialQuery
@@ -27,6 +28,20 @@ struct CatalogSearchView: View {
 
     var body: some View {
         List {
+            Section {
+                HStack(spacing: Theme.Spacing.s) {
+                    Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
+                    TextField("Course name or code", text: $query)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .submitLabel(.search)
+                        .focused($focused)
+                    if !query.isEmpty {
+                        Button { query = "" } label: { Image(systemName: "xmark.circle.fill").foregroundStyle(.tertiary) }
+                            .buttonStyle(.plain)
+                    }
+                }
+            }
             if let error {
                 Section { Text(error).font(.footnote).foregroundStyle(.secondary) }
             }
@@ -51,8 +66,8 @@ struct CatalogSearchView: View {
         .listStyle(.insetGrouped)
         .navigationTitle("WeBeep catalogue")
         .navigationBarTitleDisplayMode(.inline)
-        .searchable(text: $query, prompt: "Course name or code")
         .overlay { if isLoading && results.isEmpty { ProgressView() } }
+        .onAppear { if query.isEmpty { focused = true } }
         .task(id: query) {
             let q = query.trimmingCharacters(in: .whitespaces)
             guard q.count >= 3 else { results = []; return }

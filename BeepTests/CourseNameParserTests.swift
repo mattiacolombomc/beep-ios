@@ -30,6 +30,13 @@ struct CourseNameParserTests {
         #expect(t.professors == nil)
     }
 
+    @Test func catalogueBracesAndRomanOne() {
+        let t = CourseNameParser.parse("GEOMETRIA (IELLA PAOLO) {095730 - ANALISI MATEMATICA 1 E GEOMETRIA [SEZIONE A]}")
+        #expect(t.name == "Geometria")
+        #expect(t.professors == "Iella Paolo")
+        #expect(CourseNameParser.titleCased("ANALISI MATEMATICA I E GEOMETRIA") == "Analisi Matematica I e Geometria")
+    }
+
     @Test func plainNameIsKept() {
         let t = CourseNameParser.parse("Ingegneria Informatica")
         #expect(t.name == "Ingegneria Informatica")

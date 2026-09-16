@@ -9,6 +9,8 @@ struct SettingsView: View {
     @Environment(\.openURL) private var openURL
     @AppStorage("settings.backgroundRefresh") private var backgroundRefresh = true
     @AppStorage("settings.notifications") private var notifications = true
+    @AppStorage("settings.refreshMinutes") private var refreshMinutes = 120.0
+    @AppStorage("settings.backgroundWifiOnly") private var backgroundWifiOnly = false
     @Environment(TokenRenewer.self) private var renewer
     @Environment(SyncEngine.self) private var sync
 
@@ -53,6 +55,18 @@ struct SettingsView: View {
                     }
                     Toggle("Check in the background", systemImage: "clock.arrow.2.circlepath", isOn: $backgroundRefresh)
                         .onChange(of: backgroundRefresh) { _, on in on ? BackgroundRefresh.schedule() : BackgroundRefresh.cancel() }
+                    if backgroundRefresh {
+                        Picker(selection: $refreshMinutes) {
+                            Text("Every hour at most").tag(60.0)
+                            Text("Every 2 hours").tag(120.0)
+                            Text("Every 6 hours").tag(360.0)
+                            Text("Once a day").tag(1440.0)
+                        } label: {
+                            Label("Check frequency", systemImage: "timer")
+                        }
+                        .onChange(of: refreshMinutes) { _, _ in BackgroundRefresh.schedule() }
+                        Toggle("Background downloads on Wi-Fi only", systemImage: "wifi", isOn: $backgroundWifiOnly)
+                    }
                     Toggle("Notify about new files", systemImage: "bell.badge", isOn: $notifications)
                         .onChange(of: notifications) { _, on in
                             if on { Task { notifications = await Notifier.requestPermission() } }
@@ -60,7 +74,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Sync")
                 } footer: {
-                    Text("New files in these courses download automatically when you sync. iOS decides how often background checks run, usually a few times a day.")
+                    Text("New files in these courses download automatically when you sync. Background checks are skipped in Low Power Mode; iOS may space them out further than the frequency you pick. Wi-Fi only postpones background downloads until you open the app or reach Wi-Fi.")
                 }
                 Section {
                     LabeledContent("Downloaded", value: "\(downloadedCount) files · \(downloadedSize.fileSizeLabel)")

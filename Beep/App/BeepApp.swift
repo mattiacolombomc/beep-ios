@@ -1,3 +1,4 @@
+import CoreSpotlight
 import SwiftData
 import SwiftUI
 import UIKit
@@ -9,6 +10,7 @@ struct BeepApp: App {
     @State private var sync: SyncEngine
     @State private var opener: FileOpener
     @State private var renewer: TokenRenewer
+    @State private var router = AppRouter()
     private let container: ModelContainer
     private let downloads: DownloadManager
 
@@ -30,7 +32,7 @@ struct BeepApp: App {
         } catch {
             fatalError("Cannot open the local store: \(error)")
         }
-        UserDefaults.standard.register(defaults: ["settings.backgroundRefresh": true, "settings.notifications": true])
+        UserDefaults.standard.register(defaults: ["settings.backgroundRefresh": true, "settings.notifications": true, "settings.refreshMinutes": 120.0, "settings.backgroundWifiOnly": false])
     }
 
     var body: some Scene {
@@ -40,6 +42,11 @@ struct BeepApp: App {
                 .environment(sync)
                 .environment(opener)
                 .environment(renewer)
+                .environment(router)
+                .onOpenURL { router.handle(url: $0) }
+                .onContinueUserActivity(CSSearchableItemActionType) { activity in
+                    if let d = SpotlightIndexer.destination(for: activity) { router.open(d) }
+                }
                 .task {
                     appDelegate.downloads = downloads
                     sync.onInvalidToken = { trigger in
@@ -57,7 +64,10 @@ struct BeepApp: App {
                     }
                     appDelegate.onBackgroundRefresh = { task in
                         let work = Task {
-                            if let client = session.client, let user = session.user, user.id != 0 {
+                            // Respect Low Power Mode: skip the whole check, reschedule.
+                            if ProcessInfo.processInfo.isLowPowerModeEnabled {
+                                BackgroundRefresh.schedule()
+                            } else if let client = session.client, let user = session.user, user.id != 0 {
                                 _ = await sync.syncAll(client: client, userID: user.id, trigger: .background)
                             }
                             task.setTaskCompleted(success: true)

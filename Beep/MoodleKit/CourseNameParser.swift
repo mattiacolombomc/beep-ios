@@ -20,6 +20,7 @@ nonisolated enum CourseNameParser {
 
         // Trailing "[2026-27]" academic-year tag → drop (category already carries it).
         text = text.replacing(/\s*\[[^\]]*\]\s*$/, with: "")
+        text = text.replacing(/\s*\{[^}]*\}\s*$/, with: "")
 
         var code: String?
         // Leading "054443 - "
@@ -50,7 +51,7 @@ nonisolated enum CourseNameParser {
     /// `connectors: false` capitalises every word (people's names: "Di Nitto").
     static func titleCased(_ s: String, connectors: Bool = true) -> String {
         let lowerWords: Set<String> = ["and", "or", "of", "the", "for", "in", "on", "to", "a", "an",
-                                       "e", "di", "del", "della", "dei", "delle", "per", "con", "da", "al", "alla", "ed", "i", "il", "la", "le", "lo", "gli"]
+                                       "e", "di", "del", "della", "dei", "delle", "per", "con", "da", "al", "alla", "ed", "il", "la", "le", "lo", "gli"]
         let words = s.split(separator: " ", omittingEmptySubsequences: true).map(String.init)
         var out: [String] = []
         for (i, w) in words.enumerated() {

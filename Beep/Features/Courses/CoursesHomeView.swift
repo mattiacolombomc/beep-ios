@@ -4,9 +4,21 @@ import SwiftUI
 /// Home: status header + grouped course list. Sidebar on regular width.
 struct CoursesHomeView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(AppRouter.self) private var router
     @State private var selection: Int?
+    @State private var path = NavigationPath()
 
     var body: some View {
+        content
+            .onChange(of: router.pending, initial: true) { _, dest in
+                guard case .course(let id) = dest else { return }
+                if sizeClass == .regular { selection = id } else { path = NavigationPath([id]) }
+                router.pending = nil
+            }
+    }
+
+    @ViewBuilder
+    private var content: some View {
         if sizeClass == .regular {
             NavigationSplitView {
                 CoursesListView(selection: $selection)
@@ -22,7 +34,7 @@ struct CoursesHomeView: View {
                 }
             }
         } else {
-            NavigationStack {
+            NavigationStack(path: $path) {
                 CoursesListView(selection: $selection)
                     .navigationDestination(for: Int.self) { CourseDetailView(courseID: $0) }
                     .courseRoutes()

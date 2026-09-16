@@ -15,6 +15,7 @@
 		11495C7A826FF7BEB50F7C0D /* AppSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED2785533331D773CF0D25D5 /* AppSession.swift */; };
 		118F5092D57A515A3426808C /* FileURLTokenizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BF39A74533D9FEBB64D126 /* FileURLTokenizerTests.swift */; };
 		1230ED6B7B1E1BB3F88C6466 /* FileRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6EBD1D30A4573151B77A38B /* FileRow.swift */; };
+		1474FA15CD12B3496C465550 /* SpotlightIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D6CBF323937FA85E39701E /* SpotlightIndexer.swift */; };
 		14951E8148A77C6FAC5A148A /* LoginFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A86362F900DB06EED974BA /* LoginFlowTests.swift */; };
 		17573A8A9558E9750026F483 /* TokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D27EFC0A024C85307150D7 /* TokenStore.swift */; };
 		1B6FDB6FF3E0BB4693BB3D08 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C956A75A7DA5D53C8767CFAA /* Theme.swift */; };
@@ -37,6 +38,7 @@
 		4CF4BEA7E412F3ACA05D20CA /* AcknowledgementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA162076A63985DB48527FD /* AcknowledgementsView.swift */; };
 		4FBB247F1378B5331C795811 /* MoodleClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5859EC2B8B8ECA33F4EA63B /* MoodleClientTests.swift */; };
 		506F8D45566A259ADC11A4FE /* CatalogDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE799A9BBADFC00A51DC1EA4 /* CatalogDTO.swift */; };
+		61333CBBF93E5F17F42E0F60 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 855198D4868B1F4408DD06A0 /* AppRouter.swift */; };
 		616BF66625739DBCB3C5AE70 /* NotificationHTMLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591204CDA9D4449A5DF917D4 /* NotificationHTMLTests.swift */; };
 		6C4AB023B505AD19B002477E /* CoursesHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8C5004148D51BFD22BB6DE /* CoursesHomeView.swift */; };
 		724FD949B3D00AA7329215A2 /* FileOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8694ACF7AB5159B41777A /* FileOpener.swift */; };
@@ -132,6 +134,8 @@
 		79808CD1C374D0352A1F0E37 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		7A2A5A24A4239BD7AB55BDAA /* AcademicYear.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcademicYear.swift; sourceTree = "<group>"; };
 		83797407F81A91DEB24BEF98 /* RecentFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFilesView.swift; sourceTree = "<group>"; };
+		83D6CBF323937FA85E39701E /* SpotlightIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightIndexer.swift; sourceTree = "<group>"; };
+		855198D4868B1F4408DD06A0 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		864BC64E7643ABBFBF2CCFD3 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		87CAC2B1DEDF862FD7B242D6 /* BeepTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BeepTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C6239253FDE3EEE913FFD0B /* PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageView.swift; sourceTree = "<group>"; };
@@ -285,6 +289,7 @@
 				BB8DD2552D68CA4F2DAB7922 /* DownloadManager.swift */,
 				B1D5FBE3ACEA751305B2C656 /* Indexer.swift */,
 				9D988C29D5162025A8E0C42E /* Notifier.swift */,
+				83D6CBF323937FA85E39701E /* SpotlightIndexer.swift */,
 				AD984B3CFFCA2AD81EA3EDC8 /* SyncEngine.swift */,
 			);
 			path = Sync;
@@ -333,6 +338,7 @@
 			isa = PBXGroup;
 			children = (
 				C18D872AD99A30965F745633 /* AppDelegate.swift */,
+				855198D4868B1F4408DD06A0 /* AppRouter.swift */,
 				ED2785533331D773CF0D25D5 /* AppSession.swift */,
 				F4DE5789C80BF2E517E67978 /* BeepApp.swift */,
 				7244B2A38FD30B29696052BF /* DemoData.swift */,
@@ -585,6 +591,7 @@
 				4CF4BEA7E412F3ACA05D20CA /* AcknowledgementsView.swift in Sources */,
 				7E2C6B05A3F63BBB8B50917C /* ActivityView.swift in Sources */,
 				EDF824725C2A3DFDFC277F99 /* AppDelegate.swift in Sources */,
+				61333CBBF93E5F17F42E0F60 /* AppRouter.swift in Sources */,
 				11495C7A826FF7BEB50F7C0D /* AppSession.swift in Sources */,
 				E04E49833CDD0D4EA098781D /* BackgroundRefresh.swift in Sources */,
 				A46A7CF1B1510E9189B8DDD2 /* BeepApp.swift in Sources */,
@@ -628,6 +635,7 @@
 				D21B2D226467AFE6CF491CAA /* SessionExpiredView.swift in Sources */,
 				A17B535957C22F5DCCF9322A /* SettingsView.swift in Sources */,
 				0BFCB4E536F0DEF226744E67 /* SiteInfoDTO.swift in Sources */,
+				1474FA15CD12B3496C465550 /* SpotlightIndexer.swift in Sources */,
 				38E915034426D597D953CB8A /* StatusTile.swift in Sources */,
 				205CD762DB8C6F586EBBE93B /* StoreContainer.swift in Sources */,
 				ACD6B2DBB3ACF96620808FC5 /* SyncCoursesView.swift in Sources */,

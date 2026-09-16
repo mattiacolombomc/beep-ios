@@ -73,8 +73,23 @@ final class DownloadManager {
         pump()
     }
 
-    func enqueue(_ files: [FileItem]) {
+    /// `background: true` marks the batch as opportunistic: Wi-Fi only if the user asked for it.
+    func enqueue(_ files: [FileItem], background: Bool = false) {
+        if background, UserDefaults.standard.bool(forKey: "settings.backgroundWifiOnly") {
+            deferredKeys.formUnion(files.filter { !$0.isDownloaded || $0.hasUpdate }.map(\.key))
+            return
+        }
         for f in files where !f.isDownloaded || f.hasUpdate { enqueue(f) }
+    }
+
+    /// Files postponed by a background check; flushed on the next foreground sync.
+    private(set) var deferredKeys: Set<String> = []
+
+    func flushDeferred() {
+        guard !deferredKeys.isEmpty else { return }
+        let keys = deferredKeys
+        deferredKeys.removeAll()
+        for key in keys { if let f = file(for: key) { enqueue(f) } }
     }
 
     func cancelAll() {

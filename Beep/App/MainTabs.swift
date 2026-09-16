@@ -1,17 +1,36 @@
+import SwiftData
 import SwiftUI
 
 struct MainTabs: View {
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
     @Environment(TokenRenewer.self) private var renewer
-    @State private var showActivity = false
+    @Environment(AppRouter.self) private var router
+    @Environment(FileOpener.self) private var opener
+    @Environment(\.modelContext) private var context
 
     var body: some View {
-        TabView {
-            Tab("Courses", systemImage: "graduationcap") { CoursesHomeView() }
-            Tab("Recent", systemImage: "clock") { RecentFilesView() }
-            Tab("Activity", systemImage: "arrow.down.circle") { ActivityView() }
-            Tab("Search", systemImage: "magnifyingglass", role: .search) { GlobalSearchView() }
+        @Bindable var router = router
+        TabView(selection: $router.selectedTab) {
+            Tab("Courses", systemImage: "graduationcap", value: .courses) { CoursesHomeView() }
+            Tab("Recent", systemImage: "clock", value: .recent) { RecentFilesView() }
+            Tab("Activity", systemImage: "arrow.down.circle", value: .activity) { ActivityView() }
+            Tab("Search", systemImage: "magnifyingglass", value: .search, role: .search) { GlobalSearchView() }
+        }
+        .onChange(of: router.pending) { _, dest in
+            guard let dest else { return }
+            switch dest {
+            case .file(let key):
+                var d = FetchDescriptor<FileItem>(predicate: #Predicate { $0.key == key })
+                d.fetchLimit = 1
+                if let file = try? context.fetch(d).first { opener.open(file) }
+                router.pending = nil
+            case .sync:
+                if let client = session.client, let user = session.user { Task { _ = await sync.syncAll(client: client, userID: user.id) } }
+                router.pending = nil
+            case .course:
+                break // consumed by CoursesHomeView
+            }
         }
         .tabViewStyle(.sidebarAdaptable)
         .tabBarMinimizeBehavior(.onScrollDown)

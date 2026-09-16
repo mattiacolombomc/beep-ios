@@ -76,6 +76,7 @@ final class SyncEngine {
         var report = Report()
         let indexer = Indexer(context: context)
         downloads.resetSessionCounters()
+        if trigger != .background { downloads.flushDeferred() }
         do {
             if let userID {
                 async let coursesTask = client.userCourses(userID: userID)
@@ -113,7 +114,7 @@ final class SyncEngine {
                         if course.syncEnabled {
                             let wanted = course.files.filter { !$0.isDownloaded || $0.hasUpdate }
                             if !wanted.isEmpty {
-                                downloads.enqueue(wanted)
+                                downloads.enqueue(wanted, background: trigger == .background)
                                 report.queuedDownloads += wanted.count
                             }
                         }
@@ -132,6 +133,7 @@ final class SyncEngine {
             }
             lastSyncAt = .now
             phase = .idle
+            if userID != nil { Task { await SpotlightIndexer.reindex(context: context) } }
         } catch MoodleError.invalidToken {
             report.errors.append("invalidToken")
             phase = .failed(String(localized: "Session expired"))
