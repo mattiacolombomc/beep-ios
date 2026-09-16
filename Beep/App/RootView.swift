@@ -1,16 +1,17 @@
 import SwiftUI
 
-/// Entry point of the UI. Will branch between onboarding and the main tabs once auth exists.
+/// Auth gate: welcome/login when signed out, the main tabs when signed in.
 struct RootView: View {
-    var body: some View {
-        ContentUnavailableView(
-            "Beep",
-            systemImage: "graduationcap",
-            description: Text("Project skeleton. Nothing to see yet.")
-        )
-    }
-}
+    @Environment(AppSession.self) private var session
 
-#Preview {
-    RootView()
+    var body: some View {
+        switch session.state {
+        case .loading:
+            ProgressView()
+        case .signedOut:
+            WelcomeView()
+        case .signedIn:
+            MainTabs()
+        }
+    }
 }
