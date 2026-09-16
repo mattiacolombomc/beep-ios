@@ -39,5 +39,7 @@ struct CourseNameParserTests {
         #expect(CourseNameParser.titleCased("ANALISI MATEMATICA II") == "Analisi Matematica II")
         #expect(CourseNameParser.titleCased("SIGNALS FOR AI AND ML") == "Signals for AI and ML")
         #expect(CourseNameParser.titleCased("Data Bases 2") == "Data Bases 2")
+        #expect(CourseNameParser.titleCased("COMPUTER SECURITY - UIC 587") == "Computer Security - UIC 587")
+        #expect(CourseNameParser.titleCased("FOUNDATIONS OF OPERATIONS RESEARCH") == "Foundations of Operations Research")
     }
 }

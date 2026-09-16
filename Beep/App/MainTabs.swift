@@ -38,7 +38,7 @@ struct SyncStatusBar: View {
             HStack(spacing: Theme.Spacing.m - 4) {
                 ZStack {
                     switch sync.phase {
-                    case .indexing(let done, let total):
+                    case .indexing(let done, let total, _):
                         ProgressView(value: total > 0 ? Double(done) / Double(total) : 0)
                             .progressViewStyle(.circular)
                             .controlSize(.small)
@@ -49,10 +49,17 @@ struct SyncStatusBar: View {
                     }
                 }
                 .frame(width: 24, height: 24)
-                VStack(alignment: .leading, spacing: 1) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text(title).font(.subheadline.weight(.semibold)).lineLimit(1)
                     if placement != .inline {
                         Text(subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(1).monospacedDigit()
+                            .contentTransition(.numericText())
+                        if case .indexing(let done, let total, _) = sync.phase {
+                            ProgressView(value: total > 0 ? Double(done) / Double(total) : 0)
+                                .progressViewStyle(.linear)
+                                .tint(.accentColor)
+                                .animation(.linear(duration: 0.25), value: done)
+                        }
                     }
                 }
                 Spacer(minLength: 0)
@@ -79,10 +86,12 @@ struct SyncStatusBar: View {
 
     private var subtitle: String {
         switch sync.phase {
-        case .indexing(let done, let total): return String(localized: "\(done) of \(total) courses")
+        case .indexing(let done, let total, let current):
+            if let current { return String(localized: "\(done)/\(total) · \(current)") }
+            return String(localized: "\(done) of \(total) courses")
         case .failed(let message): return message
         case .idle:
-            if let at = sync.lastSyncAt { return String(localized: "Last sync \(at.formatted(.relative(presentation: .named)))") }
+            if let at = sync.lastSyncAt { return String(localized: "Last sync \(at.relativeLabel)") }
             return String(localized: "Never synced")
         }
     }

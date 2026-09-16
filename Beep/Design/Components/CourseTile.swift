@@ -8,7 +8,7 @@ struct CourseTile: View {
 
     var body: some View {
         Text(monogram)
-            .font(.system(size: monogram.count > 3 ? 11 : 13, weight: .bold, design: .rounded))
+            .font(.system(size: monogram.count > 4 ? 10 : monogram.count > 3 ? 11 : 13, weight: .bold, design: .rounded))
             .tracking(0.5)
             .foregroundStyle(.white)
             .minimumScaleFactor(0.7)

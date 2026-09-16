@@ -19,7 +19,7 @@ nonisolated enum CourseNameParser {
         var text = Multilang.resolve(raw, language: language).trimmingCharacters(in: .whitespacesAndNewlines)
 
         // Trailing "[2026-27]" academic-year tag → drop (category already carries it).
-        text = text.replacing(/\s*\[\d{4}-\d{2}\]\s*$/, with: "")
+        text = text.replacing(/\s*\[[^\]]*\]\s*$/, with: "")
 
         var code: String?
         // Leading "054443 - "
@@ -58,8 +58,9 @@ nonisolated enum CourseNameParser {
             guard isShouty else { out.append(w); continue }
             let lower = w.lowercased()
             if connectors && i > 0 && lowerWords.contains(lower) { out.append(lower); continue }
-            // Keep roman numerals and 1–2 letter acronyms as-is (II, AI, ML).
-            if w.allSatisfy({ "IVXL".contains($0) }) || (connectors && w.count <= 2) { out.append(w); continue }
+            // Keep roman numerals and short acronyms as-is (II, AI, ML, UIC, IoT).
+            let letters = w.filter(\.isLetter)
+            if letters.isEmpty || w.allSatisfy({ "IVXL".contains($0) }) || (connectors && letters.count <= 3) { out.append(w); continue }
             // Hyphenated names: "BORACCHI-MATTEUCCI" → "Boracchi-Matteucci"
             let parts = lower.split(separator: "-").map { $0.prefix(1).uppercased() + $0.dropFirst() }
             out.append(parts.joined(separator: "-"))

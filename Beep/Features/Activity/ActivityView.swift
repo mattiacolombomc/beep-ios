@@ -12,6 +12,19 @@ struct ActivityView: View {
     var body: some View {
         NavigationStack {
             List {
+                if case .indexing(let done, let total, let current) = sync.phase {
+                    Section("Syncing now") {
+                        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+                            HStack {
+                                Text(current ?? String(localized: "Loading courses…")).font(.headline).lineLimit(1)
+                                Spacer()
+                                Text("\(done)/\(total)").font(.subheadline.monospacedDigit()).foregroundStyle(.secondary)
+                            }
+                            ProgressView(value: total > 0 ? Double(done) / Double(total) : 0)
+                        }
+                        .padding(.vertical, Theme.Spacing.xs)
+                    }
+                }
                 if let report = sync.lastReport {
                     Section("Last sync") {
                         LabeledContent("Courses updated", value: "\(report.coursesIndexed)")

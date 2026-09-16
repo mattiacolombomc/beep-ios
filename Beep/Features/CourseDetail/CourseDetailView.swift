@@ -104,7 +104,7 @@ private struct CourseContentView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle(course.title)
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $query, prompt: "Search in this course")
         .searchScopes($scope, activation: .onSearchPresentation) {
             ForEach(FileTypeScope.allCases) { Text($0.label).tag($0) }
@@ -151,6 +151,10 @@ private struct CourseHeader: View {
             HStack(alignment: .top, spacing: Theme.Spacing.m - 4) {
                 CourseTile(monogram: course.monogram, color: course.color, size: 56)
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                    Text(course.title)
+                        .font(.title2.weight(.bold))
+                        .lineLimit(3)
+                        .padding(.bottom, 2)
                     if let code = course.code {
                         Text(code)
                             .font(.caption.weight(.semibold))
@@ -167,7 +171,7 @@ private struct CourseHeader: View {
             HStack(spacing: Theme.Spacing.l) {
                 Stat(value: "\(course.files.count)", label: "files")
                 Stat(value: "\(newCount)", label: "new", highlighted: newCount > 0)
-                Stat(value: ByteCountFormatter.string(fromByteCount: Int64(totalSize), countStyle: .file), label: "total")
+                Stat(value: totalSize == 0 ? "0 KB" : ByteCountFormatter.string(fromByteCount: Int64(totalSize), countStyle: .file), label: "total")
                 Stat(value: "\(downloaded)", label: "offline")
                 Spacer(minLength: 0)
             }

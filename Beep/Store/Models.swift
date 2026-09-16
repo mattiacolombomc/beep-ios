@@ -16,6 +16,8 @@ final class Course {
     var isHidden: Bool
     /// Download new files automatically during sync.
     var syncEnabled: Bool
+    /// Hidden locally by the user (independent from Moodle's `hidden`).
+    var isArchived: Bool = false
     var lastIndexedAt: Date?
     /// Last time the user opened the course; files first seen after this are "new".
     var lastSeenAt: Date?

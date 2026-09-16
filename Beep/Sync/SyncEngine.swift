@@ -8,7 +8,7 @@ import SwiftData
 final class SyncEngine {
     enum Phase: Equatable {
         case idle
-        case indexing(done: Int, total: Int)
+        case indexing(done: Int, total: Int, current: String?)
         case failed(String)
     }
 
@@ -70,7 +70,7 @@ final class SyncEngine {
             var descriptor = FetchDescriptor<Course>()
             if let courseID { descriptor.predicate = #Predicate { $0.id == courseID } }
             let targets = try context.fetch(descriptor)
-            phase = .indexing(done: 0, total: targets.count)
+            phase = .indexing(done: 0, total: targets.count, current: targets.first?.title)
 
             // Fetch contents 4 at a time; apply to the store on the main actor as they arrive.
             var done = 0
@@ -97,8 +97,8 @@ final class SyncEngine {
                     report.errors.append("\(byID[id]?.title ?? "\(id)"): \(error)")
                 }
                 done += 1
-                phase = .indexing(done: done, total: targets.count)
                 if let c = iterator.next() { launch(c) }
+                phase = .indexing(done: done, total: targets.count, current: inFlight.keys.compactMap { byID[$0]?.title }.first)
             }
             lastSyncAt = .now
             phase = .idle

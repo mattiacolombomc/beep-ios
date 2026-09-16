@@ -50,10 +50,25 @@ nonisolated enum CourseMonogram {
             if let _ = Int(w) { suffix = w; continue }
             if w.allSatisfy({ "IVX".contains($0) }) && w.count <= 3 { suffix = w; continue }
             if skip.contains(w.lowercased()) { continue }
-            if let f = w.first { letters.append(f.uppercased()) }
+            if let f = w.first(where: \.isLetter) { letters.append(f.uppercased()) }
         }
         if letters.isEmpty { letters = String(title.prefix(3)).uppercased() }
-        let maxLetters = suffix.isEmpty ? 4 : 3
+        let maxLetters = suffix.isEmpty ? 5 : 4
         return String(letters.prefix(maxLetters)) + suffix
+    }
+}
+
+extension Date {
+    /// "Just now" under a minute, otherwise a named relative date ("5 minutes ago", "yesterday").
+    var relativeLabel: String {
+        if Date.now.timeIntervalSince(self) < 60 { return String(localized: "Just now") }
+        return formatted(.relative(presentation: .named))
+    }
+}
+
+extension Int {
+    /// "0 KB", "2,3 MB", "1,2 GB".
+    var fileSizeLabel: String {
+        self == 0 ? "0 KB" : ByteCountFormatter.string(fromByteCount: Int64(self), countStyle: .file)
     }
 }

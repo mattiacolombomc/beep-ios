@@ -46,10 +46,13 @@ struct CoursesListView: View {
     @Query(sort: \Course.title) private var courses: [Course]
     @Query(filter: #Predicate<WebeepNotification> { !$0.read }) private var unread: [WebeepNotification]
     @State private var query = ""
-    @State private var yearFilter: YearFilter = .all
-    @State private var showHidden = false
-    @State private var onlyNew = false
+    @AppStorage("home.yearFilter") private var yearFilter: YearFilter = .all
+    @AppStorage("home.showHidden") private var showHidden = false
+    @AppStorage("home.showArchived") private var showArchived = false
+    @AppStorage("home.onlyNew") private var onlyNew = false
+    @AppStorage("home.onlyAutoDownload") private var onlyAutoDownload = false
     @State private var expandedYears: Set<String> = []
+    @State private var archiveTarget: Course?
     @State private var showSettings = false
     @State private var showNotifications = false
 
@@ -57,7 +60,9 @@ struct CoursesListView: View {
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
         return courses.filter { c in
             if c.isHidden && !showHidden { return false }
+            if c.isArchived && !showArchived { return false }
             if onlyNew && c.newFilesCount == 0 { return false }
+            if onlyAutoDownload && !c.syncEnabled { return false }
             switch yearFilter {
             case .all: break
             case .current: if c.isAcademicYear && !c.isCurrentYear { return false }
@@ -68,11 +73,13 @@ struct CoursesListView: View {
         }
     }
 
-    private var favourites: [Course] { visible.filter(\.isFavourite) }
-    private var current: [Course] { visible.filter { $0.isCurrentYear } }
-    private var general: [Course] { visible.filter { !$0.isAcademicYear } }
+    private var active: [Course] { visible.filter { !$0.isArchived } }
+    private var archived: [Course] { visible.filter(\.isArchived) }
+    private var favourites: [Course] { active.filter(\.isFavourite) }
+    private var current: [Course] { active.filter { $0.isCurrentYear } }
+    private var general: [Course] { active.filter { !$0.isAcademicYear } }
     private var pastByYear: [(year: String, courses: [Course])] {
-        let past = visible.filter { $0.isAcademicYear && !$0.isCurrentYear }
+        let past = active.filter { $0.isAcademicYear && !$0.isCurrentYear }
         return Dictionary(grouping: past, by: \.categoryName)
             .sorted { $0.key > $1.key }
             .map { ($0.key, $0.value) }
@@ -127,6 +134,19 @@ struct CoursesListView: View {
                     .animation(.spring(duration: 0.32, bounce: 0.18), value: expandedYears)
                 }
             }
+            if !archived.isEmpty {
+                Section {
+                    DisclosureGroup(isExpanded: binding(for: "archived")) {
+                        rows(archived)
+                    } label: {
+                        HStack {
+                            Label("Archived", systemImage: "archivebox").font(.headline)
+                            Spacer()
+                            Text("\(archived.count)").font(.subheadline.monospacedDigit()).foregroundStyle(.secondary)
+                        }
+                    }
+                }
+            }
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Courses")
@@ -139,10 +159,13 @@ struct CoursesListView: View {
                     Picker("Years", selection: $yearFilter) {
                         ForEach(YearFilter.allCases) { Text($0.label).tag($0) }
                     }
-                    Toggle("Show hidden courses", systemImage: "eye.slash", isOn: $showHidden)
                     Toggle("Only with new files", systemImage: "sparkles", isOn: $onlyNew)
+                    Toggle("Only auto-download", systemImage: "arrow.down.circle", isOn: $onlyAutoDownload)
+                    Divider()
+                    Toggle("Show archived", systemImage: "archivebox", isOn: $showArchived)
+                    Toggle("Show hidden on WeBeep", systemImage: "eye.slash", isOn: $showHidden)
                 } label: {
-                    Label("Filter", systemImage: yearFilter == .all && !showHidden && !onlyNew ? "line.3.horizontal.decrease" : "line.3.horizontal.decrease.circle.fill")
+                    Label("Filter", systemImage: isFilterActive ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease")
                 }
             }
             ToolbarSpacer(.fixed)
@@ -156,7 +179,10 @@ struct CoursesListView: View {
         }
         .sheet(isPresented: $showSettings) { SettingsView() }
         .sheet(isPresented: $showNotifications) { NotificationsView() }
+        .archiveDialog(course: $archiveTarget)
     }
+
+    private var isFilterActive: Bool { yearFilter != .all || showHidden || showArchived || onlyNew || onlyAutoDownload }
 
     @ViewBuilder
     private func rows(_ list: [Course]) -> some View {
@@ -164,7 +190,20 @@ struct CoursesListView: View {
             CourseRow(course: course)
                 .tag(course.id)
                 .modifier(RowLink(id: course.id, isSplit: sizeClass == .regular))
-                .contextMenu { CourseContextMenu(course: course) }
+                .contextMenu { CourseContextMenu(course: course, onArchive: { archiveTarget = course }) }
+                .swipeActions(edge: .trailing) {
+                    if course.isArchived {
+                        Button { course.isArchived = false } label: { Label("Unarchive", systemImage: "tray.and.arrow.up") }
+                    } else {
+                        Button { archiveTarget = course } label: { Label("Archive", systemImage: "archivebox") }
+                    }
+                    Button {
+                        course.syncEnabled.toggle()
+                    } label: {
+                        Label(course.syncEnabled ? "Stop auto-download" : "Auto-download", systemImage: course.syncEnabled ? "arrow.down.circle.dotted" : "arrow.down.circle")
+                    }
+                    .tint(.accentColor)
+                }
                 .swipeActions(edge: .leading, allowsFullSwipe: true) {
                     Button {
                         course.isFavourite.toggle()
@@ -236,10 +275,10 @@ private struct StatusHeader: View {
     }
     private var syncValue: String {
         switch sync.phase {
-        case .indexing(let done, let total): return "\(done)/\(total)"
+        case .indexing(let done, let total, _): return "\(done)/\(total)"
         case .failed: return String(localized: "Failed")
         case .idle:
-            if let at = sync.lastSyncAt { return at.formatted(.relative(presentation: .named)) }
+            if let at = sync.lastSyncAt { return at.relativeLabel }
             return String(localized: "Never")
         }
     }
@@ -254,12 +293,17 @@ private struct StatusHeader: View {
 
 struct CourseContextMenu: View {
     @Bindable var course: Course
+    var onArchive: (() -> Void)? = nil
     @Environment(\.openURL) private var openURL
 
     var body: some View {
         Toggle(isOn: $course.isFavourite) { Label("Favourite", systemImage: "star") }
         Toggle(isOn: $course.syncEnabled) { Label("Auto-download new files", systemImage: "arrow.down.circle") }
-        Toggle(isOn: $course.isHidden) { Label("Hidden", systemImage: "eye.slash") }
+        if course.isArchived {
+            Button { course.isArchived = false } label: { Label("Unarchive", systemImage: "tray.and.arrow.up") }
+        } else if let onArchive {
+            Button(action: onArchive) { Label("Archive…", systemImage: "archivebox") }
+        }
         Divider()
         Button {
             openURL(WeBeep.host.appending(path: "course/view.php").appending(queryItems: [URLQueryItem(name: "id", value: String(course.id))]))
@@ -267,4 +311,41 @@ struct CourseContextMenu: View {
             Label("Open on WeBeep", systemImage: "safari")
         }
     }
+}
+
+
+/// Archive confirmation: keep or delete the downloaded files.
+private struct ArchiveDialog: ViewModifier {
+    @Binding var course: Course?
+    @Environment(FileOpener.self) private var opener
+
+    func body(content: Content) -> some View {
+        content.confirmationDialog(
+            course.map { Text("Archive \u{201C}\($0.title)\u{201D}?") } ?? Text(""),
+            isPresented: Binding(get: { course != nil }, set: { if !$0 { course = nil } }),
+            titleVisibility: .visible
+        ) {
+            if let c = course {
+                let downloaded = c.files.filter(\.isDownloaded)
+                let size = downloaded.reduce(0) { $0 + $1.filesize }
+                Button("Archive, keep files") { archive(c, deleteFiles: false) }
+                if !downloaded.isEmpty {
+                    Button("Archive and delete \(downloaded.count) files (\(size.fileSizeLabel))", role: .destructive) { archive(c, deleteFiles: true) }
+                }
+            }
+        } message: {
+            Text("The course moves to the Archived group and stops auto-downloading. You can unarchive it any time.")
+        }
+    }
+
+    private func archive(_ c: Course, deleteFiles: Bool) {
+        c.isArchived = true
+        c.syncEnabled = false
+        if deleteFiles { for f in c.files where f.isDownloaded { opener.removeLocal(f) } }
+        course = nil
+    }
+}
+
+extension View {
+    func archiveDialog(course: Binding<Course?>) -> some View { modifier(ArchiveDialog(course: course)) }
 }

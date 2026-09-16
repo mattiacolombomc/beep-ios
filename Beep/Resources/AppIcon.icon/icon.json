@@ -1,0 +1,66 @@
+{
+  "fill" : {
+    "automatic-gradient" : "display-p3:0.17600,0.41200,0.85500,1.00000"
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "fill-specializations" : [
+            { "value" : { "solid" : "display-p3:1.00000,1.00000,1.00000,1.00000" } },
+            { "appearance" : "tinted", "value" : { "solid" : "gray:0.92000,1.00000" } }
+          ],
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "document.png",
+          "name" : "Document"
+        },
+        {
+          "fill-specializations" : [
+            { "value" : { "solid" : "display-p3:0.85000,0.92000,1.00000,1.00000" } },
+            { "appearance" : "tinted", "value" : { "solid" : "gray:0.75000,1.00000" } }
+          ],
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "flap.png",
+          "name" : "Flap",
+          "opacity" : 0.9
+        }
+      ],
+      "name" : "File",
+      "position" : {
+        "scale" : 1,
+        "translation-in-points" : [ 0, 0 ]
+      },
+      "shadow" : { "kind" : "neutral", "opacity" : 0.5 },
+      "specular" : true,
+      "translucency" : { "enabled" : true, "value" : 0.5 }
+    },
+    {
+      "layers" : [
+        {
+          "fill-specializations" : [
+            { "value" : { "solid" : "display-p3:1.00000,1.00000,1.00000,1.00000" } },
+            { "appearance" : "tinted", "value" : { "solid" : "gray:0.95000,1.00000" } }
+          ],
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "beep.png",
+          "name" : "Beep"
+        }
+      ],
+      "name" : "Signal",
+      "position" : {
+        "scale" : 1,
+        "translation-in-points" : [ 0, 0 ]
+      },
+      "shadow" : { "kind" : "neutral", "opacity" : 0.6 },
+      "specular" : true,
+      "translucency" : { "enabled" : true, "value" : 0.35 }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [ "watchOS" ],
+    "squares" : "shared"
+  }
+}

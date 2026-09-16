@@ -6,6 +6,11 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \Course.title) private var courses: [Course]
     @State private var confirmSignOut = false
+    @Environment(\.openURL) private var openURL
+
+    private var downloadedFiles: [FileItem] { courses.flatMap(\.files).filter(\.isDownloaded) }
+    private var downloadedCount: Int { downloadedFiles.count }
+    private var downloadedSize: Int { downloadedFiles.reduce(0) { $0 + $1.filesize } }
 
     var body: some View {
         NavigationStack {
@@ -38,6 +43,18 @@ struct SettingsView: View {
                 } footer: {
                     Text("New files in these courses download automatically when you sync.")
                 }
+                Section {
+                    LabeledContent("Downloaded", value: "\(downloadedCount) files · \(downloadedSize.fileSizeLabel)")
+                    Button("Show in Files app", systemImage: "folder") {
+                        var comps = URLComponents(url: URL.documentsDirectory, resolvingAgainstBaseURL: false)
+                        comps?.scheme = "shareddocuments"
+                        if let url = comps?.url { openURL(url) }
+                    }
+                } header: {
+                    Text("Storage")
+                } footer: {
+                    Text("Files are saved in Files → On My iPhone → Beep, one folder per course, so any app can open and edit them.")
+                }
                 Section("About") {
                     NavigationLink("Acknowledgements") { AcknowledgementsView() }
                     LabeledContent("Version", value: Bundle.main.versionString)
@@ -55,48 +72,6 @@ struct SettingsView: View {
                 Text("Downloaded files stay on this device.")
             }
         }
-    }
-}
-
-struct SyncCoursesView: View {
-    @Query(sort: \Course.title) private var courses: [Course]
-
-    var body: some View {
-        List {
-            ForEach(courses.filter { !$0.isHidden }) { course in
-                @Bindable var course = course
-                Toggle(isOn: $course.syncEnabled) {
-                    HStack(spacing: Theme.Spacing.m - 4) {
-                        CourseTile(monogram: course.monogram, color: course.color, size: 36)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(course.title).font(.body).lineLimit(1)
-                            Text(course.categoryName).font(.caption).foregroundStyle(.secondary)
-                        }
-                    }
-                }
-            }
-        }
-        .navigationTitle("Auto-download")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-struct AcknowledgementsView: View {
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: Theme.Spacing.m) {
-                Text("Beep is inspired by and partly derived from **myPoliFile** by Matteo Visotto, released under the MIT License.")
-                Text("The login flow follows the approach of **WeBeep Sync** by Tommaso Morganti.")
-                Text("Beep is not affiliated with, endorsed by, or sponsored by Politecnico di Milano.")
-                    .foregroundStyle(.secondary)
-                if let notice = Bundle.main.url(forResource: "NOTICE", withExtension: nil), let text = try? String(contentsOf: notice, encoding: .utf8) {
-                    Text(text).font(.caption.monospaced()).foregroundStyle(.secondary)
-                }
-            }
-            .padding(Theme.Spacing.m)
-        }
-        .navigationTitle("Acknowledgements")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
