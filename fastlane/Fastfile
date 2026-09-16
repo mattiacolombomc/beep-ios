@@ -139,3 +139,42 @@ lane :bump_version do |options|
   git_commit(path: paths, message: "chore: bump marketing version to #{version}")
   UI.success("Version bumped to #{version}.")
 end
+
+desc "Invite an external TestFlight tester: fastlane add_tester email:x@y.z first:Name last:Surname group:Amici"
+lane :add_tester do |options|
+  api_key = asc_api_key
+  email = options[:email] or UI.user_error!("Pass email:")
+  group = options[:group] || "Amici"
+  Pilot::TesterManager.new.add_tester(
+    api_key:        api_key,
+    app_identifier: APP_BUNDLE,
+    email:          email,
+    first_name:     options[:first] || "",
+    last_name:      options[:last] || "",
+    groups:         [group]
+  )
+  UI.success("#{email} added to TestFlight group '#{group}'")
+end
+
+desc "Submit the latest build to the external group (triggers Beta App Review on the first build)"
+lane :distribute_external do |options|
+  api_key = asc_api_key
+  group = options[:group] || "Amici"
+  upload_to_testflight(
+    api_key:            api_key,
+    app_identifier:     APP_BUNDLE,
+    skip_submission:    false,
+    distribute_only:    true,
+    distribute_external: true,
+    notify_external_testers: true,
+    groups:             [group],
+    changelog:          options[:changelog] || "Prima beta di Beep: sync WeBeep, download automatici, ricerca file, notifiche.",
+    beta_app_review_info: {
+      contact_email:      "mattia@mattiacolombo.engineering",
+      contact_first_name: "Mattia",
+      contact_last_name:  "Colombo",
+      contact_phone:      "+390000000000",
+      notes:              "Unofficial client for Politecnico di Milano's WeBeep (Moodle). Sign in requires a Polimi student account; reviewers can use the manual token option only with a valid WeBeep account. All features work read-only against the user's own courses."
+    }
+  )
+end
