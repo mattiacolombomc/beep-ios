@@ -97,11 +97,16 @@ final class SyncEngine {
                 do {
                     let sections = try await task.value
                     if let course = byID[id] {
+                        // A course indexed for the first time is a baseline, not news:
+                        // its files must never trigger badges or notifications.
+                        let isFirstIndex = course.lastIndexedAt == nil
                         let diff = try indexer.upsertContents(sections, for: course, token: client.token)
-                        report.newFiles += diff.newFiles.count
-                        report.updatedFiles += diff.updatedFiles.count
                         report.coursesIndexed += 1
-                        if !diff.newFiles.isEmpty || !diff.updatedFiles.isEmpty { report.coursesWithNews.append(course.title) }
+                        if !isFirstIndex {
+                            report.newFiles += diff.newFiles.count
+                            report.updatedFiles += diff.updatedFiles.count
+                            if !diff.newFiles.isEmpty || !diff.updatedFiles.isEmpty { report.coursesWithNews.append(course.title) }
+                        }
                         if course.syncEnabled {
                             let wanted = course.files.filter { !$0.isDownloaded || $0.hasUpdate }
                             if !wanted.isEmpty {
@@ -130,7 +135,10 @@ final class SyncEngine {
         }
         report.finishedAt = .now
         lastReport = report
-        if trigger == .background, UserDefaults.standard.bool(forKey: "settings.notifications") {
+        // Local notifications: only for background checks, only after onboarding's first full sync.
+        if trigger == .background,
+           UserDefaults.standard.bool(forKey: "settings.notifications"),
+           UserDefaults.standard.bool(forKey: "onboarding.done") {
             Notifier.notifyNewFiles(count: report.newFiles + report.updatedFiles, courses: report.coursesWithNews)
         }
         if UserDefaults.standard.bool(forKey: "settings.backgroundRefresh") { BackgroundRefresh.schedule() }
