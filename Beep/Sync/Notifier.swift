@@ -18,7 +18,7 @@ enum Notifier {
         content.title = String(localized: "WeBeep session expired")
         content.body = String(localized: "Open Beep and sign in again to keep your courses in sync. Your files are safe.")
         content.sound = .default
-        content.interruptionLevel = .timeSensitive
+        content.interruptionLevel = .active
         UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: "session-expired", content: content, trigger: nil))
     }
 
