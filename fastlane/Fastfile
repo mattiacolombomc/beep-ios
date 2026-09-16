@@ -1,3 +1,6 @@
+require "tmpdir"
+require "fileutils"
+
 PROJECT      = "Beep.xcodeproj"
 PROJECT_YML  = "project.yml"
 APP_BUNDLE   = "com.mattiacolombo.Beep"
@@ -52,9 +55,11 @@ def auth_xcargs
   issuer_id = ENV.fetch("ASC_ISSUER_ID")
   path = ENV["ASC_KEY_PATH"]
   if (content = ENV["ASC_KEY_CONTENT"]) && !content.strip.empty?
-    path = File.join(Dir.tmpdir, "AuthKey_#{key_id}.p8")
-    File.write(path, content)
-    File.chmod(0600, path)
+    # Owner-only temp dir + exclusive create: no world-readable window, no symlink follow. Removed at exit.
+    dir = Dir.mktmpdir("beep-asc-")
+    path = File.join(dir, "AuthKey_#{key_id}.p8")
+    File.open(path, File::WRONLY | File::CREAT | File::EXCL, 0o600) { |f| f.write(content) }
+    at_exit { FileUtils.rm_rf(dir) }
   end
   "-allowProvisioningUpdates -allowProvisioningDeviceRegistration " \
   "-authenticationKeyPath #{File.expand_path(path)} -authenticationKeyID #{key_id} -authenticationKeyIssuerID #{issuer_id}"
