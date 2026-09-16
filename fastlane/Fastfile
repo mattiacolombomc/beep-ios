@@ -175,7 +175,7 @@ lane :distribute_external do |options|
       contact_email:      "mattia@mattiacolombo.engineering",
       contact_first_name: "Mattia",
       contact_last_name:  "Colombo",
-      contact_phone:      "+390000000000",
+      contact_phone:      "+39 3920002350",
       notes:              "Unofficial client for Politecnico di Milano's WeBeep (Moodle). Sign in requires a Polimi student account; reviewers can use the manual token option only with a valid WeBeep account. All features work read-only against the user's own courses."
     }
   )
