@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03B6363204FCCC5E7E957A43 /* BeepWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = FCB37E15497DFA26FCC7A2E2 /* BeepWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		08565BE1761ADCDA22C31FD1 /* FilePresenters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF0B94F1558DB6DA49A610F /* FilePresenters.swift */; };
 		0B1704EAB59D17E78F41D5E3 /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6239253FDE3EEE913FFD0B /* PageView.swift */; };
 		0BFCB4E536F0DEF226744E67 /* SiteInfoDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FEEA578AD0563216F3CD65A /* SiteInfoDTO.swift */; };
@@ -15,14 +16,17 @@
 		11495C7A826FF7BEB50F7C0D /* AppSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED2785533331D773CF0D25D5 /* AppSession.swift */; };
 		118F5092D57A515A3426808C /* FileURLTokenizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3BF39A74533D9FEBB64D126 /* FileURLTokenizerTests.swift */; };
 		1230ED6B7B1E1BB3F88C6466 /* FileRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6EBD1D30A4573151B77A38B /* FileRow.swift */; };
+		124BF27E6E0676CC8EDD65C8 /* BeepIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2CD4C29988299E34B4B689 /* BeepIntents.swift */; };
 		1474FA15CD12B3496C465550 /* SpotlightIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D6CBF323937FA85E39701E /* SpotlightIndexer.swift */; };
 		14951E8148A77C6FAC5A148A /* LoginFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A86362F900DB06EED974BA /* LoginFlowTests.swift */; };
+		16554F78FC2DA0ADEA1E7C14 /* AcademicYear.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2A5A24A4239BD7AB55BDAA /* AcademicYear.swift */; };
 		17573A8A9558E9750026F483 /* TokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D27EFC0A024C85307150D7 /* TokenStore.swift */; };
 		1B6FDB6FF3E0BB4693BB3D08 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C956A75A7DA5D53C8767CFAA /* Theme.swift */; };
 		1CC354A37D8D0733313543EE /* Multilang.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269D9C6B193F29B7CE5B6822 /* Multilang.swift */; };
 		1EA927507217E873689AA0CC /* HTMLDocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D6B05C73E46F07902DEE37 /* HTMLDocumentView.swift */; };
 		205CD762DB8C6F586EBBE93B /* StoreContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19452E311E45FA947869B393 /* StoreContainer.swift */; };
 		21E5BFDB220B7863B2DC91FC /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 864BC64E7643ABBFBF2CCFD3 /* Localizable.xcstrings */; };
+		23F34B7603B14582FB2BEF8F /* StoreContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19452E311E45FA947869B393 /* StoreContainer.swift */; };
 		2626377E36F6BED6DD271F6A /* NotificationHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA49ED7BCABAB45AB8683EB2 /* NotificationHTML.swift */; };
 		28731E8EE11B072B787AA833 /* CatalogSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A9F48A8D454DFCDEA10154 /* CatalogSearchView.swift */; };
 		29EEC2580CF13F0C30F66688 /* GlobalSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 627F23C0ADBE033E203C10F3 /* GlobalSearchView.swift */; };
@@ -34,12 +38,14 @@
 		38E915034426D597D953CB8A /* StatusTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CC05CAD9EE8A0567A6406E7 /* StatusTile.swift */; };
 		4141E0AE22FD7B8AFB1B9418 /* TokenRenewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA184C5F47F6D595DF12167 /* TokenRenewer.swift */; };
 		4190859D37F8969EC27E0856 /* categories.json in Resources */ = {isa = PBXBuildFile; fileRef = 3F0D756C3B06D3C63DA23AB7 /* categories.json */; };
+		458402E16F18A001747EF9A4 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808CD1C374D0352A1F0E37 /* Models.swift */; };
 		4625BB2B05CF79339EDECB1B /* Notifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D988C29D5162025A8E0C42E /* Notifier.swift */; };
 		4CF4BEA7E412F3ACA05D20CA /* AcknowledgementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA162076A63985DB48527FD /* AcknowledgementsView.swift */; };
 		4FBB247F1378B5331C795811 /* MoodleClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5859EC2B8B8ECA33F4EA63B /* MoodleClientTests.swift */; };
 		506F8D45566A259ADC11A4FE /* CatalogDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE799A9BBADFC00A51DC1EA4 /* CatalogDTO.swift */; };
 		61333CBBF93E5F17F42E0F60 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 855198D4868B1F4408DD06A0 /* AppRouter.swift */; };
 		616BF66625739DBCB3C5AE70 /* NotificationHTMLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591204CDA9D4449A5DF917D4 /* NotificationHTMLTests.swift */; };
+		61E1CAC843B541E29EC8870F /* AppServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3B13A614078AA947AC892F4 /* AppServices.swift */; };
 		6C4AB023B505AD19B002477E /* CoursesHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8C5004148D51BFD22BB6DE /* CoursesHomeView.swift */; };
 		724FD949B3D00AA7329215A2 /* FileOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8694ACF7AB5159B41777A /* FileOpener.swift */; };
 		769FC084E0C34B5FC753F513 /* OnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909D07C337AEE2C18713073D /* OnboardingFlow.swift */; };
@@ -53,11 +59,14 @@
 		97B9AD6D6A5ECCD8C59D8D34 /* MoodleError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286AB63D1C7EF76A73108AAA /* MoodleError.swift */; };
 		9DA61CE0986AD0667456853F /* TokenRenewerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684A3781B2025117449208B9 /* TokenRenewerTests.swift */; };
 		9FEF5A7A095D2FA9AB77273F /* error_invalidtoken.json in Resources */ = {isa = PBXBuildFile; fileRef = AF462B1F1184F0A52D098EC7 /* error_invalidtoken.json */; };
+		A02F6D034B55300C468AEBD2 /* RecentFilesWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EC9966A7EADC3B41F7D0F2 /* RecentFilesWidget.swift */; };
 		A17B535957C22F5DCCF9322A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DC03A9A41FBAA63B81F471 /* SettingsView.swift */; };
 		A1FD17704A581986987016AD /* CourseNameParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F027F03142CE65043329E3 /* CourseNameParser.swift */; };
 		A46A7CF1B1510E9189B8DDD2 /* BeepApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DE5789C80BF2E517E67978 /* BeepApp.swift */; };
 		A853F8004BE198CCB38C66C6 /* MainTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDBE80ED4DAF175F43E0A6E /* MainTabs.swift */; };
+		AADE8FBF9ECEDF46090BC31A /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C956A75A7DA5D53C8767CFAA /* Theme.swift */; };
 		ACD6B2DBB3ACF96620808FC5 /* SyncCoursesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310DD6AAE1D1B781EFA5601C /* SyncCoursesView.swift */; };
+		B8661C44B8E696AAB53C7C46 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 855198D4868B1F4408DD06A0 /* AppRouter.swift */; };
 		B9287AE1401A76332A60CBF8 /* CourseContentsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632F9C4E22DDA97925F567A1 /* CourseContentsDTO.swift */; };
 		BE100D9ECE10FC95B2C345A1 /* CourseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E4840D462EF098CE10FD83 /* CourseDetailView.swift */; };
 		C1A3A74FB37AACF97A8403B5 /* course_contents.json in Resources */ = {isa = PBXBuildFile; fileRef = 9B277ED54290D81DF1A0DB17 /* course_contents.json */; };
@@ -66,6 +75,7 @@
 		D06EDE2500B8063422C11257 /* MoodleClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA016BEE918F3CECA3C896C /* MoodleClient.swift */; };
 		D2090CA81A5389D97FE3C779 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD984B3CFFCA2AD81EA3EDC8 /* SyncEngine.swift */; };
 		D21B2D226467AFE6CF491CAA /* SessionExpiredView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B386C894EC086F44EAA51A75 /* SessionExpiredView.swift */; };
+		D3D0FA805AC782F3CB21E08D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DF4144FD06449B7635ED698 /* Assets.xcassets */; };
 		D4242DA20C3804FC6C8B4749 /* RecentFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83797407F81A91DEB24BEF98 /* RecentFilesView.swift */; };
 		D5054C1FB88A83275883BAC2 /* NOTICE in Resources */ = {isa = PBXBuildFile; fileRef = 28FC5D2010DAB3286DF95F13 /* NOTICE */; };
 		D79E9320936B93753C5B9ECC /* AcademicYearTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F85901F69D7F210C5CCF9D3 /* AcademicYearTests.swift */; };
@@ -83,10 +93,18 @@
 		ECC33AE508D8A7E799C94E1E /* ForumDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3894DE45915C01852E61D255 /* ForumDTO.swift */; };
 		EDF824725C2A3DFDFC277F99 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18D872AD99A30965F745633 /* AppDelegate.swift */; };
 		F23CAFFA458B9E6314482632 /* CourseTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33057622945CF80070DEDD5E /* CourseTile.swift */; };
+		F36095FF2D18E3B90ADE52C7 /* BeepWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC5102FB94F5091EBB3B0D2 /* BeepWidgetBundle.swift */; };
 		F8228C12F6DCDD1BD3E58ED9 /* MultilangTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		31E087548F1C1C3F8A15AFF6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B20E5A0EC915A61F761D5E2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0C4702DD8271935D3B07776A;
+			remoteInfo = BeepWidget;
+		};
 		5931C1881E8D691EE26C0B77 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7B20E5A0EC915A61F761D5E2 /* Project object */;
@@ -95,6 +113,20 @@
 			remoteInfo = Beep;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3955B567FDD78CA5AE93D349 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				03B6363204FCCC5E7E957A43 /* BeepWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		03582BA59A9B5D1BEC9FF227 /* SmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmokeTests.swift; sourceTree = "<group>"; };
@@ -120,19 +152,23 @@
 		3F0D756C3B06D3C63DA23AB7 /* categories.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = categories.json; sourceTree = "<group>"; };
 		45D6B05C73E46F07902DEE37 /* HTMLDocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLDocumentView.swift; sourceTree = "<group>"; };
 		50A3A42D947FB5BA2B6AFB70 /* FileURLTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileURLTokenizer.swift; sourceTree = "<group>"; };
+		561EC702E9838D3510C5B494 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		57DE24B0F8748037EA115797 /* LoginWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWebView.swift; sourceTree = "<group>"; };
 		591204CDA9D4449A5DF917D4 /* NotificationHTMLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHTMLTests.swift; sourceTree = "<group>"; };
 		5EC0BE5246B5005FBF7AF7A2 /* IndexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexerTests.swift; sourceTree = "<group>"; };
 		627F23C0ADBE033E203C10F3 /* GlobalSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalSearchView.swift; sourceTree = "<group>"; };
 		632F9C4E22DDA97925F567A1 /* CourseContentsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseContentsDTO.swift; sourceTree = "<group>"; };
+		66C13C4FB7A36CFB78061D0E /* BeepWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BeepWidget.entitlements; sourceTree = "<group>"; };
 		684A3781B2025117449208B9 /* TokenRenewerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRenewerTests.swift; sourceTree = "<group>"; };
 		6CDBE80ED4DAF175F43E0A6E /* MainTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabs.swift; sourceTree = "<group>"; };
 		6F85901F69D7F210C5CCF9D3 /* AcademicYearTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcademicYearTests.swift; sourceTree = "<group>"; };
 		6FF0B94F1558DB6DA49A610F /* FilePresenters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePresenters.swift; sourceTree = "<group>"; };
 		71E4840D462EF098CE10FD83 /* CourseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDetailView.swift; sourceTree = "<group>"; };
 		7244B2A38FD30B29696052BF /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
+		77EC9966A7EADC3B41F7D0F2 /* RecentFilesWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFilesWidget.swift; sourceTree = "<group>"; };
 		79808CD1C374D0352A1F0E37 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		7A2A5A24A4239BD7AB55BDAA /* AcademicYear.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcademicYear.swift; sourceTree = "<group>"; };
+		7ABB233466543DB88FF5E076 /* Beep.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Beep.entitlements; sourceTree = "<group>"; };
 		83797407F81A91DEB24BEF98 /* RecentFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFilesView.swift; sourceTree = "<group>"; };
 		83D6CBF323937FA85E39701E /* SpotlightIndexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightIndexer.swift; sourceTree = "<group>"; };
 		855198D4868B1F4408DD06A0 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
@@ -165,6 +201,7 @@
 		CAA184C5F47F6D595DF12167 /* TokenRenewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRenewer.swift; sourceTree = "<group>"; };
 		CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilangTests.swift; sourceTree = "<group>"; };
 		CE09B0D0E5769EBAB31D00DD /* NotificationDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDTO.swift; sourceTree = "<group>"; };
+		CFC5102FB94F5091EBB3B0D2 /* BeepWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepWidgetBundle.swift; sourceTree = "<group>"; };
 		D0A9F48A8D454DFCDEA10154 /* CatalogSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSearchView.swift; sourceTree = "<group>"; };
 		D5DDC33A2E7014A4565C4823 /* Beep.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Beep.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8A86362F900DB06EED974BA /* LoginFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFlowTests.swift; sourceTree = "<group>"; };
@@ -174,9 +211,12 @@
 		EC0BB1DC0D87DE1F7BCDE019 /* users_courses.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = users_courses.json; sourceTree = "<group>"; };
 		ED2785533331D773CF0D25D5 /* AppSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSession.swift; sourceTree = "<group>"; };
 		EFB947E1DDE4DB52EA62CD43 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		F3B13A614078AA947AC892F4 /* AppServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppServices.swift; sourceTree = "<group>"; };
 		F3BF39A74533D9FEBB64D126 /* FileURLTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileURLTokenizerTests.swift; sourceTree = "<group>"; };
 		F4DE5789C80BF2E517E67978 /* BeepApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepApp.swift; sourceTree = "<group>"; };
 		F6EBD1D30A4573151B77A38B /* FileRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileRow.swift; sourceTree = "<group>"; };
+		FA2CD4C29988299E34B4B689 /* BeepIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepIntents.swift; sourceTree = "<group>"; };
+		FCB37E15497DFA26FCC7A2E2 /* BeepWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BeepWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -186,6 +226,7 @@
 				28FC5D2010DAB3286DF95F13 /* NOTICE */,
 				472B5880A06FF2BEA9572AD7 /* Beep */,
 				607AB977D8416D1B654F76C8 /* BeepTests */,
+				988C28B590FEE5096EE60C28 /* BeepWidget */,
 				C39E92F63115DC7D2D3EB758 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -237,10 +278,12 @@
 		472B5880A06FF2BEA9572AD7 /* Beep */ = {
 			isa = PBXGroup;
 			children = (
+				7ABB233466543DB88FF5E076 /* Beep.entitlements */,
 				66469142E1B42729162D0146 /* App */,
 				E4DEB3E5D446769ED30A074A /* Auth */,
 				B078BF5C42F27229DED2E9E3 /* Design */,
 				13CAC8BA15C0A57A3DC3AA28 /* Features */,
+				929C75EC07FEA69A968014B8 /* Intents */,
 				4F18071C59799A93E40B3B1F /* MoodleKit */,
 				73C78EE03E9AD1F47E8E45E4 /* Resources */,
 				879F349BE7A565450440B45E /* Store */,
@@ -339,6 +382,7 @@
 			children = (
 				C18D872AD99A30965F745633 /* AppDelegate.swift */,
 				855198D4868B1F4408DD06A0 /* AppRouter.swift */,
+				F3B13A614078AA947AC892F4 /* AppServices.swift */,
 				ED2785533331D773CF0D25D5 /* AppSession.swift */,
 				F4DE5789C80BF2E517E67978 /* BeepApp.swift */,
 				7244B2A38FD30B29696052BF /* DemoData.swift */,
@@ -389,6 +433,25 @@
 			path = Store;
 			sourceTree = "<group>";
 		};
+		929C75EC07FEA69A968014B8 /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				FA2CD4C29988299E34B4B689 /* BeepIntents.swift */,
+			);
+			path = Intents;
+			sourceTree = "<group>";
+		};
+		988C28B590FEE5096EE60C28 /* BeepWidget */ = {
+			isa = PBXGroup;
+			children = (
+				66C13C4FB7A36CFB78061D0E /* BeepWidget.entitlements */,
+				CFC5102FB94F5091EBB3B0D2 /* BeepWidgetBundle.swift */,
+				561EC702E9838D3510C5B494 /* Info.plist */,
+				77EC9966A7EADC3B41F7D0F2 /* RecentFilesWidget.swift */,
+			);
+			path = BeepWidget;
+			sourceTree = "<group>";
+		};
 		B078BF5C42F27229DED2E9E3 /* Design */ = {
 			isa = PBXGroup;
 			children = (
@@ -432,6 +495,7 @@
 			children = (
 				D5DDC33A2E7014A4565C4823 /* Beep.app */,
 				87CAC2B1DEDF862FD7B242D6 /* BeepTests.xctest */,
+				FCB37E15497DFA26FCC7A2E2 /* BeepWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -461,6 +525,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0C4702DD8271935D3B07776A /* BeepWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C314B916DA301E4C17DD46ED /* Build configuration list for PBXNativeTarget "BeepWidget" */;
+			buildPhases = (
+				4AA605C797D3240E5CD6DA5F /* Sources */,
+				0A21AEDFF7AF0B303EC97271 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BeepWidget;
+			packageProductDependencies = (
+			);
+			productName = BeepWidget;
+			productReference = FCB37E15497DFA26FCC7A2E2 /* BeepWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		1C80CB137BB90C9067C8E9C3 /* BeepTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4C2E9984B2C1D00E6ABDF175 /* Build configuration list for PBXNativeTarget "BeepTests" */;
@@ -486,10 +568,12 @@
 			buildPhases = (
 				BB0E674DAEBBE600706B8523 /* Sources */,
 				F302C87AB85D8F8B56186D0E /* Resources */,
+				3955B567FDD78CA5AE93D349 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				1D64DFAE18F6E21CF37404B6 /* PBXTargetDependency */,
 			);
 			name = Beep;
 			packageProductDependencies = (
@@ -507,6 +591,10 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 2700;
 				TargetAttributes = {
+					0C4702DD8271935D3B07776A = {
+						DevelopmentTeam = M9YL94W837;
+						ProvisioningStyle = Automatic;
+					};
 					1C80CB137BB90C9067C8E9C3 = {
 						DevelopmentTeam = M9YL94W837;
 						ProvisioningStyle = Automatic;
@@ -534,11 +622,20 @@
 			targets = (
 				4E1E84473F88659B8C224DAF /* Beep */,
 				1C80CB137BB90C9067C8E9C3 /* BeepTests */,
+				0C4702DD8271935D3B07776A /* BeepWidget */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0A21AEDFF7AF0B303EC97271 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D3D0FA805AC782F3CB21E08D /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D979F31C65096975171D96C2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -565,6 +662,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		4AA605C797D3240E5CD6DA5F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16554F78FC2DA0ADEA1E7C14 /* AcademicYear.swift in Sources */,
+				B8661C44B8E696AAB53C7C46 /* AppRouter.swift in Sources */,
+				F36095FF2D18E3B90ADE52C7 /* BeepWidgetBundle.swift in Sources */,
+				458402E16F18A001747EF9A4 /* Models.swift in Sources */,
+				A02F6D034B55300C468AEBD2 /* RecentFilesWidget.swift in Sources */,
+				23F34B7603B14582FB2BEF8F /* StoreContainer.swift in Sources */,
+				AADE8FBF9ECEDF46090BC31A /* Theme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9F77301F61AEB82CD5DDD5D9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -592,9 +703,11 @@
 				7E2C6B05A3F63BBB8B50917C /* ActivityView.swift in Sources */,
 				EDF824725C2A3DFDFC277F99 /* AppDelegate.swift in Sources */,
 				61333CBBF93E5F17F42E0F60 /* AppRouter.swift in Sources */,
+				61E1CAC843B541E29EC8870F /* AppServices.swift in Sources */,
 				11495C7A826FF7BEB50F7C0D /* AppSession.swift in Sources */,
 				E04E49833CDD0D4EA098781D /* BackgroundRefresh.swift in Sources */,
 				A46A7CF1B1510E9189B8DDD2 /* BeepApp.swift in Sources */,
+				124BF27E6E0676CC8EDD65C8 /* BeepIntents.swift in Sources */,
 				506F8D45566A259ADC11A4FE /* CatalogDTO.swift in Sources */,
 				28731E8EE11B072B787AA833 /* CatalogSearchView.swift in Sources */,
 				B9287AE1401A76332A60CBF8 /* CourseContentsDTO.swift in Sources */,
@@ -650,6 +763,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1D64DFAE18F6E21CF37404B6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0C4702DD8271935D3B07776A /* BeepWidget */;
+			targetProxy = 31E087548F1C1C3F8A15AFF6 /* PBXContainerItemProxy */;
+		};
 		CAA5BCA96C081AAB0B925B53 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4E1E84473F88659B8C224DAF /* Beep */;
@@ -724,11 +842,50 @@
 			};
 			name = Release;
 		};
+		7DCAB3AAA22901BE8A9C3CFC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BeepWidget/BeepWidget.entitlements;
+				INFOPLIST_FILE = BeepWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mattiacolombo.Beep.BeepWidget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7E7D569D135653D659DB0991 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BeepWidget/BeepWidget.entitlements;
+				INFOPLIST_FILE = BeepWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mattiacolombo.Beep.BeepWidget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		A54AFA588D5E9AA7C4C194AF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Beep/Beep.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Beep/Resources/Info.plist;
@@ -839,6 +996,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Beep/Beep.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Beep/Resources/Info.plist;
@@ -897,6 +1055,15 @@
 			buildConfigurations = (
 				A54AFA588D5E9AA7C4C194AF /* Debug */,
 				DB3377A07C2505AE1D3BC74C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C314B916DA301E4C17DD46ED /* Build configuration list for PBXNativeTarget "BeepWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7DCAB3AAA22901BE8A9C3CFC /* Debug */,
+				7E7D569D135653D659DB0991 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

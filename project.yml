@@ -60,10 +60,44 @@ targets:
           - CFBundleURLName: com.mattiacolombo.Beep
             CFBundleURLSchemes: [beep]
         CoreSpotlightContinuation: true
+    entitlements:
+      path: Beep/Beep.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.mattiacolombo.Beep]
+    dependencies:
+      - target: BeepWidget
+        embed: true
     scheme:
       testTargets:
         - BeepTests
       gatherCoverageData: true
+  BeepWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: BeepWidget
+      - path: Beep/Store/Models.swift
+      - path: Beep/Store/StoreContainer.swift
+      - path: Beep/MoodleKit/AcademicYear.swift
+      - path: Beep/Design/Theme.swift
+      - path: Beep/App/AppRouter.swift
+      - path: Beep/Resources/Assets.xcassets
+    entitlements:
+      path: BeepWidget/BeepWidget.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.mattiacolombo.Beep]
+    info:
+      path: BeepWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Beep
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mattiacolombo.Beep.BeepWidget
+        SWIFT_DEFAULT_ACTOR_ISOLATION: nonisolated
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        SKIP_INSTALL: YES
   BeepTests:
     type: bundle.unit-test
     platform: iOS

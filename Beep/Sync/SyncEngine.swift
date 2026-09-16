@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import SwiftData
+import WidgetKit
 
 /// Orchestrates index refreshes (courses + contents) and hands new files to the
 /// DownloadManager for courses with auto-download on. Main-actor bound like the
@@ -29,7 +30,10 @@ final class SyncEngine {
     private(set) var phase: Phase = .idle
     private(set) var lastReport: Report?
     private(set) var lastSyncAt: Date? {
-        didSet { UserDefaults.standard.set(lastSyncAt, forKey: "lastSyncAt") }
+        didSet {
+            UserDefaults.standard.set(lastSyncAt, forKey: "lastSyncAt")
+            UserDefaults(suiteName: StoreContainer.appGroup)?.set(lastSyncAt, forKey: "lastSyncAt")
+        }
     }
 
     let downloads: DownloadManager
@@ -134,6 +138,7 @@ final class SyncEngine {
             lastSyncAt = .now
             phase = .idle
             if userID != nil { Task { await SpotlightIndexer.reindex(context: context) } }
+            WidgetCenter.shared.reloadAllTimelines()
         } catch MoodleError.invalidToken {
             report.errors.append("invalidToken")
             phase = .failed(String(localized: "Session expired"))

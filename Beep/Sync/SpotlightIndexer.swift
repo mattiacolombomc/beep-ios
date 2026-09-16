@@ -26,7 +26,6 @@ enum SpotlightIndexer {
                 fa.contentDescription = [c.title, f.module?.name].compactMap { $0 }.joined(separator: " › ")
                 fa.keywords = [c.monogram, c.title]
                 fa.contentModificationDate = f.timemodified
-                fa.fileSize = NSNumber(value: f.filesize)
                 items.append(CSSearchableItem(uniqueIdentifier: "file:\(f.key)", domainIdentifier: fileDomain, attributeSet: fa))
             }
         }

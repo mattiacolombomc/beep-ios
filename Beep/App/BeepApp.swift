@@ -48,6 +48,9 @@ struct BeepApp: App {
                     if let d = SpotlightIndexer.destination(for: activity) { router.open(d) }
                 }
                 .task {
+                    AppServices.session = session
+                    AppServices.sync = sync
+                    AppServices.router = router
                     appDelegate.downloads = downloads
                     sync.onInvalidToken = { trigger in
                         session.markExpired()
