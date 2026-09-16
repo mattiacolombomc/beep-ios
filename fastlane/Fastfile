@@ -171,6 +171,14 @@ lane :distribute_external do |options|
     notify_external_testers: true,
     groups:             [group],
     changelog:          options[:changelog] || "Prima beta di Beep: sync WeBeep, download automatici, ricerca file, notifiche.",
+    beta_app_description: "Beep tiene sincronizzati i file dei tuoi corsi WeBeep (Politecnico di Milano): download automatici, novità, ricerca nei file, annunci e notifiche. Client non ufficiale, richiede un account Polimi.",
+    beta_app_feedback_email: "mattia@mattiacolombo.engineering",
+    localized_app_info: {
+      "default" => {
+        feedback_email: "mattia@mattiacolombo.engineering",
+        description: "Beep tiene sincronizzati i file dei tuoi corsi WeBeep (Politecnico di Milano): download automatici, novità, ricerca nei file, annunci e notifiche. Client non ufficiale, richiede un account Polimi."
+      }
+    },
     beta_app_review_info: {
       contact_email:      "mattia@mattiacolombo.engineering",
       contact_first_name: "Mattia",
