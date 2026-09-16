@@ -148,9 +148,11 @@ private struct NotificationsStep: View {
                 }
                 .buttonStyle(.glassProminent)
                 .controlSize(.large)
-                Button("Not now") {
+                Button {
                     notifications = false
                     finish()
+                } label: {
+                    Text("Not now").font(.headline).frame(maxWidth: .infinity).padding(.vertical, 6)
                 }
                 .buttonStyle(.glass)
                 .controlSize(.large)

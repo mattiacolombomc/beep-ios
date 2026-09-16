@@ -1,6 +1,7 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "": {},
     "%lld": {
       "localizations": {
         "it": {
@@ -873,6 +874,16 @@
         }
       }
     },
+    "Mark all read": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Segna tutte lette"
+          }
+        }
+      }
+    },
     "Mobile web service token": {
       "localizations": {
         "it": {
@@ -1024,6 +1035,16 @@
         }
       }
     },
+    "No posts yet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora nessun post"
+          }
+        }
+      }
+    },
     "Not affiliated with Politecnico di Milano.": {
       "localizations": {
         "it": {
@@ -1050,6 +1071,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Non ora"
+          }
+        }
+      }
+    },
+    "Nothing has been posted in this forum.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In questo forum non è stato ancora pubblicato nulla."
+          }
+        }
+      }
+    },
+    "Nothing to show": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niente da mostrare"
           }
         }
       }
@@ -1870,6 +1911,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "totale"
+          }
+        }
+      }
+    },
+    "·": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·"
           }
         }
       }
