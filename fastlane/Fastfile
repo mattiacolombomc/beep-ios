@@ -158,9 +158,28 @@ lane :add_tester do |options|
   UI.success("#{email} added to TestFlight group '#{group}'")
 end
 
+BETA_DESCRIPTION = "Beep tiene sincronizzati i file dei tuoi corsi WeBeep (Politecnico di Milano): download automatici, novità, ricerca nei file, annunci e notifiche. Client non ufficiale, richiede un account Polimi."
+FEEDBACK_EMAIL   = "mattia@mattiacolombo.engineering"
+
+# TestFlight "Test Information" (beta description + feedback email) for the primary locale.
+def ensure_beta_app_info(api_key)
+  Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.create(**api_key)
+  app = Spaceship::ConnectAPI::App.find(APP_BUNDLE) or UI.user_error!("App #{APP_BUNDLE} not found")
+  attrs = { description: BETA_DESCRIPTION, feedbackEmail: FEEDBACK_EMAIL }
+  locs = app.get_beta_app_localizations
+  if locs.empty?
+    Spaceship::ConnectAPI::BetaAppLocalization.create(app_id: app.id, attributes: attrs.merge(locale: app.primary_locale || "it"))
+    UI.message("Created beta app localization")
+  else
+    locs.each { |l| l.update(attributes: attrs) }
+    UI.message("Updated #{locs.size} beta app localization(s)")
+  end
+end
+
 desc "Submit the latest build to the external group (triggers Beta App Review on the first build)"
 lane :distribute_external do |options|
   api_key = asc_api_key
+  ensure_beta_app_info(api_key)
   group = options[:group] || "Amici"
   upload_to_testflight(
     api_key:            api_key,
