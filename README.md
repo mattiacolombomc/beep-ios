@@ -8,6 +8,18 @@ new material automatically for the courses you choose, shows what's new, and let
 you search files inside a course or across all of them. Downloaded files live in
 the Files app ("On My iPhone → Beep") so any other app can open and edit them.
 
+## Features
+
+- Sign in with Polimi credentials or SPID once; the WeBeep access key is stored in the Keychain and renewed silently.
+- Courses grouped by academic year with favourites, archive, filters and instant search.
+- Course view with folders, in-course file search by type, download all, and QuickLook preview.
+- Background downloads for the courses you choose, "what's new" badges, recent-files feed, global file search.
+- Background checks with local notifications for new files and announcements (frequency and Wi-Fi-only configurable).
+- WeBeep notifications, read-only announcements and forums, Moodle pages.
+- WeBeep catalogue: enrol in new courses and leave self-enrolment courses from the app.
+- Spotlight indexing, "Latest material" home-screen widget, Siri/Shortcuts intents, `beep://` deep links.
+- Files live in the Files app, one folder per course (renamable), so any other app can open them.
+
 Successor of [myPoliFile](https://github.com/matteovisotto/myPoliFile) by Matteo
 Visotto (MIT). See `NOTICE` for attributions.
 
