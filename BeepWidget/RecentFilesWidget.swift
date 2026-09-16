@@ -100,11 +100,14 @@ struct RecentFilesView: View {
 
     private var list: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Label("Latest material", systemImage: "graduationcap.fill").font(.headline)
-                Spacer()
+            HStack(alignment: .firstTextBaseline) {
+                Label("Latest material", systemImage: "graduationcap.fill")
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                Spacer(minLength: 8)
                 if let s = entry.lastSync {
-                    Text(s, style: .relative).font(.caption2).foregroundStyle(.secondary)
+                    Text(s, format: .relative(presentation: .named)).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
                 }
             }
             if entry.items.isEmpty {
