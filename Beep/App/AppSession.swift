@@ -134,6 +134,10 @@ final class AppSession {
     }
 
     func signOut() {
+        if defaults.bool(forKey: DemoData.flagKey) {
+            defaults.removeObject(forKey: DemoData.flagKey)
+            onUserChanged?()
+        }
         tokenStore.clear()
         defaults.removeObject(forKey: profileKey)
         defaults.removeObject(forKey: issuedKey)

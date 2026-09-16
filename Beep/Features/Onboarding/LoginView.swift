@@ -71,6 +71,7 @@ struct LoginView: View {
 /// Fallback: paste the "moodle_mobile_app" security key from WeBeep → Preferences → Security keys.
 struct ManualTokenSheet: View {
     @Environment(AppSession.self) private var session
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
     @State private var token = ""
@@ -111,6 +112,10 @@ struct ManualTokenSheet: View {
     }
 
     private func submit() {
+        if token.trimmingCharacters(in: .whitespacesAndNewlines) == DemoData.reviewPassword {
+            do { try DemoData.enter(session: session, context: modelContext); dismiss() } catch { errorMessage = String(describing: error) }
+            return
+        }
         isValidating = true
         errorMessage = nil
         Task {

@@ -3,7 +3,23 @@ import SwiftData
 
 /// Sample store for previews and for `-demo` launches (UI work without WeBeep credentials).
 enum DemoData {
-    static let isEnabled = ProcessInfo.processInfo.arguments.contains("-demo")
+    /// Demo is on for `-demo` launches and after a reviewer signs in with `reviewPassword`.
+    static var isEnabled: Bool {
+        ProcessInfo.processInfo.arguments.contains("-demo") || UserDefaults.standard.bool(forKey: flagKey)
+    }
+    static let flagKey = "demo.enabled"
+    /// "Password" for App Review's demonstration mode; entered in the manual-token sheet.
+    static let reviewPassword = "BeepReview2026"
+
+    /// Turns the current session into the demo (sample data, no WeBeep calls) until sign-out.
+    @MainActor
+    static func enter(session: AppSession, context: ModelContext) throws {
+        UserDefaults.standard.set(true, forKey: flagKey)
+        try context.delete(model: Course.self)
+        try context.delete(model: WebeepNotification.self)
+        try seed(into: context)
+        session.enterDemo()
+    }
 
     @MainActor
     static func seed(into context: ModelContext) throws {
@@ -44,8 +60,12 @@ enum DemoData {
     }
 
     private static func file(_ name: String, _ path: String = "/", size: Int, daysAgo: Int, id: Int) -> ContentDTO {
-        ContentDTO(type: "file", filename: name, filepath: path, filesize: size,
-                   fileurl: "https://webeep.polimi.it/webservice/pluginfile.php/\(id)/mod_folder/content/0\(path)\(name)?forcedownload=1",
+        // PDFs point at a public sample so downloads and Quick Look work without WeBeep.
+        let url = name.hasSuffix(".pdf")
+            ? "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf?course=\(id)&file=\(name)"
+            : "https://webeep.polimi.it/webservice/pluginfile.php/\(id)/mod_folder/content/0\(path)\(name)?forcedownload=1"
+        return ContentDTO(type: "file", filename: name, filepath: path, filesize: size,
+                   fileurl: url,
                    timemodified: Int(Date.now.timeIntervalSince1970) - daysAgo * 86_400, timecreated: nil,
                    mimetype: nil, author: "Docente")
     }

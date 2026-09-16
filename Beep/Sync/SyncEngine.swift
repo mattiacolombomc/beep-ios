@@ -53,6 +53,7 @@ final class SyncEngine {
     /// Refreshes the course list and every course's contents. Coalesces concurrent calls.
     @discardableResult
     func syncAll(client: MoodleClient, userID: Int, trigger: Trigger = .manual) async -> Report {
+        if DemoData.isEnabled { lastSyncAt = .now; return Report() }
         if let running { return await running.value }
         let task = Task { await run(client: client, userID: userID, only: nil, trigger: trigger) }
         running = task
@@ -63,6 +64,7 @@ final class SyncEngine {
 
     @discardableResult
     func sync(course: Course, client: MoodleClient) async -> Report {
+        if DemoData.isEnabled { return Report() }
         if let running { return await running.value }
         let task = Task { await run(client: client, userID: nil, only: course.id, trigger: .manual) }
         running = task

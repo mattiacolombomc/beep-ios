@@ -202,7 +202,10 @@ lane :distribute_external do |options|
       contact_first_name: "Mattia",
       contact_last_name:  "Colombo",
       contact_phone:      "+39 3920002350",
-      notes:              "Unofficial client for Politecnico di Milano's WeBeep (Moodle). Sign in requires a Polimi student account; reviewers can use the manual token option only with a valid WeBeep account. All features work read-only against the user's own courses."
+      demo_account_name:     "demo",
+      demo_account_password: "BeepReview2026",
+      demo_account_required: true,
+      notes:              "Unofficial client for Politecnico di Milano's WeBeep (Moodle); a real sign-in needs a Polimi student account, so the app ships a demonstration mode. To use it: on the Welcome screen tap 'Sign in', then in the toolbar menu (…) choose 'Enter token manually' and paste the password above into the Token field, then tap 'Sign in'. The app then loads sample courses and files; downloads, Quick Look, search, filters, widget and settings all work on that sample data. Available from build 4 onward."
     }
   )
 end
