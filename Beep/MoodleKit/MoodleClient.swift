@@ -3,15 +3,43 @@ import Foundation
 /// Minimal transport abstraction so the client can be tested with canned responses.
 protocol HTTPTransport: Sendable {
     func get(_ url: URL) async throws -> (Data, HTTPURLResponse)
+    /// Form-encoded POST; Moodle requires it for sensitive parameters (private token).
+    func post(_ url: URL, form: [(String, String)]) async throws -> (Data, HTTPURLResponse)
+}
+
+extension HTTPTransport {
+    func post(_ url: URL, form: [(String, String)]) async throws -> (Data, HTTPURLResponse) {
+        try await get(url.appending(queryItems: form.map { URLQueryItem(name: $0.0, value: $0.1) }))
+    }
 }
 
 struct URLSessionTransport: HTTPTransport {
     let session: URLSession
     init(session: URLSession = .shared) { self.session = session }
 
+    /// Moodle gates some functions (autologin key) behind the official app's user agent.
+    static let userAgent = "MoodleMobile 4.5.0 (Beep; iOS)"
+
     func get(_ url: URL) async throws -> (Data, HTTPURLResponse) {
+        var request = URLRequest(url: url)
+        request.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
+        return try await perform(request)
+    }
+
+    func post(_ url: URL, form: [(String, String)]) async throws -> (Data, HTTPURLResponse) {
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue(Self.userAgent, forHTTPHeaderField: "User-Agent")
+        request.setValue("application/x-www-form-urlencoded; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        var comps = URLComponents()
+        comps.queryItems = form.map { URLQueryItem(name: $0.0, value: $0.1) }
+        request.httpBody = Data((comps.percentEncodedQuery ?? "").utf8)
+        return try await perform(request)
+    }
+
+    private func perform(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
         do {
-            let (data, response) = try await session.data(from: url)
+            let (data, response) = try await session.data(for: request)
             guard let http = response as? HTTPURLResponse else { throw MoodleError.transport("non-HTTP response") }
             return (data, http)
         } catch let error as MoodleError {
@@ -57,8 +85,10 @@ struct MoodleClient: Sendable {
         return WeBeep.restServer.appending(queryItems: items)
     }
 
-    func call<T: Decodable>(_ function: String, parameters: [(String, String)] = [], as type: T.Type) async throws -> T {
-        let (data, response) = try await transport.get(url(function: function, parameters: parameters))
+    func call<T: Decodable>(_ function: String, parameters: [(String, String)] = [], post: Bool = false, as type: T.Type) async throws -> T {
+        let (data, response) = post
+            ? try await transport.post(url(function: function), form: parameters)
+            : try await transport.get(url(function: function, parameters: parameters))
         guard (200...299).contains(response.statusCode) else { throw MoodleError.http(status: response.statusCode) }
         return try Self.decode(type, from: data)
     }
@@ -111,7 +141,7 @@ extension MoodleClient {
 
     /// Requires the private token from the mobile launch handshake. Rate limited by Moodle (once per 6 minutes).
     func autologinKey(privateToken: String) async throws -> AutologinKeyDTO {
-        try await call("tool_mobile_get_autologin_key", parameters: [("privatetoken", privateToken)], as: AutologinKeyDTO.self)
+        try await call("tool_mobile_get_autologin_key", parameters: [("privatetoken", privateToken)], post: true, as: AutologinKeyDTO.self)
     }
 
     func discussionPosts(discussionID: Int) async throws -> DiscussionPostsDTO {

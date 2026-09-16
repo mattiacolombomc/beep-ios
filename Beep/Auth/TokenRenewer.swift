@@ -94,6 +94,7 @@ final class TokenRenewer {
             config.websiteDataStore = .nonPersistent()
             let wv = WKWebView(frame: CGRect(x: 0, y: 0, width: 390, height: 844), configuration: config)
             wv.navigationDelegate = self
+            wv.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 " + URLSessionTransport.userAgent
             webView = wv
             let watchdog = Task { [weak self] in
                 try? await Task.sleep(for: .seconds(timeout))
