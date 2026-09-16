@@ -119,6 +119,9 @@ final class SyncEngine {
                 if let c = iterator.next() { launch(c) }
                 phase = .indexing(done: done, total: targets.count, current: inFlight.keys.compactMap { byID[$0]?.title }.first)
             }
+            if let userID, let dto = try? await client.popupNotifications(userID: userID) {
+                try? indexer.upsertNotifications(dto.notifications)
+            }
             lastSyncAt = .now
             phase = .idle
         } catch {

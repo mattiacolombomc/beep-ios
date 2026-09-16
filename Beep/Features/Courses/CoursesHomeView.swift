@@ -13,7 +13,10 @@ struct CoursesHomeView: View {
                     .navigationSplitViewColumnWidth(min: 340, ideal: 400, max: 520)
             } detail: {
                 if let selection {
-                    CourseDetailView(courseID: selection)
+                    NavigationStack {
+                        CourseDetailView(courseID: selection)
+                            .courseRoutes()
+                    }
                 } else {
                     ContentUnavailableView("Pick a course", systemImage: "graduationcap", description: Text("Its material, announcements and files show up here."))
                 }
@@ -22,6 +25,7 @@ struct CoursesHomeView: View {
             NavigationStack {
                 CoursesListView(selection: $selection)
                     .navigationDestination(for: Int.self) { CourseDetailView(courseID: $0) }
+                    .courseRoutes()
             }
         }
     }
@@ -361,4 +365,15 @@ private struct ArchiveDialog: ViewModifier {
 
 extension View {
     func archiveDialog(course: Binding<Course?>) -> some View { modifier(ArchiveDialog(course: course)) }
+}
+
+
+/// Destinations reachable from a course: forum, discussion, page.
+extension View {
+    func courseRoutes() -> some View {
+        self
+            .navigationDestination(for: ForumRoute.self) { ForumDiscussionsView(module: $0.module) }
+            .navigationDestination(for: DiscussionRoute.self) { DiscussionView(route: $0) }
+            .navigationDestination(for: PageRoute.self) { PageView(module: $0.module) }
+    }
 }

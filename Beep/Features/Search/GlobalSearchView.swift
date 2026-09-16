@@ -41,6 +41,7 @@ struct GlobalSearchView: View {
             .listStyle(.insetGrouped)
             .navigationTitle("Search")
             .navigationDestination(for: Int.self) { CourseDetailView(courseID: $0) }
+            .courseRoutes()
             .searchable(text: $query, prompt: "Files in every course")
             .searchScopes($scope, activation: .onSearchPresentation) {
                 ForEach(FileTypeScope.allCases) { Text($0.label).tag($0) }

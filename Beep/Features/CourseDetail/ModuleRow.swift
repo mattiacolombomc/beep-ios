@@ -140,22 +140,29 @@ struct FolderTree: View {
     }
 }
 
-/// Renders simple Moodle HTML (labels, descriptions) as attributed text.
+/// Renders simple Moodle HTML (labels, previews) as plain paragraphs. Fast: no WebKit.
 struct HTMLText: View {
     let html: String
 
-    var body: some View {
-        Text(attributed)
+    /// Tag-stripped, entity-decoded single paragraph (for previews).
+    static func plain(_ html: String) -> String {
+        paragraphs(html).replacing(/\s+/, with: " ").trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    private var attributed: AttributedString {
-        let data = Data(html.utf8)
-        if let ns = try? NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil) {
-            var a = AttributedString(ns)
-            a.font = nil
-            a.foregroundColor = nil
-            return a
+    /// Tag-stripped text keeping paragraph breaks.
+    static func paragraphs(_ html: String) -> String {
+        var s = html.replacing(/<br\s*\/?>/, with: "\n")
+        s = s.replacing(/<\/(p|div|li|h[1-6]|tr)>/, with: "\n")
+        s = s.replacing(/<li[^>]*>/, with: "• ")
+        s = s.replacing(/<[^>]+>/, with: "")
+        for (e, c) in [("&nbsp;", " "), ("&amp;", "&"), ("&lt;", "<"), ("&gt;", ">"), ("&quot;", "\""), ("&#39;", "'"), ("&rsquo;", "\u{2019}"), ("&lsquo;", "\u{2018}"), ("&ldquo;", "\u{201C}"), ("&rdquo;", "\u{201D}"), ("&egrave;", "è"), ("&agrave;", "à"), ("&ograve;", "ò"), ("&ugrave;", "ù"), ("&igrave;", "ì"), ("&eacute;", "é")] {
+            s = s.replacingOccurrences(of: e, with: c)
         }
-        return AttributedString(html.replacing(/<[^>]+>/, with: ""))
+        s = s.replacing(/\n{3,}/, with: "\n\n")
+        return s.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    var body: some View {
+        Text(Self.paragraphs(html))
     }
 }
