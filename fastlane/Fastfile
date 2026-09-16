@@ -217,7 +217,10 @@ lane :internal_testers do |options|
   groups = Spaceship::ConnectAPI.get_beta_groups(filter: { app: app.id }).all_pages.flat_map(&:to_models)
   group = groups.find { |g| g.is_internal_group }
   unless group
-    group = app.create_beta_group(group_name: "Team", is_internal_group: true, has_access_to_all_builds: true)
+    body = { data: { type: "betaGroups",
+                     attributes: { name: "Team", isInternalGroup: true, hasAccessToAllBuilds: true },
+                     relationships: { app: { data: { type: "apps", id: app.id } } } } }
+    group = Spaceship::ConnectAPI.testflight_request_client.post("betaGroups", body).to_models.first
     UI.message("Created internal group 'Team'")
   end
   UI.message("Internal group: #{group.name} (all builds: #{group.has_access_to_all_builds})")
