@@ -1,4 +1,5 @@
 require "tmpdir"
+require "pilot"
 require "fileutils"
 
 PROJECT      = "Beep.xcodeproj"
