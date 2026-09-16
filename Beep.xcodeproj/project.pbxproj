@@ -540,8 +540,6 @@
 			dependencies = (
 			);
 			name = BeepWidget;
-			packageProductDependencies = (
-			);
 			productName = BeepWidget;
 			productReference = FCB37E15497DFA26FCC7A2E2 /* BeepWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -559,8 +557,6 @@
 				CAA5BCA96C081AAB0B925B53 /* PBXTargetDependency */,
 			);
 			name = BeepTests;
-			packageProductDependencies = (
-			);
 			productName = BeepTests;
 			productReference = 87CAC2B1DEDF862FD7B242D6 /* BeepTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -579,8 +575,6 @@
 				1D64DFAE18F6E21CF37404B6 /* PBXTargetDependency */,
 			);
 			name = Beep;
-			packageProductDependencies = (
-			);
 			productName = Beep;
 			productReference = D5DDC33A2E7014A4565C4823 /* Beep.app */;
 			productType = "com.apple.product-type.application";
@@ -892,6 +886,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Beep/Beep.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Beep/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1004,6 +999,7 @@
 				CODE_SIGN_ENTITLEMENTS = Beep/Beep.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Beep/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
