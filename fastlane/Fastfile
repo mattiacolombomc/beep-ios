@@ -2,7 +2,7 @@ require "tmpdir"
 require "fileutils"
 
 PROJECT      = "Beep.xcodeproj"
-PROJECT_YML  = "project.yml"
+PROJECT_YML  = File.expand_path("../project.yml", __dir__)
 APP_BUNDLE   = "com.mattiacolombo.Beep"
 IOS_TARGET   = "Beep"
 IOS_SCHEME   = "Beep"
