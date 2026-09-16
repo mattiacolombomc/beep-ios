@@ -168,7 +168,7 @@ def ensure_beta_app_info(api_key)
   attrs = { description: BETA_DESCRIPTION, feedbackEmail: FEEDBACK_EMAIL }
   locs = app.get_beta_app_localizations
   if locs.empty?
-    Spaceship::ConnectAPI::BetaAppLocalization.create(app_id: app.id, attributes: attrs.merge(locale: app.primary_locale || "it"))
+    Spaceship::ConnectAPI.post_beta_app_localizations(app_id: app.id, attributes: attrs.merge(locale: app.primary_locale || "it"))
     UI.message("Created beta app localization")
   else
     locs.each { |l| l.update(attributes: attrs) }
