@@ -596,7 +596,6 @@
 				TargetAttributes = {
 					0C4702DD8271935D3B07776A = {
 						DevelopmentTeam = M9YL94W837;
-						ProvisioningStyle = Automatic;
 					};
 					1C80CB137BB90C9067C8E9C3 = {
 						DevelopmentTeam = M9YL94W837;
@@ -604,7 +603,6 @@
 					};
 					4E1E84473F88659B8C224DAF = {
 						DevelopmentTeam = M9YL94W837;
-						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -870,6 +868,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = BeepWidget/BeepWidget.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
 				INFOPLIST_FILE = BeepWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -877,6 +877,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattiacolombo.Beep.BeepWidget;
+				PROVISIONING_PROFILE_SPECIFIER = "Beep Widget AppStore";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
@@ -1001,7 +1002,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Beep/Beep.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Beep/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1010,6 +1012,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattiacolombo.Beep;
 				PRODUCT_NAME = Beep;
+				PROVISIONING_PROFILE_SPECIFIER = "Beep AppStore";
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";

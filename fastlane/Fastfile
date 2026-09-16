@@ -4,6 +4,9 @@ require "fileutils"
 PROJECT      = "Beep.xcodeproj"
 PROJECT_YML  = File.expand_path("../project.yml", __dir__)
 APP_BUNDLE   = "com.mattiacolombo.Beep"
+WIDGET_BUNDLE = "com.mattiacolombo.Beep.BeepWidget"
+APP_PROFILE    = "Beep AppStore"
+WIDGET_PROFILE = "Beep Widget AppStore"
 IOS_TARGET   = "Beep"
 IOS_SCHEME   = "Beep"
 
@@ -85,20 +88,33 @@ before_all do
   ensure_git_status_clean(show_uncommitted_changes: true)
 end
 
+# Distribution certificate + App Store profiles through the API key (Spaceship), installed locally.
+# Release configs in project.yml reference these profile names, so the archive signs manually.
+def ensure_signing(api_key)
+  get_certificates(api_key: api_key, generate_apple_certs: true, team_id: "M9YL94W837")
+  get_provisioning_profile(api_key: api_key, app_identifier: APP_BUNDLE, provisioning_name: APP_PROFILE, force: true, team_id: "M9YL94W837")
+  get_provisioning_profile(api_key: api_key, app_identifier: WIDGET_BUNDLE, provisioning_name: WIDGET_PROFILE, force: true, team_id: "M9YL94W837")
+end
+
 desc "Archive, upload to TestFlight and commit the build bump"
 lane :beta_ios do
   api_key = asc_api_key
+  ensure_signing(api_key)
   build = bump_build_to_latest_plus_one(api_key: api_key)
   build_app(
     project:               PROJECT,
     scheme:                IOS_SCHEME,
+    configuration:         "Release",
     export_method:         "app-store",
     destination:           "generic/platform=iOS",
     output_name:           "Beep-iOS",
     clean:                 true,
     silent:                true,
     suppress_xcode_output: true,
-    xcargs:                auth_xcargs
+    export_options: {
+      signingStyle: "manual",
+      provisioningProfiles: { APP_BUNDLE => APP_PROFILE, WIDGET_BUNDLE => WIDGET_PROFILE }
+    }
   )
   upload_to_testflight(
     api_key:                           api_key,
