@@ -81,7 +81,8 @@ def commit_and_push(message)
   push_to_git_remote(remote: "origin", local_branch: "HEAD", remote_branch: "main")
 end
 
-before_all do
+before_all do |lane|
+  next unless lane == :beta_ios   # tester management lanes don't touch the tree
   ensure_git_status_clean(show_uncommitted_changes: true)
   sh "git pull --rebase --autostash origin main"
   sh "cd .. && xcodegen generate -q"
