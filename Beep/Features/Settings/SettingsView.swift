@@ -105,6 +105,9 @@ struct SettingsView: View {
                         Text(outcomeLabel(outcome)).font(.footnote).foregroundStyle(.secondary)
                     }
                     #if DEBUG
+                    Button("Restart onboarding (debug)") {
+                        UserDefaults.standard.set(false, forKey: "onboarding.done")
+                    }
                     Button("Simulate expired session (debug)", role: .destructive) {
                         Task {
                             if let user = session.user, let sync = Optional(sync) {

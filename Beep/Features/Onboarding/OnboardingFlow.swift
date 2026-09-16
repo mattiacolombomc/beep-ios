@@ -98,14 +98,29 @@ private struct CourseSelectionStep: View {
     let next: () -> Void
     @Query(sort: \Course.title) private var courses: [Course]
 
+    private var enabledCount: Int { courses.filter(\.syncEnabled).count }
+    private var currentYear: [Course] { courses.filter { $0.isCurrentYear && !$0.isHidden && !$0.isArchived } }
+
     var body: some View {
         SyncCoursesView()
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: Theme.Spacing.s) {
-                    Text("\(courses.filter(\.syncEnabled).count) courses will download new files automatically.")
+                    Text(enabledCount == 0
+                         ? "Nothing downloads automatically. Pick courses now or later in Settings."
+                         : "\(enabledCount) courses will download new files automatically.")
                         .font(.footnote).foregroundStyle(.secondary).monospacedDigit()
+                        .multilineTextAlignment(.center)
+                    if enabledCount == 0, !currentYear.isEmpty {
+                        Button {
+                            for c in currentYear { c.syncEnabled = true }
+                        } label: {
+                            Text("Enable \(currentYear.count) courses of this year").font(.headline).frame(maxWidth: .infinity).padding(.vertical, 6)
+                        }
+                        .buttonStyle(.glass)
+                        .controlSize(.large)
+                    }
                     Button(action: next) {
-                        Text("Continue").font(.headline).frame(maxWidth: .infinity).padding(.vertical, 6)
+                        Text(enabledCount == 0 ? "Skip for now" : "Continue").font(.headline).frame(maxWidth: .infinity).padding(.vertical, 6)
                     }
                     .buttonStyle(.glassProminent)
                     .controlSize(.large)

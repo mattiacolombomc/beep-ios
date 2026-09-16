@@ -740,6 +740,16 @@
         }
       }
     },
+    "Enable %lld courses of this year": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abilita i %lld corsi di quest'anno"
+          }
+        }
+      }
+    },
     "Enable all shown": {
       "localizations": {
         "it": {
@@ -1404,6 +1414,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Non ora"
+          }
+        }
+      }
+    },
+    "Nothing downloads automatically. Pick courses now or later in Settings.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun download automatico. Scegli i corsi ora o più tardi nelle Impostazioni."
           }
         }
       }
@@ -2074,6 +2094,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dall'ultima visita"
+          }
+        }
+      }
+    },
+    "Skip for now": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salta per ora"
           }
         }
       }

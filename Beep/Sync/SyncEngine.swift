@@ -86,7 +86,8 @@ final class SyncEngine {
                 async let coursesTask = client.userCourses(userID: userID)
                 async let categoriesTask = client.categories()
                 let (courses, categories) = try await (coursesTask, categoriesTask)
-                try indexer.upsertCourses(courses, categories: categories) { _, category in AcademicYear.isCurrent(category) }
+                // Auto-download is opt-in: nothing is downloaded until the user enables a course.
+                try indexer.upsertCourses(courses, categories: categories) { _, _ in false }
             }
             var descriptor = FetchDescriptor<Course>()
             if let courseID { descriptor.predicate = #Predicate { $0.id == courseID } }
