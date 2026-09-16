@@ -21,7 +21,7 @@ struct CoursesHomeView: View {
     private var content: some View {
         if sizeClass == .regular {
             NavigationSplitView {
-                CoursesListView(selection: $selection)
+                CoursesListView(selection: $selection, isSplit: true)
                     .navigationSplitViewColumnWidth(min: 340, ideal: 400, max: 520)
             } detail: {
                 if let selection {
@@ -35,7 +35,7 @@ struct CoursesHomeView: View {
             }
         } else {
             NavigationStack(path: $path) {
-                CoursesListView(selection: $selection)
+                CoursesListView(selection: $selection, isSplit: false)
                     .navigationDestination(for: Int.self) { CourseDetailView(courseID: $0) }
                     .courseRoutes()
             }
@@ -57,6 +57,9 @@ enum YearFilter: String, CaseIterable, Identifiable {
 
 struct CoursesListView: View {
     @Binding var selection: Int?
+    /// True when hosted as the sidebar of a split view (rows select instead of pushing).
+    /// Read from the parent: the sidebar column itself reports a compact size class.
+    let isSplit: Bool
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
@@ -107,7 +110,7 @@ struct CoursesListView: View {
     private var totalNew: Int { courses.reduce(0) { $0 + $1.newFilesCount } }
 
     var body: some View {
-        List(selection: sizeClass == .regular ? $selection : nil) {
+        List(selection: isSplit ? $selection : nil) {
             if query.isEmpty {
                 Section {
                     StatusHeader(newCount: totalNew, onlyNew: $onlyNew)
@@ -215,7 +218,7 @@ struct CoursesListView: View {
         ForEach(list) { course in
             CourseRow(course: course)
                 .tag(course.id)
-                .modifier(RowLink(id: course.id, isSplit: sizeClass == .regular))
+                .modifier(RowLink(id: course.id, isSplit: isSplit))
                 .contextMenu { CourseContextMenu(course: course, onArchive: { archiveTarget = course }, onRename: { renameTarget = course }, onUnenrol: { unenrolTarget = course }) }
                 .swipeActions(edge: .trailing) {
                     if course.isArchived {
