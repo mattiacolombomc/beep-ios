@@ -9,6 +9,17 @@ struct SettingsView: View {
     @Environment(\.openURL) private var openURL
     @AppStorage("settings.backgroundRefresh") private var backgroundRefresh = true
     @AppStorage("settings.notifications") private var notifications = true
+    @Environment(TokenRenewer.self) private var renewer
+    @Environment(SyncEngine.self) private var sync
+
+    private func outcomeLabel(_ o: TokenRenewer.Outcome) -> String {
+        switch o {
+        case .renewed: String(localized: "Renewed just now")
+        case .notNeeded: String(localized: "Not needed yet")
+        case .unavailable(let why): String(localized: "Unavailable: \(why)")
+        case .failed(let why): String(localized: "Failed: \(why)")
+        }
+    }
 
     private var downloadedFiles: [FileItem] { courses.flatMap(\.files).filter(\.isDownloaded) }
     private var downloadedCount: Int { downloadedFiles.count }
@@ -62,6 +73,36 @@ struct SettingsView: View {
                     Text("Storage")
                 } footer: {
                     Text("Files are saved in Files → On My iPhone → Beep, one folder per course, so any app can open and edit them.")
+                }
+                Section {
+                    LabeledContent("Access key obtained", value: session.tokenIssuedAt?.formatted(date: .abbreviated, time: .shortened) ?? "—")
+                    LabeledContent("Silent renewal", value: session.privateToken == nil ? String(localized: "Unavailable, sign in again once") : String(localized: "Enabled"))
+                    Button {
+                        Task { await renewer.renewNow() }
+                    } label: {
+                        HStack {
+                            Label("Renew access key now", systemImage: "key.viewfinder")
+                            Spacer()
+                            if renewer.isRunning { ProgressView().controlSize(.small) }
+                        }
+                    }
+                    .disabled(renewer.isRunning || session.privateToken == nil)
+                    if let outcome = renewer.lastOutcome {
+                        Text(outcomeLabel(outcome)).font(.footnote).foregroundStyle(.secondary)
+                    }
+                    #if DEBUG
+                    Button("Simulate expired session (debug)", role: .destructive) {
+                        Task {
+                            if let user = session.user, let sync = Optional(sync) {
+                                _ = await sync.syncAll(client: MoodleClient(token: "expired-token"), userID: user.id, trigger: .manual)
+                            }
+                        }
+                    }
+                    #endif
+                } header: {
+                    Text("Session")
+                } footer: {
+                    Text("Beep renews the WeBeep access key by itself about every 4 weeks, before it can expire. If WeBeep rejects it anyway you get a notification and a quick sign-in.")
                 }
                 Section("About") {
                     NavigationLink("Acknowledgements") { AcknowledgementsView() }

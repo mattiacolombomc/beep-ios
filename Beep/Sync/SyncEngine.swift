@@ -32,6 +32,8 @@ final class SyncEngine {
     }
 
     let downloads: DownloadManager
+    /// WeBeep rejected the token during a sync.
+    var onInvalidToken: ((Trigger) -> Void)?
     private let context: ModelContext
     private var running: Task<Report, Never>?
 
@@ -129,6 +131,10 @@ final class SyncEngine {
             }
             lastSyncAt = .now
             phase = .idle
+        } catch MoodleError.invalidToken {
+            report.errors.append("invalidToken")
+            phase = .failed(String(localized: "Session expired"))
+            onInvalidToken?(trigger)
         } catch {
             report.errors.append(String(describing: error))
             phase = .failed(String(describing: error))

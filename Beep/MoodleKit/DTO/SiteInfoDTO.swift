@@ -8,3 +8,8 @@ struct SiteInfoDTO: Decodable, Sendable, Equatable {
     let userpictureurl: String?
     let lang: String?
 }
+
+struct AutologinKeyDTO: Decodable, Sendable, Equatable {
+    let key: String
+    let autologinurl: String
+}

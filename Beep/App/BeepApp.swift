@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import UIKit
 
 @main
 struct BeepApp: App {
@@ -7,6 +8,7 @@ struct BeepApp: App {
     @State private var session: AppSession
     @State private var sync: SyncEngine
     @State private var opener: FileOpener
+    @State private var renewer: TokenRenewer
     private let container: ModelContainer
     private let downloads: DownloadManager
 
@@ -20,6 +22,7 @@ struct BeepApp: App {
             _session = State(initialValue: session)
             _sync = State(initialValue: SyncEngine(context: container.mainContext, downloads: downloads))
             _opener = State(initialValue: FileOpener(downloads: downloads))
+            _renewer = State(initialValue: TokenRenewer(session: session))
             if DemoData.isEnabled {
                 try DemoData.seed(into: container.mainContext)
                 session.enterDemo()
@@ -36,8 +39,22 @@ struct BeepApp: App {
                 .environment(session)
                 .environment(sync)
                 .environment(opener)
+                .environment(renewer)
                 .task {
                     appDelegate.downloads = downloads
+                    sync.onInvalidToken = { trigger in
+                        session.markExpired()
+                        if trigger == .background || UIApplication.shared.applicationState != .active {
+                            Notifier.notifySessionExpired()
+                        }
+                    }
+                    session.onUserChanged = {
+                        let ctx = container.mainContext
+                        try? ctx.delete(model: Course.self)
+                        try? ctx.delete(model: WebeepNotification.self)
+                        try? ctx.save()
+                        UserDefaults.standard.removeObject(forKey: "onboarding.done")
+                    }
                     appDelegate.onBackgroundRefresh = { task in
                         let work = Task {
                             if let client = session.client, let user = session.user, user.id != 0 {

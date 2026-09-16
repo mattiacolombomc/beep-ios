@@ -109,6 +109,11 @@ extension MoodleClient {
         try await call("mod_forum_get_forum_discussions", parameters: [("forumid", String(forumID)), ("sortorder", "1")], as: ForumDiscussionsDTO.self)
     }
 
+    /// Requires the private token from the mobile launch handshake. Rate limited by Moodle (once per 6 minutes).
+    func autologinKey(privateToken: String) async throws -> AutologinKeyDTO {
+        try await call("tool_mobile_get_autologin_key", parameters: [("privatetoken", privateToken)], as: AutologinKeyDTO.self)
+    }
+
     func discussionPosts(discussionID: Int) async throws -> DiscussionPostsDTO {
         try await call("mod_forum_get_discussion_posts", parameters: [("discussionid", String(discussionID))], as: DiscussionPostsDTO.self)
     }

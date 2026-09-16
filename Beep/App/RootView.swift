@@ -11,6 +11,8 @@ struct RootView: View {
             ProgressView()
         case .signedOut:
             WelcomeView()
+        case .expired(let user):
+            SessionExpiredView(user: user)
         case .signedIn:
             if onboardingDone || DemoData.isEnabled {
                 MainTabs()

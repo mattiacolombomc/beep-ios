@@ -58,7 +58,7 @@ struct LoginView: View {
         isValidating = true
         Task {
             do {
-                try await session.signIn(withToken: creds.token)
+                try await session.signIn(withToken: creds.token, privateToken: creds.privateToken)
             } catch {
                 errorMessage = String(describing: error)
                 isValidating = false

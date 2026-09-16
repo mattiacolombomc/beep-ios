@@ -13,6 +13,15 @@ enum Notifier {
         return settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional
     }
 
+    static func notifySessionExpired() {
+        let content = UNMutableNotificationContent()
+        content.title = String(localized: "WeBeep session expired")
+        content.body = String(localized: "Open Beep and sign in again to keep your courses in sync. Your files are safe.")
+        content.sound = .default
+        content.interruptionLevel = .timeSensitive
+        UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: "session-expired", content: content, trigger: nil))
+    }
+
     static func notifyNewFiles(count: Int, courses: [String]) {
         guard count > 0 else { return }
         let content = UNMutableNotificationContent()

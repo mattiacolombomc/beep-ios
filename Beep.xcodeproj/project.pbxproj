@@ -29,6 +29,7 @@
 		3327218B5E09E7B30CA063E2 /* users_courses.json in Resources */ = {isa = PBXBuildFile; fileRef = EC0BB1DC0D87DE1F7BCDE019 /* users_courses.json */; };
 		3753DE3FC210E0B7D4492B8F /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A9DEA0B195D1C341C16A8 /* LoginView.swift */; };
 		38E915034426D597D953CB8A /* StatusTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CC05CAD9EE8A0567A6406E7 /* StatusTile.swift */; };
+		4141E0AE22FD7B8AFB1B9418 /* TokenRenewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA184C5F47F6D595DF12167 /* TokenRenewer.swift */; };
 		4190859D37F8969EC27E0856 /* categories.json in Resources */ = {isa = PBXBuildFile; fileRef = 3F0D756C3B06D3C63DA23AB7 /* categories.json */; };
 		4625BB2B05CF79339EDECB1B /* Notifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D988C29D5162025A8E0C42E /* Notifier.swift */; };
 		4CF4BEA7E412F3ACA05D20CA /* AcknowledgementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA162076A63985DB48527FD /* AcknowledgementsView.swift */; };
@@ -44,6 +45,7 @@
 		8B0F59A0BEB0A339641A65CA /* Indexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D5FBE3ACEA751305B2C656 /* Indexer.swift */; };
 		8BFBAD8978D84465EDC8B377 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 0478DD28AE32D428A6FF72E7 /* AppIcon.icon */; };
 		97B9AD6D6A5ECCD8C59D8D34 /* MoodleError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 286AB63D1C7EF76A73108AAA /* MoodleError.swift */; };
+		9DA61CE0986AD0667456853F /* TokenRenewerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684A3781B2025117449208B9 /* TokenRenewerTests.swift */; };
 		9FEF5A7A095D2FA9AB77273F /* error_invalidtoken.json in Resources */ = {isa = PBXBuildFile; fileRef = AF462B1F1184F0A52D098EC7 /* error_invalidtoken.json */; };
 		A17B535957C22F5DCCF9322A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DC03A9A41FBAA63B81F471 /* SettingsView.swift */; };
 		A1FD17704A581986987016AD /* CourseNameParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F027F03142CE65043329E3 /* CourseNameParser.swift */; };
@@ -57,6 +59,7 @@
 		CE5F33BDE5114B749AC8D43A /* ModuleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39EF8D5542906BF58E29A37C /* ModuleRow.swift */; };
 		D06EDE2500B8063422C11257 /* MoodleClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA016BEE918F3CECA3C896C /* MoodleClient.swift */; };
 		D2090CA81A5389D97FE3C779 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD984B3CFFCA2AD81EA3EDC8 /* SyncEngine.swift */; };
+		D21B2D226467AFE6CF491CAA /* SessionExpiredView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B386C894EC086F44EAA51A75 /* SessionExpiredView.swift */; };
 		D4242DA20C3804FC6C8B4749 /* RecentFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83797407F81A91DEB24BEF98 /* RecentFilesView.swift */; };
 		D5054C1FB88A83275883BAC2 /* NOTICE in Resources */ = {isa = PBXBuildFile; fileRef = 28FC5D2010DAB3286DF95F13 /* NOTICE */; };
 		D79E9320936B93753C5B9ECC /* AcademicYearTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F85901F69D7F210C5CCF9D3 /* AcademicYearTests.swift */; };
@@ -115,6 +118,7 @@
 		5EC0BE5246B5005FBF7AF7A2 /* IndexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexerTests.swift; sourceTree = "<group>"; };
 		627F23C0ADBE033E203C10F3 /* GlobalSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalSearchView.swift; sourceTree = "<group>"; };
 		632F9C4E22DDA97925F567A1 /* CourseContentsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseContentsDTO.swift; sourceTree = "<group>"; };
+		684A3781B2025117449208B9 /* TokenRenewerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRenewerTests.swift; sourceTree = "<group>"; };
 		6CDBE80ED4DAF175F43E0A6E /* MainTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabs.swift; sourceTree = "<group>"; };
 		6F85901F69D7F210C5CCF9D3 /* AcademicYearTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcademicYearTests.swift; sourceTree = "<group>"; };
 		6FF0B94F1558DB6DA49A610F /* FilePresenters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePresenters.swift; sourceTree = "<group>"; };
@@ -141,12 +145,14 @@
 		AF462B1F1184F0A52D098EC7 /* error_invalidtoken.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = error_invalidtoken.json; sourceTree = "<group>"; };
 		B15B3C2D5080241C175CE54B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B1D5FBE3ACEA751305B2C656 /* Indexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Indexer.swift; sourceTree = "<group>"; };
+		B386C894EC086F44EAA51A75 /* SessionExpiredView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionExpiredView.swift; sourceTree = "<group>"; };
 		B3C6EA2C67FF7D0DF0604A9C /* BackgroundRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefresh.swift; sourceTree = "<group>"; };
 		BB8DD2552D68CA4F2DAB7922 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		BCB2A417054F68350208AB6C /* LocalFilesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFilesTests.swift; sourceTree = "<group>"; };
 		BCB403E03ED555E80094485A /* CourseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDTO.swift; sourceTree = "<group>"; };
 		C18D872AD99A30965F745633 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C956A75A7DA5D53C8767CFAA /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		CAA184C5F47F6D595DF12167 /* TokenRenewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRenewer.swift; sourceTree = "<group>"; };
 		CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilangTests.swift; sourceTree = "<group>"; };
 		CE09B0D0E5769EBAB31D00DD /* NotificationDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDTO.swift; sourceTree = "<group>"; };
 		D5DDC33A2E7014A4565C4823 /* Beep.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Beep.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -306,6 +312,7 @@
 				E5859EC2B8B8ECA33F4EA63B /* MoodleClientTests.swift */,
 				CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */,
 				03582BA59A9B5D1BEC9FF227 /* SmokeTests.swift */,
+				684A3781B2025117449208B9 /* TokenRenewerTests.swift */,
 				5C7A2E54BF998D3B7522D9D5 /* Fixtures */,
 			);
 			path = BeepTests;
@@ -416,6 +423,7 @@
 			children = (
 				135FEEAF58474DF5713A782B /* LoginFlow.swift */,
 				57DE24B0F8748037EA115797 /* LoginWebView.swift */,
+				CAA184C5F47F6D595DF12167 /* TokenRenewer.swift */,
 				93D27EFC0A024C85307150D7 /* TokenStore.swift */,
 			);
 			path = Auth;
@@ -426,6 +434,7 @@
 			children = (
 				3E0A9DEA0B195D1C341C16A8 /* LoginView.swift */,
 				909D07C337AEE2C18713073D /* OnboardingFlow.swift */,
+				B386C894EC086F44EAA51A75 /* SessionExpiredView.swift */,
 				EFB947E1DDE4DB52EA62CD43 /* WelcomeView.swift */,
 			);
 			path = Onboarding;
@@ -551,6 +560,7 @@
 				4FBB247F1378B5331C795811 /* MoodleClientTests.swift in Sources */,
 				F8228C12F6DCDD1BD3E58ED9 /* MultilangTests.swift in Sources */,
 				DB9A38011CA86FD6B9C5B993 /* SmokeTests.swift in Sources */,
+				9DA61CE0986AD0667456853F /* TokenRenewerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -599,6 +609,7 @@
 				0B1704EAB59D17E78F41D5E3 /* PageView.swift in Sources */,
 				D4242DA20C3804FC6C8B4749 /* RecentFilesView.swift in Sources */,
 				0F71D99FFD4B012266DCCA65 /* RootView.swift in Sources */,
+				D21B2D226467AFE6CF491CAA /* SessionExpiredView.swift in Sources */,
 				A17B535957C22F5DCCF9322A /* SettingsView.swift in Sources */,
 				0BFCB4E536F0DEF226744E67 /* SiteInfoDTO.swift in Sources */,
 				38E915034426D597D953CB8A /* StatusTile.swift in Sources */,
@@ -606,6 +617,7 @@
 				ACD6B2DBB3ACF96620808FC5 /* SyncCoursesView.swift in Sources */,
 				D2090CA81A5389D97FE3C779 /* SyncEngine.swift in Sources */,
 				1B6FDB6FF3E0BB4693BB3D08 /* Theme.swift in Sources */,
+				4141E0AE22FD7B8AFB1B9418 /* TokenRenewer.swift in Sources */,
 				17573A8A9558E9750026F483 /* TokenStore.swift in Sources */,
 				DAA031E7642FE2F986BBB0A4 /* WelcomeView.swift in Sources */,
 			);

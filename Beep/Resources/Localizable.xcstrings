@@ -144,6 +144,16 @@
         }
       }
     },
+    "Access key obtained": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiave di accesso ottenuta"
+          }
+        }
+      }
+    },
     "Acknowledgements": {
       "localizations": {
         "it": {
@@ -370,6 +380,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Beep non è affiliata, approvata o sponsorizzata dal Politecnico di Milano. WeBeep è un marchio del rispettivo proprietario."
+          }
+        }
+      }
+    },
+    "Beep renews the WeBeep access key by itself about every 4 weeks, before it can expire. If WeBeep rejects it anyway you get a notification and a quick sign-in.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beep rinnova da solo la chiave di accesso WeBeep circa ogni 4 settimane, prima che possa scadere. Se WeBeep la rifiuta comunque ricevi una notifica e un accesso rapido."
           }
         }
       }
@@ -624,6 +644,16 @@
         }
       }
     },
+    "Enabled": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attivo"
+          }
+        }
+      }
+    },
     "Enter token": {
       "localizations": {
         "it": {
@@ -650,6 +680,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Non riuscita"
+          }
+        }
+      }
+    },
+    "Failed: %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non riuscito: %@"
           }
         }
       }
@@ -1065,6 +1105,16 @@
         }
       }
     },
+    "Not needed yet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non ancora necessario"
+          }
+        }
+      }
+    },
     "Not now": {
       "localizations": {
         "it": {
@@ -1231,6 +1281,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Apri"
+          }
+        }
+      }
+    },
+    "Open Beep and sign in again to keep your courses in sync. Your files are safe.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri Beep e accedi di nuovo per mantenere i corsi sincronizzati. I tuoi file sono al sicuro."
           }
         }
       }
@@ -1405,6 +1465,26 @@
         }
       }
     },
+    "Renew access key now": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinnova la chiave adesso"
+          }
+        }
+      }
+    },
+    "Renewed just now": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinnovata adesso"
+          }
+        }
+      }
+    },
     "Search": {
       "localizations": {
         "it": {
@@ -1451,6 +1531,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vedi a colpo d'occhio quali file sono apparsi dall'ultima visita."
+          }
+        }
+      }
+    },
+    "Session": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sessione"
+          }
+        }
+      }
+    },
+    "Session expired": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sessione scaduta"
           }
         }
       }
@@ -1515,6 +1615,16 @@
         }
       }
     },
+    "Sign in again": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accedi di nuovo"
+          }
+        }
+      }
+    },
     "Sign in with Polimi account": {
       "localizations": {
         "it": {
@@ -1535,6 +1645,16 @@
         }
       }
     },
+    "Sign out and forget this account": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esci e dimentica questo account"
+          }
+        }
+      }
+    },
     "Sign out of WeBeep?": {
       "localizations": {
         "it": {
@@ -1551,6 +1671,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Accesso in corso…"
+          }
+        }
+      }
+    },
+    "Silent renewal": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinnovo silenzioso"
           }
         }
       }
@@ -1715,6 +1845,26 @@
         }
       }
     },
+    "Unavailable, sign in again once": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non disponibile, accedi di nuovo una volta"
+          }
+        }
+      }
+    },
+    "Unavailable: %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non disponibile: %@"
+          }
+        }
+      }
+    },
     "Unfavourite": {
       "localizations": {
         "it": {
@@ -1805,6 +1955,26 @@
         }
       }
     },
+    "WeBeep session expired": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sessione WeBeep scaduta"
+          }
+        }
+      }
+    },
+    "WeBeep stopped accepting Beep's access key for %@. Sign in again to resume syncing. Downloaded files and your settings are kept.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep non accetta più la chiave di accesso di Beep per %@. Accedi di nuovo per riprendere la sincronizzazione. File scaricati e impostazioni restano."
+          }
+        }
+      }
+    },
     "Welcome": {
       "localizations": {
         "it": {
@@ -1851,6 +2021,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "I tuoi file WeBeep, sempre sincronizzati."
+          }
+        }
+      }
+    },
+    "Your WeBeep session expired": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La tua sessione WeBeep è scaduta"
           }
         }
       }

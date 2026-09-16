@@ -3,6 +3,7 @@ import SwiftUI
 struct MainTabs: View {
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
+    @Environment(TokenRenewer.self) private var renewer
     @State private var showActivity = false
 
     var body: some View {
@@ -22,6 +23,7 @@ struct MainTabs: View {
                 if sync.lastSyncAt.map({ Date.now.timeIntervalSince($0) > 15 * 60 }) ?? true {
                     _ = await sync.syncAll(client: client, userID: user.id, trigger: .launch)
                 }
+                await renewer.renewIfNeeded()
             }
         }
     }

@@ -8,6 +8,8 @@ final class AppSession {
         case loading
         case signedOut
         case signedIn(UserProfile)
+        /// WeBeep rejected the token; local data is kept until the user signs in again.
+        case expired(UserProfile)
     }
 
     struct UserProfile: Equatable, Codable {
@@ -19,9 +21,15 @@ final class AppSession {
 
     private(set) var state: State = .loading
     private(set) var token: String?
+    private(set) var privateToken: String?
+    /// When the current token was obtained (login or silent renewal).
+    private(set) var tokenIssuedAt: Date?
     let tokenStore: TokenStore
     private let defaults: UserDefaults
     private let profileKey = "profile"
+    private let issuedKey = "tokenIssuedAt"
+    /// Called when a different WeBeep user signs in (the local store must be wiped).
+    var onUserChanged: (() -> Void)?
 
     init(tokenStore: TokenStore = TokenStore(), defaults: UserDefaults = .standard) {
         self.tokenStore = tokenStore
@@ -31,14 +39,20 @@ final class AppSession {
     var client: MoodleClient? { token.map { MoodleClient(token: $0) } }
 
     var user: UserProfile? {
-        if case .signedIn(let u) = state { return u }
-        return nil
+        switch state {
+        case .signedIn(let u), .expired(let u): return u
+        default: return nil
+        }
     }
+
+    var isExpired: Bool { if case .expired = state { return true } else { return false } }
 
     /// Restores a previous session from Keychain + cached profile.
     func restore() {
         guard let saved = tokenStore.load(), !saved.isEmpty else { state = .signedOut; return }
         token = saved
+        privateToken = tokenStore.loadPrivateToken()
+        tokenIssuedAt = defaults.object(forKey: issuedKey) as? Date
         if let data = defaults.data(forKey: profileKey), let profile = try? JSONDecoder().decode(UserProfile.self, from: data) {
             state = .signedIn(profile)
         } else {
@@ -51,29 +65,53 @@ final class AppSession {
         guard let client else { state = .signedOut; return }
         do {
             let info = try await client.siteInfo()
-            signIn(token: client.token, info: info)
+            apply(token: client.token, privateToken: privateToken, info: info)
         } catch MoodleError.invalidToken {
             signOut()
         } catch {
-            // Offline: keep whatever we have, the UI will show a placeholder.
             state = .signedIn(UserProfile(id: 0, fullname: "", username: "", pictureURL: nil))
         }
     }
 
-    /// Validates a token against WeBeep and, if good, persists it.
-    func signIn(withToken candidate: String) async throws {
+    /// Validates a token against WeBeep and, if good, persists it (and the private token when present).
+    func signIn(withToken candidate: String, privateToken: String? = nil) async throws {
         let trimmed = candidate.trimmingCharacters(in: .whitespacesAndNewlines)
         let info = try await MoodleClient(token: trimmed).siteInfo()
         try tokenStore.save(trimmed)
-        signIn(token: trimmed, info: info)
+        if let privateToken { try tokenStore.savePrivateToken(privateToken) }
+        apply(token: trimmed, privateToken: privateToken ?? self.privateToken, info: info)
     }
 
-    private func signIn(token: String, info: SiteInfoDTO) {
+    /// Silent renewal succeeded: swap tokens without touching the profile.
+    func adopt(token newToken: String, privateToken newPrivate: String?) throws {
+        try tokenStore.save(newToken)
+        if let newPrivate { try tokenStore.savePrivateToken(newPrivate) }
+        token = newToken
+        if let newPrivate { privateToken = newPrivate }
+        tokenIssuedAt = .now
+        defaults.set(tokenIssuedAt, forKey: issuedKey)
+        if case .expired(let u) = state { state = .signedIn(u) }
+    }
+
+    private func apply(token: String, privateToken: String?, info: SiteInfoDTO) {
+        let previousID = user?.id
         self.token = token
+        self.privateToken = privateToken
+        tokenIssuedAt = .now
+        defaults.set(tokenIssuedAt, forKey: issuedKey)
         let profile = UserProfile(id: info.userid, fullname: info.fullname, username: info.username,
                                   pictureURL: info.userpictureurl.flatMap(URL.init(string:)))
         if let data = try? JSONEncoder().encode(profile) { defaults.set(data, forKey: profileKey) }
+        if let previousID, previousID != 0, previousID != info.userid { onUserChanged?() }
         state = .signedIn(profile)
+    }
+
+    /// WeBeep said `invalidtoken`: keep the data, ask for a new login.
+    func markExpired() {
+        guard let user, user.id != 0 else { signOut(); return }
+        token = nil
+        tokenStore.clear()
+        state = .expired(user)
     }
 
     /// Demo launches: fake signed-in user, no network.
@@ -85,9 +123,12 @@ final class AppSession {
     func signOut() {
         tokenStore.clear()
         defaults.removeObject(forKey: profileKey)
+        defaults.removeObject(forKey: issuedKey)
         defaults.removeObject(forKey: "onboarding.done")
         defaults.removeObject(forKey: "lastSyncAt")
         token = nil
+        privateToken = nil
+        tokenIssuedAt = nil
         state = .signedOut
     }
 }
