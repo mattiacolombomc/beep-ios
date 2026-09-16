@@ -207,3 +207,25 @@ lane :distribute_external do |options|
     }
   )
 end
+
+desc "Internal TestFlight group with access to every build, with the team account as tester"
+lane :internal_testers do |options|
+  api_key = asc_api_key
+  Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.create(**api_key)
+  app = Spaceship::ConnectAPI::App.find(APP_BUNDLE) or UI.user_error!("App not found")
+  email = options[:email] || "mattia@mattiacolombo.engineering"
+  groups = Spaceship::ConnectAPI.get_beta_groups(filter: { app: app.id }).all_pages.flat_map(&:to_models)
+  group = groups.find { |g| g.is_internal_group }
+  unless group
+    group = Spaceship::ConnectAPI.post_beta_group(app_id: app.id, group_name: "Team", is_internal_group: true, has_access_to_all_builds: true).to_models.first
+    UI.message("Created internal group 'Team'")
+  end
+  UI.message("Internal group: #{group.name} (all builds: #{group.has_access_to_all_builds})")
+  existing = Spaceship::ConnectAPI.get_beta_testers(filter: { email: email, betaGroups: group.id }).all_pages.flat_map(&:to_models)
+  if existing.empty?
+    Spaceship::ConnectAPI.post_beta_tester(email: email, first_name: options[:first] || "Mattia", last_name: options[:last] || "Colombo", beta_group_ids: [group.id])
+    UI.success("#{email} added to internal group #{group.name}")
+  else
+    UI.success("#{email} already in #{group.name}")
+  end
+end
