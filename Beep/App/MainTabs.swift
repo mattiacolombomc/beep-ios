@@ -55,6 +55,30 @@ struct SyncStatusBar: View {
     @Environment(\.tabViewBottomAccessoryPlacement) private var placement
 
     var body: some View {
+        // Collapsed tab bar (scrolling down): status only, no button. A sync is heavy and
+        // must not start from an accidental tap on the tiny inline pill.
+        if placement == .inline {
+            inlineStatus
+        } else {
+            bar
+        }
+    }
+
+    private var inlineStatus: some View {
+        HStack(spacing: Theme.Spacing.s) {
+            Image(systemName: sync.isRunning || sync.downloads.progress.isBusy ? "arrow.triangle.2.circlepath" : "checkmark.circle")
+                .font(.caption.weight(.semibold))
+                .symbolEffect(.rotate, isActive: sync.isRunning)
+            Text(inlineTitle).font(.caption.weight(.medium)).lineLimit(1).monospacedDigit()
+                .contentTransition(.numericText())
+        }
+        .foregroundStyle(.secondary)
+        .padding(.horizontal, Theme.Spacing.s)
+        .allowsHitTesting(false)
+        .accessibilityElement(children: .combine)
+    }
+
+    private var bar: some View {
         Button(action: syncNow) {
             let dl = sync.downloads.progress
             HStack(spacing: Theme.Spacing.m - 4) {
@@ -112,6 +136,16 @@ struct SyncStatusBar: View {
         case .indexing: "Updating courses…"
         case .failed: "Sync failed"
         case .idle: sync.downloads.progress.isBusy ? "Downloading…" : "Sync now"
+        }
+    }
+
+    /// Short label for the collapsed tab bar: progress numbers while working, otherwise the last sync.
+    private var inlineTitle: String {
+        let dl = sync.downloads.progress
+        switch sync.phase {
+        case .indexing(let done, let total, _): return "\(done)/\(total)"
+        case .failed: return String(localized: "Sync failed")
+        case .idle: return dl.isBusy ? "\(dl.completedInSession + 1)/\(dl.total)" : subtitle
         }
     }
 
