@@ -4,31 +4,35 @@ import QuickLook
 import SwiftUI
 import UIKit
 
-/// Coordinates opening, sharing and downloading files from the UI.
-/// M1: single foreground downloads. M2 swaps the transport for the background DownloadManager.
+/// Coordinates opening, sharing and (single) downloading of files from the UI.
+/// Downloads go through the background `DownloadManager`.
 @Observable
 final class FileOpener {
     var previewURL: URL?
     var shareURL: URL?
-    private(set) var progressByKey: [String: Double] = [:]
-    private var tasks: [String: Task<Void, Never>] = [:]
     private let local: LocalFiles
+    private let downloads: DownloadManager
 
-    init(local: LocalFiles = LocalFiles()) {
+    init(downloads: DownloadManager, local: LocalFiles = LocalFiles()) {
+        self.downloads = downloads
         self.local = local
     }
 
-    func progress(for file: FileItem) -> Double { progressByKey[file.key] ?? 0 }
+    func progress(for file: FileItem) -> Double { downloads.fileProgress[file.key] ?? 0 }
 
     func open(_ file: FileItem) {
         if file.isDownloaded, let url = local.url(for: file) {
             previewURL = url
             return
         }
-        download(file) { [weak self] in
+        downloads.enqueue(file, priority: true) { [weak self] in
             guard let self, let url = self.local.url(for: file) else { return }
             self.previewURL = url
         }
+    }
+
+    func download(_ file: FileItem) {
+        downloads.enqueue(file, priority: true)
     }
 
     func share(_ file: FileItem) {
@@ -37,7 +41,6 @@ final class FileOpener {
 
     func showInFiles(_ file: FileItem) {
         guard let url = local.url(for: file) else { return }
-        // Files app deep link: swap the scheme, keep the path.
         var comps = URLComponents(url: url.deletingLastPathComponent(), resolvingAgainstBaseURL: false)
         comps?.scheme = "shareddocuments"
         if let target = comps?.url { UIApplication.shared.open(target) }
@@ -48,46 +51,6 @@ final class FileOpener {
         file.localRelativePath = nil
         file.downloadedTimemodified = nil
         file.state = .notDownloaded
-    }
-
-    func download(_ file: FileItem, completion: (() -> Void)? = nil) {
-        guard tasks[file.key] == nil, let url = URL(string: file.remoteURL) else { return }
-        file.state = .downloading
-        progressByKey[file.key] = 0
-        tasks[file.key] = Task {
-            defer { tasks[file.key] = nil; progressByKey[file.key] = nil }
-            do {
-                let (bytes, response) = try await URLSession.shared.bytes(from: url)
-                guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
-                    throw MoodleError.http(status: (response as? HTTPURLResponse)?.statusCode ?? 0)
-                }
-                let expected = Double(http.expectedContentLength)
-                let temp = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
-                FileManager.default.createFile(atPath: temp.path(percentEncoded: false), contents: nil)
-                let handle = try FileHandle(forWritingTo: temp)
-                var buffer = Data(); buffer.reserveCapacity(64 * 1024)
-                var received: Double = 0
-                for try await byte in bytes {
-                    buffer.append(byte)
-                    if buffer.count >= 64 * 1024 {
-                        try handle.write(contentsOf: buffer)
-                        received += Double(buffer.count)
-                        buffer.removeAll(keepingCapacity: true)
-                        if expected > 0 { progressByKey[file.key] = min(received / expected, 0.99) }
-                    }
-                }
-                try handle.write(contentsOf: buffer)
-                try handle.close()
-                try local.store(temp, for: file)
-                file.downloadedTimemodified = file.timemodified
-                file.state = .downloaded
-                file.lastError = nil
-                completion?()
-            } catch {
-                file.state = .failed
-                file.lastError = String(describing: error)
-            }
-        }
     }
 }
 
@@ -107,7 +70,8 @@ struct LocalFiles: Sendable {
     /// Relative path for a file, computed from its course/module/filepath.
     func relativePath(for file: FileItem) -> String {
         var parts: [String] = []
-        parts.append(Self.sanitize(file.course?.title ?? "Course"))
+        let folder = file.course.map { $0.folderName.isEmpty ? $0.title : $0.folderName } ?? "Course"
+        parts.append(Self.sanitize(folder))
         if let module = file.module, module.kind == .folder { parts.append(Self.sanitize(module.name)) }
         for sub in file.filepath.split(separator: "/") where !sub.isEmpty { parts.append(Self.sanitize(String(sub))) }
         parts.append(Self.sanitize(file.filename))
@@ -132,5 +96,15 @@ struct LocalFiles: Sendable {
     func remove(_ file: FileItem) {
         guard let url = url(for: file) else { return }
         try? FileManager.default.removeItem(at: url)
+    }
+
+    /// Bytes on disk under the root (downloaded material).
+    func usedBytes() -> Int {
+        guard let e = FileManager.default.enumerator(at: root, includingPropertiesForKeys: [.fileSizeKey]) else { return 0 }
+        var total = 0
+        for case let url as URL in e {
+            total += (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+        }
+        return total
     }
 }

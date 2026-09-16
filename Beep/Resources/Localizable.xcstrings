@@ -21,6 +21,26 @@
         }
       }
     },
+    "%lld courses indexed": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld corsi indicizzati"
+          }
+        }
+      }
+    },
+    "%lld courses will download new files automatically.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld corsi scaricheranno i nuovi file automaticamente."
+          }
+        }
+      }
+    },
     "%lld errors": {
       "localizations": {
         "it": {
@@ -47,6 +67,38 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld nuovi file"
+          }
+        }
+      }
+    },
+    "%lld new files in %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld new files in %2$@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld nuovi file in %@"
+          }
+        }
+      }
+    },
+    "%lld new files in %@ and %lld more": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld new files in %2$@ and %3$lld more"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld nuovi file in %@ e altri %lld corsi"
           }
         }
       }
@@ -121,12 +173,32 @@
         }
       }
     },
+    "All files offline": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutti i file offline"
+          }
+        }
+      }
+    },
     "All years": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Tutti gli anni"
+          }
+        }
+      }
+    },
+    "Allow notifications": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consenti notifiche"
           }
         }
       }
@@ -201,6 +273,16 @@
         }
       }
     },
+    "Auto": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auto"
+          }
+        }
+      }
+    },
     "Auto-download": {
       "localizations": {
         "it": {
@@ -261,6 +343,16 @@
         }
       }
     },
+    "Beep checks WeBeep in the background and tells you when professors upload something. No spam: one notification per check.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beep controlla WeBeep in background e ti avvisa quando i docenti caricano qualcosa. Niente spam: una notifica per controllo."
+          }
+        }
+      }
+    },
     "Beep is inspired by and partly derived from myPoliFile, the first unofficial iOS client for WeBeep.": {
       "localizations": {
         "it": {
@@ -297,6 +389,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Annulla"
+          }
+        }
+      }
+    },
+    "Cancel all": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annulla tutto"
+          }
+        }
+      }
+    },
+    "Check in the background": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla in background"
+          }
+        }
+      }
+    },
+    "Continue": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continua"
           }
         }
       }
@@ -401,6 +523,26 @@
         }
       }
     },
+    "Download all (%lld)": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scarica tutto (%lld)"
+          }
+        }
+      }
+    },
+    "Download folder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scarica cartella"
+          }
+        }
+      }
+    },
     "Downloaded": {
       "localizations": {
         "it": {
@@ -421,12 +563,42 @@
         }
       }
     },
+    "Downloaded this session": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scaricati in questa sessione"
+          }
+        }
+      }
+    },
     "Downloading": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "In download"
+          }
+        }
+      }
+    },
+    "Downloading…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download in corso…"
+          }
+        }
+      }
+    },
+    "Downloads": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download"
           }
         }
       }
@@ -611,6 +783,16 @@
         }
       }
     },
+    "Know when new material lands": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sappi quando arriva nuovo materiale"
+          }
+        }
+      }
+    },
     "Last sync": {
       "localizations": {
         "it": {
@@ -762,11 +944,22 @@
       }
     },
     "New files in these courses download automatically when you sync.": {
+      "extractionState": "stale",
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "I nuovi file di questi corsi vengono scaricati automaticamente alla sincronizzazione."
+          }
+        }
+      }
+    },
+    "New files in these courses download automatically when you sync. iOS decides how often background checks run, usually a few times a day.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I nuovi file di questi corsi vengono scaricati automaticamente alla sincronizzazione. iOS decide quanto spesso eseguire i controlli in background, di solito alcune volte al giorno."
           }
         }
       }
@@ -777,6 +970,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Il nuovo materiale si scarica da solo per i corsi che scegli."
+          }
+        }
+      }
+    },
+    "New material on WeBeep": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuovo materiale su WeBeep"
           }
         }
       }
@@ -841,6 +1044,16 @@
         }
       }
     },
+    "Not now": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non ora"
+          }
+        }
+      }
+    },
     "Nothing yet": {
       "localizations": {
         "it": {
@@ -857,6 +1070,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Notifiche"
+          }
+        }
+      }
+    },
+    "Notify about new files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avvisa per i nuovi file"
           }
         }
       }
@@ -937,6 +1160,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Solo file nuovi"
+          }
+        }
+      }
+    },
+    "Only the index is downloaded now; files come next.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ora scarichiamo solo l'indice; i file arrivano dopo."
           }
         }
       }
@@ -1077,6 +1310,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Trascina per riprovare"
+          }
+        }
+      }
+    },
+    "Queued downloads": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download in coda"
+          }
+        }
+      }
+    },
+    "Reading your WeBeep courses…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lettura dei tuoi corsi WeBeep…"
           }
         }
       }
@@ -1511,6 +1764,16 @@
         }
       }
     },
+    "Welcome": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benvenuto"
+          }
+        }
+      }
+    },
     "What's new": {
       "localizations": {
         "it": {
@@ -1547,6 +1810,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "I tuoi file WeBeep, sempre sincronizzati."
+          }
+        }
+      }
+    },
+    "Your courses are ready": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I tuoi corsi sono pronti"
           }
         }
       }

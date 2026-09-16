@@ -20,7 +20,7 @@ struct MainTabs: View {
             // Refresh the index on launch if it's stale (> 15 min) or empty.
             if !DemoData.isEnabled, let client = session.client, let user = session.user, user.id != 0 {
                 if sync.lastSyncAt.map({ Date.now.timeIntervalSince($0) > 15 * 60 }) ?? true {
-                    _ = await sync.syncAll(client: client, userID: user.id)
+                    _ = await sync.syncAll(client: client, userID: user.id, trigger: .launch)
                 }
             }
         }
@@ -35,6 +35,7 @@ struct SyncStatusBar: View {
 
     var body: some View {
         Button(action: syncNow) {
+            let dl = sync.downloads.progress
             HStack(spacing: Theme.Spacing.m - 4) {
                 ZStack {
                     switch sync.phase {
@@ -45,7 +46,11 @@ struct SyncStatusBar: View {
                     case .failed:
                         Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
                     case .idle:
-                        Image(systemName: "arrow.triangle.2.circlepath").font(.body.weight(.semibold))
+                        if dl.isBusy {
+                            ProgressView(value: dl.fraction).progressViewStyle(.circular).controlSize(.small)
+                        } else {
+                            Image(systemName: "arrow.triangle.2.circlepath").font(.body.weight(.semibold))
+                        }
                     }
                 }
                 .frame(width: 24, height: 24)
@@ -59,11 +64,16 @@ struct SyncStatusBar: View {
                                 .progressViewStyle(.linear)
                                 .tint(.accentColor)
                                 .animation(.linear(duration: 0.25), value: done)
+                        } else if dl.isBusy {
+                            ProgressView(value: dl.fraction)
+                                .progressViewStyle(.linear)
+                                .tint(.accentColor)
+                                .animation(.linear(duration: 0.25), value: dl.completedInSession)
                         }
                     }
                 }
                 Spacer(minLength: 0)
-                if case .idle = sync.phase {
+                if case .idle = sync.phase, !dl.isBusy {
                     Text("Sync").font(.subheadline.weight(.semibold)).foregroundStyle(.tint)
                 }
             }
@@ -80,7 +90,7 @@ struct SyncStatusBar: View {
         switch sync.phase {
         case .indexing: "Updating courses…"
         case .failed: "Sync failed"
-        case .idle: "Sync now"
+        case .idle: sync.downloads.progress.isBusy ? "Downloading…" : "Sync now"
         }
     }
 
@@ -91,6 +101,11 @@ struct SyncStatusBar: View {
             return String(localized: "\(done) of \(total) courses")
         case .failed(let message): return message
         case .idle:
+            let dl = sync.downloads.progress
+            if dl.isBusy {
+                let name = dl.currentFileName ?? ""
+                return String(localized: "\(dl.completedInSession + 1)/\(dl.total) · \(name)")
+            }
             if let at = sync.lastSyncAt { return String(localized: "Last sync \(at.relativeLabel)") }
             return String(localized: "Never synced")
         }

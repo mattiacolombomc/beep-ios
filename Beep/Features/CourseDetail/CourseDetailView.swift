@@ -139,8 +139,10 @@ private struct CourseContentView: View {
 }
 
 private struct CourseHeader: View {
-    let course: Course
+    @Bindable var course: Course
     let lastSeen: Date?
+    @Environment(SyncEngine.self) private var sync
+    private var missing: Int { course.files.reduce(0) { $0 + (($1.isDownloaded && !$1.hasUpdate) ? 0 : 1) } }
 
     private var totalSize: Int { course.files.reduce(0) { $0 + $1.filesize } }
     private var newCount: Int { course.files.reduce(0) { $0 + ($1.isNew(relativeTo: lastSeen) ? 1 : 0) } }
@@ -175,6 +177,22 @@ private struct CourseHeader: View {
                 Stat(value: "\(downloaded)", label: "offline")
                 Spacer(minLength: 0)
             }
+            HStack(spacing: Theme.Spacing.s) {
+                Button {
+                    sync.downloadAll(of: course)
+                } label: {
+                    Label(missing == 0 ? "All files offline" : "Download all (\(missing))", systemImage: "arrow.down.circle")
+                }
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.capsule)
+                .disabled(missing == 0)
+                Toggle(isOn: $course.syncEnabled) {
+                    Label("Auto", systemImage: "arrow.triangle.2.circlepath")
+                }
+                .toggleStyle(.button)
+                .buttonBorderShape(.capsule)
+            }
+            .controlSize(.small)
         }
         .padding(.horizontal, Theme.Spacing.m)
         .padding(.top, Theme.Spacing.s)

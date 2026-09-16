@@ -82,6 +82,7 @@ struct GenericModuleRow: View {
 struct FolderTree: View {
     let module: CourseModule
     let lastSeen: Date?
+    @Environment(SyncEngine.self) private var sync
     @State private var expandedPaths: Set<String> = []
     @State private var isOpen = false
 
@@ -128,6 +129,9 @@ struct FolderTree: View {
             }
         }
         .animation(.spring(duration: 0.32, bounce: 0.18), value: isOpen)
+        .contextMenu {
+            Button { sync.downloads.enqueue(module.files) } label: { Label("Download folder", systemImage: "arrow.down.circle") }
+        }
     }
 
     private func binding(_ path: String) -> Binding<Bool> {

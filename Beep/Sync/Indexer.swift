@@ -66,6 +66,18 @@ struct Indexer {
             context.delete(course)
             diff.removed.append(id)
         }
+        // Disambiguate on-disk folder names for courses sharing a title.
+        let all = try context.fetch(FetchDescriptor<Course>())
+        let byTitle = Dictionary(grouping: all, by: \.title)
+        for course in all where course.folderName.isEmpty {
+            if (byTitle[course.title]?.count ?? 0) > 1, let profs = course.professors, !profs.isEmpty {
+                course.folderName = "\(course.title) (\(profs))"
+            } else if (byTitle[course.title]?.count ?? 0) > 1 {
+                course.folderName = "\(course.title) (\(course.id))"
+            } else {
+                course.folderName = course.title
+            }
+        }
         try context.save()
         return diff
     }

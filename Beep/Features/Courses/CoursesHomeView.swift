@@ -262,10 +262,21 @@ private struct StatusHeader: View {
             .accessibilityLabel("\(newCount) new files")
 
             StatusTile(symbol: syncSymbol, title: "Sync", value: syncValue, detail: syncDetail, tint: .secondary)
+            if sizeClass != .compact {
+                StatusTile(symbol: "arrow.down.circle", title: "Downloads", value: downloadValue, detail: downloadDetail, tint: .secondary)
+            }
         }
         .padding(.horizontal, Theme.Spacing.m)
         .padding(.bottom, Theme.Spacing.s)
         .sensoryFeedback(.selection, trigger: onlyNew)
+    }
+
+    private var downloadValue: String {
+        let p = sync.downloads.progress
+        return p.isBusy ? "\(p.completedInSession)/\(p.total)" : "\(p.completedInSession)"
+    }
+    private var downloadDetail: LocalizedStringKey {
+        sync.downloads.progress.isBusy ? "Downloading…" : "Downloaded this session"
     }
 
     private var syncSymbol: String {

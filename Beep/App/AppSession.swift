@@ -85,6 +85,8 @@ final class AppSession {
     func signOut() {
         tokenStore.clear()
         defaults.removeObject(forKey: profileKey)
+        defaults.removeObject(forKey: "onboarding.done")
+        defaults.removeObject(forKey: "lastSyncAt")
         token = nil
         state = .signedOut
     }

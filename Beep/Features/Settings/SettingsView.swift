@@ -7,6 +7,8 @@ struct SettingsView: View {
     @Query(sort: \Course.title) private var courses: [Course]
     @State private var confirmSignOut = false
     @Environment(\.openURL) private var openURL
+    @AppStorage("settings.backgroundRefresh") private var backgroundRefresh = true
+    @AppStorage("settings.notifications") private var notifications = true
 
     private var downloadedFiles: [FileItem] { courses.flatMap(\.files).filter(\.isDownloaded) }
     private var downloadedCount: Int { downloadedFiles.count }
@@ -38,10 +40,16 @@ struct SettingsView: View {
                     } label: {
                         LabeledContent("Auto-download courses", value: "\(courses.filter(\.syncEnabled).count)")
                     }
+                    Toggle("Check in the background", systemImage: "clock.arrow.2.circlepath", isOn: $backgroundRefresh)
+                        .onChange(of: backgroundRefresh) { _, on in on ? BackgroundRefresh.schedule() : BackgroundRefresh.cancel() }
+                    Toggle("Notify about new files", systemImage: "bell.badge", isOn: $notifications)
+                        .onChange(of: notifications) { _, on in
+                            if on { Task { notifications = await Notifier.requestPermission() } }
+                        }
                 } header: {
                     Text("Sync")
                 } footer: {
-                    Text("New files in these courses download automatically when you sync.")
+                    Text("New files in these courses download automatically when you sync. iOS decides how often background checks run, usually a few times a day.")
                 }
                 Section {
                     LabeledContent("Downloaded", value: "\(downloadedCount) files · \(downloadedSize.fileSizeLabel)")

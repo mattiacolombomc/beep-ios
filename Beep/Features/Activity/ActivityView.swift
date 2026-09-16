@@ -30,6 +30,7 @@ struct ActivityView: View {
                         LabeledContent("Courses updated", value: "\(report.coursesIndexed)")
                         LabeledContent("New files", value: "\(report.newFiles)")
                         LabeledContent("Updated files", value: "\(report.updatedFiles)")
+                        LabeledContent("Queued downloads", value: "\(report.queuedDownloads)")
                         if !report.errors.isEmpty {
                             DisclosureGroup("\(report.errors.count) errors") {
                                 ForEach(report.errors, id: \.self) { Text($0).font(.caption).foregroundStyle(.secondary) }
@@ -39,7 +40,17 @@ struct ActivityView: View {
                     }
                 }
                 if !active.isEmpty {
-                    Section("Downloading") { ForEach(active) { FileRow(file: $0, showsLocation: true) } }
+                    Section {
+                        ForEach(active) { FileRow(file: $0, showsLocation: true) }
+                    } header: {
+                        HStack {
+                            Text("Downloading")
+                            Spacer()
+                            Text("\(sync.downloads.progress.completedInSession)/\(sync.downloads.progress.total)").monospacedDigit()
+                            Button("Cancel all", role: .destructive) { sync.downloads.cancelAll() }
+                                .font(.caption)
+                        }
+                    }
                 }
                 if !failed.isEmpty {
                     Section("Failed") { ForEach(failed) { FileRow(file: $0, showsLocation: true) } }

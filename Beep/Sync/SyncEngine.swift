@@ -2,8 +2,9 @@ import Foundation
 import Observation
 import SwiftData
 
-/// Orchestrates index refreshes (courses + contents). Downloads are handled by
-/// `DownloadManager` (M2). Main-actor bound like the SwiftData models it touches.
+/// Orchestrates index refreshes (courses + contents) and hands new files to the
+/// DownloadManager for courses with auto-download on. Main-actor bound like the
+/// SwiftData models it touches.
 @Observable
 final class SyncEngine {
     enum Phase: Equatable {
@@ -12,10 +13,14 @@ final class SyncEngine {
         case failed(String)
     }
 
+    enum Trigger: Equatable { case manual, launch, background }
+
     struct Report: Equatable {
         var coursesIndexed = 0
         var newFiles = 0
         var updatedFiles = 0
+        var queuedDownloads = 0
+        var coursesWithNews: [String] = []
         var errors: [String] = []
         var finishedAt = Date.now
     }
@@ -26,11 +31,13 @@ final class SyncEngine {
         didSet { UserDefaults.standard.set(lastSyncAt, forKey: "lastSyncAt") }
     }
 
+    let downloads: DownloadManager
     private let context: ModelContext
     private var running: Task<Report, Never>?
 
-    init(context: ModelContext) {
+    init(context: ModelContext, downloads: DownloadManager) {
         self.context = context
+        self.downloads = downloads
         lastSyncAt = UserDefaults.standard.object(forKey: "lastSyncAt") as? Date
     }
 
@@ -38,9 +45,9 @@ final class SyncEngine {
 
     /// Refreshes the course list and every course's contents. Coalesces concurrent calls.
     @discardableResult
-    func syncAll(client: MoodleClient, userID: Int) async -> Report {
+    func syncAll(client: MoodleClient, userID: Int, trigger: Trigger = .manual) async -> Report {
         if let running { return await running.value }
-        let task = Task { await run(client: client, userID: userID, only: nil) }
+        let task = Task { await run(client: client, userID: userID, only: nil, trigger: trigger) }
         running = task
         let report = await task.value
         running = nil
@@ -50,16 +57,22 @@ final class SyncEngine {
     @discardableResult
     func sync(course: Course, client: MoodleClient) async -> Report {
         if let running { return await running.value }
-        let task = Task { await run(client: client, userID: nil, only: course.id) }
+        let task = Task { await run(client: client, userID: nil, only: course.id, trigger: .manual) }
         running = task
         let report = await task.value
         running = nil
         return report
     }
 
-    private func run(client: MoodleClient, userID: Int?, only courseID: Int?) async -> Report {
+    /// Queue every missing/outdated file of a course (or of a subset of files).
+    func downloadAll(of course: Course) {
+        downloads.enqueue(course.files)
+    }
+
+    private func run(client: MoodleClient, userID: Int?, only courseID: Int?, trigger: Trigger) async -> Report {
         var report = Report()
         let indexer = Indexer(context: context)
+        downloads.resetSessionCounters()
         do {
             if let userID {
                 async let coursesTask = client.userCourses(userID: userID)
@@ -69,10 +82,9 @@ final class SyncEngine {
             }
             var descriptor = FetchDescriptor<Course>()
             if let courseID { descriptor.predicate = #Predicate { $0.id == courseID } }
-            let targets = try context.fetch(descriptor)
+            let targets = try context.fetch(descriptor).filter { courseID != nil || !$0.isArchived }
             phase = .indexing(done: 0, total: targets.count, current: targets.first?.title)
 
-            // Fetch contents 4 at a time; apply to the store on the main actor as they arrive.
             var done = 0
             var iterator = targets.makeIterator()
             var inFlight: [Int: Task<[SectionDTO], Error>] = [:]
@@ -80,7 +92,6 @@ final class SyncEngine {
             for _ in 0..<4 { if let c = iterator.next() { launch(c) } }
             let byID = Dictionary(uniqueKeysWithValues: targets.map { ($0.id, $0) })
             while !inFlight.isEmpty {
-                // Wait for any: cheap approach, iterate over in-flight tasks in order.
                 guard let (id, task) = inFlight.first else { break }
                 inFlight.removeValue(forKey: id)
                 do {
@@ -90,6 +101,14 @@ final class SyncEngine {
                         report.newFiles += diff.newFiles.count
                         report.updatedFiles += diff.updatedFiles.count
                         report.coursesIndexed += 1
+                        if !diff.newFiles.isEmpty || !diff.updatedFiles.isEmpty { report.coursesWithNews.append(course.title) }
+                        if course.syncEnabled {
+                            let wanted = course.files.filter { !$0.isDownloaded || $0.hasUpdate }
+                            if !wanted.isEmpty {
+                                downloads.enqueue(wanted)
+                                report.queuedDownloads += wanted.count
+                            }
+                        }
                     }
                 } catch MoodleError.invalidToken {
                     throw MoodleError.invalidToken
@@ -108,6 +127,10 @@ final class SyncEngine {
         }
         report.finishedAt = .now
         lastReport = report
+        if trigger == .background, UserDefaults.standard.bool(forKey: "settings.notifications") {
+            Notifier.notifyNewFiles(count: report.newFiles + report.updatedFiles, courses: report.coursesWithNews)
+        }
+        if UserDefaults.standard.bool(forKey: "settings.backgroundRefresh") { BackgroundRefresh.schedule() }
         return report
     }
 }

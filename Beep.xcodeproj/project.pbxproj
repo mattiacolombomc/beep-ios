@@ -27,10 +27,12 @@
 		3753DE3FC210E0B7D4492B8F /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A9DEA0B195D1C341C16A8 /* LoginView.swift */; };
 		38E915034426D597D953CB8A /* StatusTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CC05CAD9EE8A0567A6406E7 /* StatusTile.swift */; };
 		4190859D37F8969EC27E0856 /* categories.json in Resources */ = {isa = PBXBuildFile; fileRef = 3F0D756C3B06D3C63DA23AB7 /* categories.json */; };
+		4625BB2B05CF79339EDECB1B /* Notifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D988C29D5162025A8E0C42E /* Notifier.swift */; };
 		4CF4BEA7E412F3ACA05D20CA /* AcknowledgementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA162076A63985DB48527FD /* AcknowledgementsView.swift */; };
 		4FBB247F1378B5331C795811 /* MoodleClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5859EC2B8B8ECA33F4EA63B /* MoodleClientTests.swift */; };
 		6C4AB023B505AD19B002477E /* CoursesHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8C5004148D51BFD22BB6DE /* CoursesHomeView.swift */; };
 		724FD949B3D00AA7329215A2 /* FileOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8694ACF7AB5159B41777A /* FileOpener.swift */; };
+		769FC084E0C34B5FC753F513 /* OnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909D07C337AEE2C18713073D /* OnboardingFlow.swift */; };
 		7737B668FFFEB4C395AEF153 /* IndexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC0BE5246B5005FBF7AF7A2 /* IndexerTests.swift */; };
 		78939754EF3C3D1067462E53 /* CourseNameParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3416213C83DDF3DE7B444F5C /* CourseNameParserTests.swift */; };
 		7BA95232FC983C887333025A /* LocalFilesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB2A417054F68350208AB6C /* LocalFilesTests.swift */; };
@@ -55,16 +57,19 @@
 		D4242DA20C3804FC6C8B4749 /* RecentFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83797407F81A91DEB24BEF98 /* RecentFilesView.swift */; };
 		D5054C1FB88A83275883BAC2 /* NOTICE in Resources */ = {isa = PBXBuildFile; fileRef = 28FC5D2010DAB3286DF95F13 /* NOTICE */; };
 		D79E9320936B93753C5B9ECC /* AcademicYearTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F85901F69D7F210C5CCF9D3 /* AcademicYearTests.swift */; };
+		D940E9C9CAB566F812B4C395 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB8DD2552D68CA4F2DAB7922 /* DownloadManager.swift */; };
 		D9CDB25E96CD7637AE81F4A9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DF4144FD06449B7635ED698 /* Assets.xcassets */; };
 		DAA031E7642FE2F986BBB0A4 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB947E1DDE4DB52EA62CD43 /* WelcomeView.swift */; };
 		DB3D146033B474942585D55E /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808CD1C374D0352A1F0E37 /* Models.swift */; };
 		DB9A38011CA86FD6B9C5B993 /* SmokeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03582BA59A9B5D1BEC9FF227 /* SmokeTests.swift */; };
 		DFAFBD4BF6D969D0088EDA20 /* CourseRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24626E92874EE99AAA4BB29F /* CourseRow.swift */; };
+		E04E49833CDD0D4EA098781D /* BackgroundRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C6EA2C67FF7D0DF0604A9C /* BackgroundRefresh.swift */; };
 		E1017A3721D41B553FE4977E /* site_info.json in Resources */ = {isa = PBXBuildFile; fileRef = E87CF57754DAA246400A385A /* site_info.json */; };
 		E6B366A3AC0BA7A882DD78E3 /* NotificationDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE09B0D0E5769EBAB31D00DD /* NotificationDTO.swift */; };
 		EA17FF851EFAE8E4A4E6BAE6 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B0FCDC6C27FDB36BBF67A34 /* NotificationsView.swift */; };
 		EB70F36E770556C2C196FAB9 /* CourseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB403E03ED555E80094485A /* CourseDTO.swift */; };
 		ECC33AE508D8A7E799C94E1E /* ForumDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3894DE45915C01852E61D255 /* ForumDTO.swift */; };
+		EDF824725C2A3DFDFC277F99 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18D872AD99A30965F745633 /* AppDelegate.swift */; };
 		F23CAFFA458B9E6314482632 /* CourseTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33057622945CF80070DEDD5E /* CourseTile.swift */; };
 		F8228C12F6DCDD1BD3E58ED9 /* MultilangTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */; };
 /* End PBXBuildFile section */
@@ -117,18 +122,24 @@
 		87CAC2B1DEDF862FD7B242D6 /* BeepTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BeepTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CF8694ACF7AB5159B41777A /* FileOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileOpener.swift; sourceTree = "<group>"; };
 		8DF4144FD06449B7635ED698 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		909D07C337AEE2C18713073D /* OnboardingFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlow.swift; sourceTree = "<group>"; };
 		92F027F03142CE65043329E3 /* CourseNameParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseNameParser.swift; sourceTree = "<group>"; };
 		93D27EFC0A024C85307150D7 /* TokenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenStore.swift; sourceTree = "<group>"; };
 		9B0FCDC6C27FDB36BBF67A34 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		9B277ED54290D81DF1A0DB17 /* course_contents.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = course_contents.json; sourceTree = "<group>"; };
+		9D988C29D5162025A8E0C42E /* Notifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifier.swift; sourceTree = "<group>"; };
 		9FEEA578AD0563216F3CD65A /* SiteInfoDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteInfoDTO.swift; sourceTree = "<group>"; };
 		AA7789D4DEFC3C8FC5C88418 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		AD984B3CFFCA2AD81EA3EDC8 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
 		ADA162076A63985DB48527FD /* AcknowledgementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowledgementsView.swift; sourceTree = "<group>"; };
 		AF462B1F1184F0A52D098EC7 /* error_invalidtoken.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = error_invalidtoken.json; sourceTree = "<group>"; };
+		B15B3C2D5080241C175CE54B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B1D5FBE3ACEA751305B2C656 /* Indexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Indexer.swift; sourceTree = "<group>"; };
+		B3C6EA2C67FF7D0DF0604A9C /* BackgroundRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefresh.swift; sourceTree = "<group>"; };
+		BB8DD2552D68CA4F2DAB7922 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		BCB2A417054F68350208AB6C /* LocalFilesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFilesTests.swift; sourceTree = "<group>"; };
 		BCB403E03ED555E80094485A /* CourseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDTO.swift; sourceTree = "<group>"; };
+		C18D872AD99A30965F745633 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C956A75A7DA5D53C8767CFAA /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilangTests.swift; sourceTree = "<group>"; };
 		CE09B0D0E5769EBAB31D00DD /* NotificationDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDTO.swift; sourceTree = "<group>"; };
@@ -246,7 +257,10 @@
 		567FC40314CDADA6F82BAA57 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
+				B3C6EA2C67FF7D0DF0604A9C /* BackgroundRefresh.swift */,
+				BB8DD2552D68CA4F2DAB7922 /* DownloadManager.swift */,
 				B1D5FBE3ACEA751305B2C656 /* Indexer.swift */,
+				9D988C29D5162025A8E0C42E /* Notifier.swift */,
 				AD984B3CFFCA2AD81EA3EDC8 /* SyncEngine.swift */,
 			);
 			path = Sync;
@@ -292,6 +306,7 @@
 		66469142E1B42729162D0146 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				C18D872AD99A30965F745633 /* AppDelegate.swift */,
 				ED2785533331D773CF0D25D5 /* AppSession.swift */,
 				F4DE5789C80BF2E517E67978 /* BeepApp.swift */,
 				7244B2A38FD30B29696052BF /* DemoData.swift */,
@@ -326,6 +341,7 @@
 			children = (
 				0478DD28AE32D428A6FF72E7 /* AppIcon.icon */,
 				8DF4144FD06449B7635ED698 /* Assets.xcassets */,
+				B15B3C2D5080241C175CE54B /* Info.plist */,
 				864BC64E7643ABBFBF2CCFD3 /* Localizable.xcstrings */,
 			);
 			path = Resources;
@@ -400,6 +416,7 @@
 			isa = PBXGroup;
 			children = (
 				3E0A9DEA0B195D1C341C16A8 /* LoginView.swift */,
+				909D07C337AEE2C18713073D /* OnboardingFlow.swift */,
 				EFB947E1DDE4DB52EA62CD43 /* WelcomeView.swift */,
 			);
 			path = Onboarding;
@@ -535,7 +552,9 @@
 				2B905BE00D958210F2A57479 /* AcademicYear.swift in Sources */,
 				4CF4BEA7E412F3ACA05D20CA /* AcknowledgementsView.swift in Sources */,
 				7E2C6B05A3F63BBB8B50917C /* ActivityView.swift in Sources */,
+				EDF824725C2A3DFDFC277F99 /* AppDelegate.swift in Sources */,
 				11495C7A826FF7BEB50F7C0D /* AppSession.swift in Sources */,
+				E04E49833CDD0D4EA098781D /* BackgroundRefresh.swift in Sources */,
 				A46A7CF1B1510E9189B8DDD2 /* BeepApp.swift in Sources */,
 				B9287AE1401A76332A60CBF8 /* CourseContentsDTO.swift in Sources */,
 				EB70F36E770556C2C196FAB9 /* CourseDTO.swift in Sources */,
@@ -545,6 +564,7 @@
 				F23CAFFA458B9E6314482632 /* CourseTile.swift in Sources */,
 				6C4AB023B505AD19B002477E /* CoursesHomeView.swift in Sources */,
 				CC00A700E301109EB1F4C635 /* DemoData.swift in Sources */,
+				D940E9C9CAB566F812B4C395 /* DownloadManager.swift in Sources */,
 				724FD949B3D00AA7329215A2 /* FileOpener.swift in Sources */,
 				08565BE1761ADCDA22C31FD1 /* FilePresenters.swift in Sources */,
 				1230ED6B7B1E1BB3F88C6466 /* FileRow.swift in Sources */,
@@ -563,6 +583,8 @@
 				1CC354A37D8D0733313543EE /* Multilang.swift in Sources */,
 				E6B366A3AC0BA7A882DD78E3 /* NotificationDTO.swift in Sources */,
 				EA17FF851EFAE8E4A4E6BAE6 /* NotificationsView.swift in Sources */,
+				4625BB2B05CF79339EDECB1B /* Notifier.swift in Sources */,
+				769FC084E0C34B5FC753F513 /* OnboardingFlow.swift in Sources */,
 				D4242DA20C3804FC6C8B4749 /* RecentFilesView.swift in Sources */,
 				0F71D99FFD4B012266DCCA65 /* RootView.swift in Sources */,
 				A17B535957C22F5DCCF9322A /* SettingsView.swift in Sources */,
@@ -661,18 +683,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = com.mattiacolombo.Beep.refresh;
-				INFOPLIST_KEY_CFBundleDisplayName = Beep;
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
-				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIBackgroundModes = "fetch processing";
-				INFOPLIST_KEY_UIFileSharingEnabled = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_FILE = Beep/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -782,18 +793,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = com.mattiacolombo.Beep.refresh;
-				INFOPLIST_KEY_CFBundleDisplayName = Beep;
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
-				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIBackgroundModes = "fetch processing";
-				INFOPLIST_KEY_UIFileSharingEnabled = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_FILE = Beep/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
