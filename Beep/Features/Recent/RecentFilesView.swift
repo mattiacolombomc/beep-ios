@@ -3,10 +3,17 @@ import SwiftUI
 
 /// Cross-course feed of files by modification date.
 struct RecentFilesView: View {
-    @Query(sort: \FileItem.timemodified, order: .reverse) private var files: [FileItem]
+    /// Only the newest 300 files: the feed never needs the whole store, and a bounded
+    /// query keeps every re-evaluation during a sync cheap.
+    private static var recent: FetchDescriptor<FileItem> {
+        var d = FetchDescriptor<FileItem>(sortBy: [SortDescriptor(\.timemodified, order: .reverse)])
+        d.fetchLimit = 300
+        return d
+    }
+    @Query(RecentFilesView.recent) private var files: [FileItem]
 
     private var grouped: [(day: Date, files: [FileItem])] {
-        let recent = Array(files.prefix(300))
+        let recent = files
         let cal = Calendar.current
         return Dictionary(grouping: recent) { cal.startOfDay(for: $0.timemodified) }
             .sorted { $0.key > $1.key }

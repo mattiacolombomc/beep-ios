@@ -22,7 +22,7 @@ struct BeepApp: App {
             self.downloads = downloads
             let session = AppSession(tokenStore: TokenStore(service: DemoData.isEnabled ? "demo" : "com.mattiacolombo.Beep"))
             _session = State(initialValue: session)
-            _sync = State(initialValue: SyncEngine(context: container.mainContext, downloads: downloads))
+            _sync = State(initialValue: SyncEngine(container: container, downloads: downloads))
             _opener = State(initialValue: FileOpener(downloads: downloads))
             _renewer = State(initialValue: TokenRenewer(session: session))
             if DemoData.isEnabled {

@@ -44,6 +44,7 @@
 		4CF4BEA7E412F3ACA05D20CA /* AcknowledgementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA162076A63985DB48527FD /* AcknowledgementsView.swift */; };
 		4FBB247F1378B5331C795811 /* MoodleClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5859EC2B8B8ECA33F4EA63B /* MoodleClientTests.swift */; };
 		506F8D45566A259ADC11A4FE /* CatalogDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE799A9BBADFC00A51DC1EA4 /* CatalogDTO.swift */; };
+		5DA098AD979331D974AF405C /* IndexActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9067B06949346483A092C39 /* IndexActor.swift */; };
 		61333CBBF93E5F17F42E0F60 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 855198D4868B1F4408DD06A0 /* AppRouter.swift */; };
 		616BF66625739DBCB3C5AE70 /* NotificationHTMLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591204CDA9D4449A5DF917D4 /* NotificationHTMLTests.swift */; };
 		61E1CAC843B541E29EC8870F /* AppServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3B13A614078AA947AC892F4 /* AppServices.swift */; };
@@ -217,6 +218,7 @@
 		F3BF39A74533D9FEBB64D126 /* FileURLTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileURLTokenizerTests.swift; sourceTree = "<group>"; };
 		F4DE5789C80BF2E517E67978 /* BeepApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepApp.swift; sourceTree = "<group>"; };
 		F6EBD1D30A4573151B77A38B /* FileRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileRow.swift; sourceTree = "<group>"; };
+		F9067B06949346483A092C39 /* IndexActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexActor.swift; sourceTree = "<group>"; };
 		FA2CD4C29988299E34B4B689 /* BeepIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepIntents.swift; sourceTree = "<group>"; };
 		FCB37E15497DFA26FCC7A2E2 /* BeepWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BeepWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -332,6 +334,7 @@
 			children = (
 				B3C6EA2C67FF7D0DF0604A9C /* BackgroundRefresh.swift */,
 				BB8DD2552D68CA4F2DAB7922 /* DownloadManager.swift */,
+				F9067B06949346483A092C39 /* IndexActor.swift */,
 				B1D5FBE3ACEA751305B2C656 /* Indexer.swift */,
 				9D988C29D5162025A8E0C42E /* Notifier.swift */,
 				83D6CBF323937FA85E39701E /* SpotlightIndexer.swift */,
@@ -728,6 +731,7 @@
 				2AE75954F9DF4835CE9BD96E /* ForumViews.swift in Sources */,
 				29EEC2580CF13F0C30F66688 /* GlobalSearchView.swift in Sources */,
 				1EA927507217E873689AA0CC /* HTMLDocumentView.swift in Sources */,
+				5DA098AD979331D974AF405C /* IndexActor.swift in Sources */,
 				8B0F59A0BEB0A339641A65CA /* Indexer.swift in Sources */,
 				32B6E669F6D21E4660A62CA2 /* LoginFlow.swift in Sources */,
 				3753DE3FC210E0B7D4492B8F /* LoginView.swift in Sources */,

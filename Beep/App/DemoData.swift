@@ -55,6 +55,7 @@ enum DemoData {
         for course in all where course.isFavourite {
             course.lastSeenAt = Date.now.addingTimeInterval(-86_400 * 3)
             for (i, f) in course.files.enumerated() where i % 3 == 0 { f.firstSeenAt = Date.now.addingTimeInterval(-3600) }
+            course.recountNewFiles()
         }
         try context.save()
     }

@@ -32,10 +32,6 @@ extension Course {
 
     /// Short identity like "SE2", "FLC", "FOR", "DB2" from the title initials.
     var monogram: String { CourseMonogram.make(title) }
-
-    var newFilesCount: Int {
-        files.reduce(0) { $0 + ($1.isNew(relativeTo: lastSeenAt) ? 1 : 0) }
-    }
 }
 
 nonisolated enum CourseMonogram {

@@ -24,6 +24,9 @@ final class Course {
     /// Last time the user opened the course; files first seen after this are "new".
     var lastSeenAt: Date?
     var lastAccess: Date?
+    /// Files first seen after `lastSeenAt`; maintained by the Indexer and reset when the course is opened,
+    /// so list rows and the home header never have to walk the files relationship.
+    var newFilesCount: Int = 0
 
     @Relationship(deleteRule: .cascade, inverse: \CourseSection.course) var sections: [CourseSection] = []
     @Relationship(deleteRule: .cascade, inverse: \FileItem.course) var files: [FileItem] = []
@@ -45,6 +48,10 @@ final class Course {
 
     var isAcademicYear: Bool { AcademicYear.isAcademicYear(categoryName) }
     var isCurrentYear: Bool { AcademicYear.isCurrent(categoryName) }
+
+    func recountNewFiles() {
+        newFilesCount = files.reduce(0) { $0 + ($1.isNew(relativeTo: lastSeenAt) ? 1 : 0) }
+    }
 }
 
 @Model

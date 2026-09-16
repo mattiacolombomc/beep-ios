@@ -4,8 +4,8 @@ import SwiftData
 import WidgetKit
 
 /// Orchestrates index refreshes (courses + contents) and hands new files to the
-/// DownloadManager for courses with auto-download on. Main-actor bound like the
-/// SwiftData models it touches.
+/// DownloadManager for courses with auto-download on. Network and UI state live
+/// here on the main actor; the store writes happen in `IndexActor`.
 @Observable
 final class SyncEngine {
     enum Phase: Equatable {
@@ -39,11 +39,14 @@ final class SyncEngine {
     let downloads: DownloadManager
     /// WeBeep rejected the token during a sync.
     var onInvalidToken: ((Trigger) -> Void)?
+    /// Main context: download queue and Spotlight read from it.
     private let context: ModelContext
+    private let store: IndexActor
     private var running: Task<Report, Never>?
 
-    init(context: ModelContext, downloads: DownloadManager) {
-        self.context = context
+    init(container: ModelContainer, downloads: DownloadManager) {
+        self.context = container.mainContext
+        self.store = IndexActor(modelContainer: container)
         self.downloads = downloads
         lastSyncAt = UserDefaults.standard.object(forKey: "lastSyncAt") as? Date
     }
@@ -80,7 +83,6 @@ final class SyncEngine {
 
     private func run(client: MoodleClient, userID: Int?, only courseID: Int?, trigger: Trigger) async -> Report {
         var report = Report()
-        let indexer = Indexer(context: context)
         downloads.resetSessionCounters()
         if trigger != .background { downloads.flushDeferred() }
         do {
@@ -88,18 +90,15 @@ final class SyncEngine {
                 async let coursesTask = client.userCourses(userID: userID)
                 async let categoriesTask = client.categories()
                 let (courses, categories) = try await (coursesTask, categoriesTask)
-                // Auto-download is opt-in: nothing is downloaded until the user enables a course.
-                try indexer.upsertCourses(courses, categories: categories) { _, _ in false }
+                try await store.upsertCourses(courses, categories: categories)
             }
-            var descriptor = FetchDescriptor<Course>()
-            if let courseID { descriptor.predicate = #Predicate { $0.id == courseID } }
-            let targets = try context.fetch(descriptor).filter { courseID != nil || !$0.isArchived }
+            let targets = try await store.targets(only: courseID)
             phase = .indexing(done: 0, total: targets.count, current: targets.first?.title)
 
             var done = 0
             var iterator = targets.makeIterator()
             var inFlight: [Int: Task<[SectionDTO], Error>] = [:]
-            func launch(_ c: Course) { inFlight[c.id] = Task { try await client.courseContents(courseID: c.id) } }
+            func launch(_ c: IndexActor.CourseRef) { inFlight[c.id] = Task { try await client.courseContents(courseID: c.id) } }
             for _ in 0..<4 { if let c = iterator.next() { launch(c) } }
             let byID = Dictionary(uniqueKeysWithValues: targets.map { ($0.id, $0) })
             while !inFlight.isEmpty {
@@ -107,23 +106,19 @@ final class SyncEngine {
                 inFlight.removeValue(forKey: id)
                 do {
                     let sections = try await task.value
-                    if let course = byID[id] {
+                    if let result = try await store.upsertContents(sections, courseID: id, token: client.token) {
+                        report.coursesIndexed += 1
                         // A course indexed for the first time is a baseline, not news:
                         // its files must never trigger badges or notifications.
-                        let isFirstIndex = course.lastIndexedAt == nil
-                        let diff = try indexer.upsertContents(sections, for: course, token: client.token)
-                        report.coursesIndexed += 1
-                        if !isFirstIndex {
-                            report.newFiles += diff.newFiles.count
-                            report.updatedFiles += diff.updatedFiles.count
-                            if !diff.newFiles.isEmpty || !diff.updatedFiles.isEmpty { report.coursesWithNews.append(course.title) }
+                        if !result.isFirstIndex {
+                            report.newFiles += result.diff.newFiles.count
+                            report.updatedFiles += result.diff.updatedFiles.count
+                            if !result.diff.newFiles.isEmpty || !result.diff.updatedFiles.isEmpty { report.coursesWithNews.append(result.title) }
                         }
-                        if course.syncEnabled {
-                            let wanted = course.files.filter { !$0.isDownloaded || $0.hasUpdate }
-                            if !wanted.isEmpty {
-                                downloads.enqueue(wanted, background: trigger == .background)
-                                report.queuedDownloads += wanted.count
-                            }
+                        if !result.wantedKeys.isEmpty {
+                            let wanted = try files(withKeys: result.wantedKeys)
+                            downloads.enqueue(wanted, background: trigger == .background)
+                            report.queuedDownloads += wanted.count
                         }
                     }
                 } catch MoodleError.invalidToken {
@@ -136,7 +131,7 @@ final class SyncEngine {
                 phase = .indexing(done: done, total: targets.count, current: inFlight.keys.compactMap { byID[$0]?.title }.first)
             }
             if let userID, let dto = try? await client.popupNotifications(userID: userID) {
-                report.newAnnouncements = (try? indexer.upsertNotifications(dto.notifications)) ?? 0
+                report.newAnnouncements = (try? await store.upsertNotifications(dto.notifications)) ?? 0
             }
             lastSyncAt = .now
             phase = .idle
@@ -160,5 +155,11 @@ final class SyncEngine {
         }
         if UserDefaults.standard.bool(forKey: "settings.backgroundRefresh") { BackgroundRefresh.schedule() }
         return report
+    }
+
+    /// Main-context models for keys the background indexer just wrote.
+    private func files(withKeys keys: [String]) throws -> [FileItem] {
+        let descriptor = FetchDescriptor<FileItem>(predicate: #Predicate { keys.contains($0.key) })
+        return try context.fetch(descriptor)
     }
 }

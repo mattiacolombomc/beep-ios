@@ -2,9 +2,9 @@ import Foundation
 import SwiftData
 
 /// Upserts Moodle DTOs into the store and reports what changed.
-/// Everything runs on the main actor: the store is small (tens of courses,
-/// thousands of files) and SwiftData models are main-actor bound in this app.
-struct Indexer {
+/// Isolation-agnostic: runs on whatever context it is given (the main context in
+/// tests and demo seeding, `IndexActor`'s background context during a sync).
+nonisolated struct Indexer {
     let context: ModelContext
     let language: String
     let now: () -> Date
@@ -15,12 +15,12 @@ struct Indexer {
         self.now = now
     }
 
-    struct CourseDiff: Equatable {
+    struct CourseDiff: Equatable, Sendable {
         var inserted: [Int] = []
         var removed: [Int] = []
     }
 
-    struct ContentDiff: Equatable {
+    struct ContentDiff: Equatable, Sendable {
         var newFiles: [String] = []
         var updatedFiles: [String] = []
         var removedFiles: [String] = []
@@ -167,6 +167,7 @@ struct Indexer {
             // First index: nothing is "new" yet.
             course.lastSeenAt = stamp
         }
+        course.recountNewFiles()
         try context.save()
         return diff
     }

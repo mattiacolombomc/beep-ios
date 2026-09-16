@@ -130,6 +130,7 @@ private struct CourseContentView: View {
             // Remember what "new" meant when the screen opened, then mark everything seen.
             lastSeenAtOpen = course.lastSeenAt
             course.lastSeenAt = .now
+            course.newFilesCount = 0
             if course.lastIndexedAt == nil { await refresh() }
         }
     }
