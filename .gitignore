@@ -31,3 +31,8 @@ fastlane/.env.*
 fastlane/README.md
 *.pkg
 *.app
+
+# signing artifacts downloaded by fastlane
+*.mobileprovision
+*.cer
+*.p12

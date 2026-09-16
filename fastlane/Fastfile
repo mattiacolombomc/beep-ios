@@ -91,9 +91,10 @@ end
 # Distribution certificate + App Store profiles through the API key (Spaceship), installed locally.
 # Release configs in project.yml reference these profile names, so the archive signs manually.
 def ensure_signing(api_key)
-  get_certificates(api_key: api_key, generate_apple_certs: true, team_id: "M9YL94W837")
-  get_provisioning_profile(api_key: api_key, app_identifier: APP_BUNDLE, provisioning_name: APP_PROFILE, force: true, team_id: "M9YL94W837")
-  get_provisioning_profile(api_key: api_key, app_identifier: WIDGET_BUNDLE, provisioning_name: WIDGET_PROFILE, force: true, team_id: "M9YL94W837")
+  out = Dir.mktmpdir("beep-signing-")
+  get_certificates(api_key: api_key, generate_apple_certs: true, team_id: "M9YL94W837", output_path: out)
+  get_provisioning_profile(api_key: api_key, app_identifier: APP_BUNDLE, provisioning_name: APP_PROFILE, force: true, team_id: "M9YL94W837", output_path: out)
+  get_provisioning_profile(api_key: api_key, app_identifier: WIDGET_BUNDLE, provisioning_name: WIDGET_PROFILE, force: true, team_id: "M9YL94W837", output_path: out)
 end
 
 desc "Archive, upload to TestFlight and commit the build bump"
