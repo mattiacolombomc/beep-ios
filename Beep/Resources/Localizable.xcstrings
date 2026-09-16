@@ -2,12 +2,32 @@
   "sourceLanguage": "en",
   "strings": {
     "": {},
+    "%@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
+          }
+        }
+      }
+    },
     "%lld": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "%lld"
+          }
+        }
+      }
+    },
+    "%lld courses": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld corsi"
           }
         }
       }
@@ -62,12 +82,38 @@
         }
       }
     },
+    "%lld new announcements": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld nuovi annunci"
+          }
+        }
+      }
+    },
     "%lld new files": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "%lld nuovi file"
+          }
+        }
+      }
+    },
+    "%lld new files across %lld courses. Downloading now.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "%1$lld new files across %2$lld courses. Downloading now."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld nuovi file in %lld corsi. Download in corso."
           }
         }
       }
@@ -334,6 +380,16 @@
         }
       }
     },
+    "Background downloads on Wi-Fi only": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download in background solo su Wi-Fi"
+          }
+        }
+      }
+    },
     "Beep": {
       "localizations": {
         "it": {
@@ -424,6 +480,16 @@
         }
       }
     },
+    "Check frequency": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frequenza dei controlli"
+          }
+        }
+      }
+    },
     "Check in the background": {
       "localizations": {
         "it": {
@@ -434,12 +500,42 @@
         }
       }
     },
+    "Checks WeBeep for new material and downloads it for your auto-download courses.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla WeBeep per nuovo materiale e lo scarica per i corsi con download automatico."
+          }
+        }
+      }
+    },
     "Continue": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Continua"
+          }
+        }
+      }
+    },
+    "Course": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corso"
+          }
+        }
+      }
+    },
+    "Course name or code": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nome o codice del corso"
           }
         }
       }
@@ -530,6 +626,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fine"
+          }
+        }
+      }
+    },
+    "Done. You are no longer enrolled in %@.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fatto. Non sei più iscritto a %@."
           }
         }
       }
@@ -654,6 +760,56 @@
         }
       }
     },
+    "Enrol": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iscriviti"
+          }
+        }
+      }
+    },
+    "Enrol in “%@”?": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iscriversi a “%@”?"
+          }
+        }
+      }
+    },
+    "Enrolled": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iscritto"
+          }
+        }
+      }
+    },
+    "Enrolled. The course is being added to your list.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iscrizione riuscita. Il corso viene aggiunto alla tua lista."
+          }
+        }
+      }
+    },
+    "Enrolment": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iscrizione"
+          }
+        }
+      }
+    },
     "Enter token": {
       "localizations": {
         "it": {
@@ -670,6 +826,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Inserisci il token a mano"
+          }
+        }
+      }
+    },
+    "Every 2 hours": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ogni 2 ore"
+          }
+        }
+      }
+    },
+    "Every 6 hours": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ogni 6 ore"
+          }
+        }
+      }
+    },
+    "Every hour at most": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Al massimo ogni ora"
+          }
+        }
+      }
+    },
+    "Everything is up to date.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "È tutto aggiornato."
           }
         }
       }
@@ -764,6 +960,16 @@
         }
       }
     },
+    "Files of “%@” live in Files → Beep → this folder. Existing downloads are moved.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I file di “%@” stanno in File → Beep → questa cartella. I download esistenti vengono spostati."
+          }
+        }
+      }
+    },
     "Files you open or download appear here and in the Files app.": {
       "localizations": {
         "it": {
@@ -794,12 +1000,58 @@
         }
       }
     },
+    "Find other courses": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trova altri corsi"
+          }
+        }
+      }
+    },
+    "Find other courses…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trova altri corsi…"
+          }
+        }
+      }
+    },
     "Finished": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Completata"
+          }
+        }
+      }
+    },
+    "First %lld of %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "First %1$lld of %2$lld"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Primi %lld di %lld"
+          }
+        }
+      }
+    },
+    "Folder name": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nome cartella"
           }
         }
       }
@@ -860,6 +1112,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ultimo aggiornamento"
+          }
+        }
+      }
+    },
+    "Leave “%@” on WeBeep?": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abbandonare “%@” su WeBeep?"
           }
         }
       }
@@ -984,6 +1246,16 @@
         }
       }
     },
+    "New announcements on WeBeep": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuovi annunci su WeBeep"
+          }
+        }
+      }
+    },
     "New files": {
       "localizations": {
         "it": {
@@ -1005,7 +1277,18 @@
         }
       }
     },
+    "New files in these courses download automatically when you sync. Background checks are skipped in Low Power Mode; iOS may space them out further than the frequency you pick. Wi-Fi only postpones background downloads until you open the app or reach Wi-Fi.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I nuovi file di questi corsi vengono scaricati automaticamente alla sincronizzazione. I controlli in background saltano in Risparmio energetico; iOS può distanziarli più della frequenza scelta. Con Solo Wi-Fi i download in background aspettano finché apri l'app o torni sotto Wi-Fi."
+          }
+        }
+      }
+    },
     "New files in these courses download automatically when you sync. iOS decides how often background checks run, usually a few times a day.": {
+      "extractionState": "stale",
       "localizations": {
         "it": {
           "stringUnit": {
@@ -1215,6 +1498,16 @@
         }
       }
     },
+    "Once a day": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una volta al giorno"
+          }
+        }
+      }
+    },
     "Once your courses are synced, the latest files from every course show up here.": {
       "localizations": {
         "it": {
@@ -1285,12 +1578,32 @@
         }
       }
     },
+    "Open ${course} in Beep": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri ${course} in Beep"
+          }
+        }
+      }
+    },
     "Open Beep and sign in again to keep your courses in sync. Your files are safe.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Apri Beep e accedi di nuovo per mantenere i corsi sincronizzati. I tuoi file sono al sicuro."
+          }
+        }
+      }
+    },
+    "Open Beep and sign in to WeBeep first.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri Beep e accedi prima a WeBeep."
           }
         }
       }
@@ -1315,6 +1628,16 @@
         }
       }
     },
+    "Open course": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri corso"
+          }
+        }
+      }
+    },
     "Open in…": {
       "localizations": {
         "it": {
@@ -1331,6 +1654,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Apri su WeBeep"
+          }
+        }
+      }
+    },
+    "Opens a course in Beep.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apre un corso in Beep."
           }
         }
       }
@@ -1465,6 +1798,36 @@
         }
       }
     },
+    "Rename": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinomina"
+          }
+        }
+      }
+    },
+    "Rename failed": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinomina non riuscita"
+          }
+        }
+      }
+    },
+    "Rename folder…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinomina cartella…"
+          }
+        }
+      }
+    },
     "Renew access key now": {
       "localizations": {
         "it": {
@@ -1521,6 +1884,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cerca in questo corso"
+          }
+        }
+      }
+    },
+    "Search the WeBeep catalogue by name or code and enrol from here.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca nel catalogo WeBeep per nome o codice e iscriviti da qui."
+          }
+        }
+      }
+    },
+    "Search “%@” in the WeBeep catalogue": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca “%@” nel catalogo WeBeep"
           }
         }
       }
@@ -1745,6 +2128,16 @@
         }
       }
     },
+    "Sync WeBeep courses": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizza i corsi WeBeep"
+          }
+        }
+      }
+    },
     "Sync failed": {
       "localizations": {
         "it": {
@@ -1781,6 +2174,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sincronizza subito i tuoi corsi"
+          }
+        }
+      }
+    },
+    "Talking to WeBeep…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comunicazione con WeBeep…"
           }
         }
       }
@@ -1825,6 +2228,26 @@
         }
       }
     },
+    "This course has no self-enrolment, so you cannot leave it from here. Ask the professor or WeBeep support.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questo corso non ha l'iscrizione spontanea, quindi non puoi abbandonarlo da qui. Chiedi al docente o al supporto WeBeep."
+          }
+        }
+      }
+    },
+    "This is the same as “Unenrol me” on the WeBeep website. Only courses with self-enrolment allow it; you can enrol again from the catalogue.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "È come “Disiscrivimi” sul sito WeBeep. Solo i corsi con iscrizione spontanea lo permettono; puoi reiscriverti dal catalogo."
+          }
+        }
+      }
+    },
     "Token": {
       "localizations": {
         "it": {
@@ -1865,6 +2288,46 @@
         }
       }
     },
+    "Unenrol and delete files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disiscriviti ed elimina i file"
+          }
+        }
+      }
+    },
+    "Unenrol and keep files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disiscriviti e conserva i file"
+          }
+        }
+      }
+    },
+    "Unenrol from WeBeep…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disiscriviti da WeBeep…"
+          }
+        }
+      }
+    },
+    "Unenrolment": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disiscrizione"
+          }
+        }
+      }
+    },
     "Unfavourite": {
       "localizations": {
         "it": {
@@ -1891,6 +2354,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aggiornamento corsi…"
+          }
+        }
+      }
+    },
+    "Use course title": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa il titolo del corso"
           }
         }
       }
@@ -1935,12 +2408,32 @@
         }
       }
     },
+    "WeBeep catalogue": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Catalogo WeBeep"
+          }
+        }
+      }
+    },
     "WeBeep login": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Accesso WeBeep"
+          }
+        }
+      }
+    },
+    "WeBeep refused the enrolment.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep ha rifiutato l'iscrizione."
           }
         }
       }
@@ -1961,6 +2454,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sessione WeBeep scaduta"
+          }
+        }
+      }
+    },
+    "WeBeep still lists this course. Try again in a minute.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep elenca ancora questo corso. Riprova tra un minuto."
           }
         }
       }
@@ -2001,6 +2504,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anni"
+          }
+        }
+      }
+    },
+    "You will be enrolled on WeBeep with your account, exactly as from the website. Courses that need an enrolment key cannot be joined from here.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verrai iscritto su WeBeep con il tuo account, esattamente come dal sito. I corsi che richiedono una chiave di iscrizione non si possono seguire da qui."
           }
         }
       }
