@@ -226,7 +226,10 @@ lane :internal_testers do |options|
   UI.message("Internal group: #{group.name} (all builds: #{group.has_access_to_all_builds})")
   existing = Spaceship::ConnectAPI.get_beta_testers(filter: { email: email, betaGroups: group.id }).all_pages.flat_map(&:to_models)
   if existing.empty?
-    Spaceship::ConnectAPI.post_bulk_beta_tester_assignments(beta_group_id: group.id, beta_testers: [{ email: email, firstName: options[:first] || "Mattia", lastName: options[:last] || "Colombo" }])
+    tester_body = { data: { type: "betaTesters",
+                            attributes: { email: email, firstName: options[:first] || "Mattia", lastName: options[:last] || "Colombo" },
+                            relationships: { betaGroups: { data: [{ type: "betaGroups", id: group.id }] } } } }
+    Spaceship::ConnectAPI.test_flight_request_client.post("v1/betaTesters", tester_body)
     UI.success("#{email} added to internal group #{group.name}")
   else
     UI.success("#{email} already in #{group.name}")
