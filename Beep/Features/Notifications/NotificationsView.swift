@@ -97,7 +97,7 @@ struct NotificationDetail: View {
             HTMLDocumentView(
                 title: notification.subject,
                 meta: [notification.contextName, notification.timecreated.formatted(date: .abbreviated, time: .shortened)].compactMap { $0 }.joined(separator: " · "),
-                bodyHTML: notification.htmlBody ?? ""
+                bodyHTML: NotificationHTML.cleaned(notification.htmlBody ?? "")
             )
             .ignoresSafeArea(edges: .bottom)
             .navigationBarTitleDisplayMode(.inline)

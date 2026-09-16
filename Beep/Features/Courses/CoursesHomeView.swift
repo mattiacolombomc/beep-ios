@@ -58,6 +58,8 @@ struct CoursesListView: View {
     @AppStorage("home.onlyAutoDownload") private var onlyAutoDownload = false
     @State private var expandedYears: Set<String> = []
     @State private var archiveTarget: Course?
+    @State private var renameTarget: Course?
+    @State private var showCatalog = false
     @State private var showSettings = false
     @State private var showNotifications = false
 
@@ -170,6 +172,8 @@ struct CoursesListView: View {
                     Divider()
                     Toggle("Show archived", systemImage: "archivebox", isOn: $showArchived)
                     Toggle("Show hidden on WeBeep", systemImage: "eye.slash", isOn: $showHidden)
+                    Divider()
+                    Button { showCatalog = true } label: { Label("Find other courses…", systemImage: "books.vertical") }
                 } label: {
                     Label("Filter", systemImage: isFilterActive ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease")
                 }
@@ -186,6 +190,8 @@ struct CoursesListView: View {
         .sheet(isPresented: $showSettings) { SettingsView() }
         .sheet(isPresented: $showNotifications) { NotificationsView() }
         .archiveDialog(course: $archiveTarget)
+        .renameFolderDialog(course: $renameTarget)
+        .navigationDestination(isPresented: $showCatalog) { CatalogSearchView(initialQuery: "") }
     }
 
     private var isFilterActive: Bool { yearFilter != .all || showHidden || showArchived || onlyNew || onlyAutoDownload }
@@ -196,7 +202,7 @@ struct CoursesListView: View {
             CourseRow(course: course)
                 .tag(course.id)
                 .modifier(RowLink(id: course.id, isSplit: sizeClass == .regular))
-                .contextMenu { CourseContextMenu(course: course, onArchive: { archiveTarget = course }) }
+                .contextMenu { CourseContextMenu(course: course, onArchive: { archiveTarget = course }, onRename: { renameTarget = course }) }
                 .swipeActions(edge: .trailing) {
                     if course.isArchived {
                         Button { course.isArchived = false } label: { Label("Unarchive", systemImage: "tray.and.arrow.up") }
@@ -311,11 +317,15 @@ private struct StatusHeader: View {
 struct CourseContextMenu: View {
     @Bindable var course: Course
     var onArchive: (() -> Void)? = nil
+    var onRename: (() -> Void)? = nil
     @Environment(\.openURL) private var openURL
 
     var body: some View {
         Toggle(isOn: $course.isFavourite) { Label("Favourite", systemImage: "star") }
         Toggle(isOn: $course.syncEnabled) { Label("Auto-download new files", systemImage: "arrow.down.circle") }
+        if let onRename {
+            Button(action: onRename) { Label("Rename folder…", systemImage: "folder.badge.gearshape") }
+        }
         if course.isArchived {
             Button { course.isArchived = false } label: { Label("Unarchive", systemImage: "tray.and.arrow.up") }
         } else if let onArchive {
@@ -372,8 +382,45 @@ extension View {
 extension View {
     func courseRoutes() -> some View {
         self
+            .navigationDestination(for: CatalogRoute.self) { CatalogSearchView(initialQuery: $0.query) }
             .navigationDestination(for: ForumRoute.self) { ForumDiscussionsView(module: $0.module) }
             .navigationDestination(for: DiscussionRoute.self) { DiscussionView(route: $0) }
             .navigationDestination(for: PageRoute.self) { PageView(module: $0.module) }
     }
+}
+
+
+/// Rename the on-disk folder of a course (visible in the Files app).
+private struct RenameFolderDialog: ViewModifier {
+    @Binding var course: Course?
+    @Environment(FileOpener.self) private var opener
+    @State private var name = ""
+    @State private var error: String?
+
+    func body(content: Content) -> some View {
+        content
+            .alert("Folder name", isPresented: Binding(get: { course != nil }, set: { if !$0 { course = nil } }), presenting: course) { c in
+                TextField("Folder name", text: $name)
+                Button("Rename") { rename(c, to: name) }
+                Button("Use course title") { rename(c, to: c.title) }
+                Button("Cancel", role: .cancel) {}
+            } message: { c in
+                Text("Files of \u{201C}\(c.title)\u{201D} live in Files → Beep → this folder. Existing downloads are moved.")
+            }
+            .onChange(of: course?.id) { _, _ in
+                if let c = course { name = c.folderName.isEmpty ? c.title : c.folderName }
+            }
+            .alert("Rename failed", isPresented: Binding(get: { error != nil }, set: { if !$0 { error = nil } })) {
+                Button("OK", role: .cancel) {}
+            } message: { Text(error ?? "") }
+    }
+
+    private func rename(_ c: Course, to newName: String) {
+        do { try opener.renameFolder(of: c, to: newName) } catch { self.error = String(describing: error) }
+        course = nil
+    }
+}
+
+extension View {
+    func renameFolderDialog(course: Binding<Course?>) -> some View { modifier(RenameFolderDialog(course: course)) }
 }

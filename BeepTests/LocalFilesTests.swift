@@ -35,4 +35,26 @@ struct LocalFilesTests {
         local.remove(file)
         #expect(local.url(for: file) == nil)
     }
+
+    @Test func renamesCourseFolderAndRewritesPaths() throws {
+        let root = FileManager.default.temporaryDirectory.appending(path: "beep-tests-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let local = LocalFiles(root: root)
+        let course = Course(id: 7, fullname: "", displayName: "", title: "Data Bases 2", code: nil, professors: nil,
+                            categoryID: 0, categoryName: "2026-27", isFavourite: false, isHidden: false, syncEnabled: true)
+        course.folderName = "Data Bases 2"
+        let file = FileItem(key: "k2", filename: "a.pdf", filepath: "/", filesize: 1, timemodified: .now, mimetype: nil, remoteURL: "https://x/a", firstSeenAt: .now)
+        file.course = course
+        let temp = root.appending(path: "tmp.bin")
+        try Data([1]).write(to: temp)
+        try local.store(temp, for: file)
+        #expect(file.localRelativePath == "Data Bases 2/a.pdf")
+
+        try local.renameCourseFolder(course, to: "DB2")
+        #expect(course.folderName == "DB2")
+        #expect(file.localRelativePath == "DB2/a.pdf")
+        #expect(local.url(for: file) != nil)
+        #expect(!FileManager.default.fileExists(atPath: root.appending(path: "Data Bases 2").path(percentEncoded: false)))
+    }
 }

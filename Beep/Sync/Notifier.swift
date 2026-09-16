@@ -22,17 +22,25 @@ enum Notifier {
         UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: "session-expired", content: content, trigger: nil))
     }
 
-    static func notifyNewFiles(count: Int, courses: [String]) {
-        guard count > 0 else { return }
+    static func notifySyncResults(newFiles: Int, courses: [String], newAnnouncements: Int) {
+        guard newFiles > 0 || newAnnouncements > 0 else { return }
         let content = UNMutableNotificationContent()
-        content.title = String(localized: "New material on WeBeep")
-        let list = courses.prefix(3).joined(separator: ", ")
-        content.body = courses.count > 3
-            ? String(localized: "\(count) new files in \(list) and \(courses.count - 3) more")
-            : String(localized: "\(count) new files in \(list)")
+        var lines: [String] = []
+        if newFiles > 0 {
+            let list = courses.prefix(3).joined(separator: ", ")
+            lines.append(courses.count > 3
+                ? String(localized: "\(newFiles) new files in \(list) and \(courses.count - 3) more")
+                : String(localized: "\(newFiles) new files in \(list)"))
+        }
+        if newAnnouncements > 0 {
+            lines.append(String(localized: "\(newAnnouncements) new announcements"))
+        }
+        content.title = newFiles > 0 ? String(localized: "New material on WeBeep") : String(localized: "New announcements on WeBeep")
+        content.body = lines.joined(separator: " · ")
         content.sound = .default
         content.interruptionLevel = .passive
-        let request = UNNotificationRequest(identifier: "new-files-\(Int(Date.now.timeIntervalSince1970))", content: content, trigger: nil)
+        content.badge = NSNumber(value: newAnnouncements)
+        let request = UNNotificationRequest(identifier: "sync-\(Int(Date.now.timeIntervalSince1970))", content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request)
     }
 }

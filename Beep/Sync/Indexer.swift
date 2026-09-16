@@ -173,9 +173,14 @@ struct Indexer {
 
     // MARK: Notifications
 
-    func upsertNotifications(_ dtos: [NotificationDTO]) throws {
+    /// Returns the number of newly inserted unread notifications. The very first
+    /// fetch is a baseline and reports 0.
+    @discardableResult
+    func upsertNotifications(_ dtos: [NotificationDTO]) throws -> Int {
         let existing = try context.fetch(FetchDescriptor<WebeepNotification>())
+        let isBaseline = existing.isEmpty
         let byID = Dictionary(uniqueKeysWithValues: existing.map { ($0.id, $0) })
+        var inserted = 0
         for dto in dtos {
             let created = Date(timeIntervalSince1970: TimeInterval(dto.timecreated))
             if let n = byID[dto.id] {
@@ -186,8 +191,10 @@ struct Indexer {
                 context.insert(WebeepNotification(id: dto.id, subject: dto.subject, htmlBody: dto.fullmessagehtml ?? dto.fullmessage,
                                                   contextURL: dto.contexturl, contextName: dto.contexturlname,
                                                   timecreated: created, read: dto.read ?? false))
+                if !(dto.read ?? false) { inserted += 1 }
             }
         }
         try context.save()
+        return isBaseline ? 0 : inserted
     }
 }

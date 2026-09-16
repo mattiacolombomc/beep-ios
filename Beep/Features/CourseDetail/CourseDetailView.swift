@@ -65,6 +65,7 @@ private struct CourseContentView: View {
     @State private var sort: FileSort = .position
     @State private var onlyNew = false
     @State private var lastSeenAtOpen: Date?
+    @State private var renameTarget: Course?
 
     private var isFiltering: Bool { !query.isEmpty || scope != .all || onlyNew || sort != .position }
 
@@ -118,12 +119,13 @@ private struct CourseContentView: View {
                     }
                     Toggle("Only new files", systemImage: "sparkles", isOn: $onlyNew)
                     Divider()
-                    CourseContextMenu(course: course)
+                    CourseContextMenu(course: course, onRename: { renameTarget = course })
                 } label: {
                     Label("More", systemImage: "ellipsis.circle")
                 }
             }
         }
+        .renameFolderDialog(course: $renameTarget)
         .task(id: course.id) {
             // Remember what "new" meant when the screen opened, then mark everything seen.
             lastSeenAtOpen = course.lastSeenAt

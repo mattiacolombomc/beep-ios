@@ -139,6 +139,17 @@ extension MoodleClient {
         try await call("mod_forum_get_forum_discussions", parameters: [("forumid", String(forumID)), ("sortorder", "1")], as: ForumDiscussionsDTO.self)
     }
 
+    func searchCatalog(_ query: String, page: Int = 0, perPage: Int = 30) async throws -> CatalogSearchDTO {
+        try await call("core_course_search_courses",
+                       parameters: [("criterianame", "search"), ("criteriavalue", query), ("page", String(page)), ("perpage", String(perPage))],
+                       as: CatalogSearchDTO.self)
+    }
+
+    /// Self-enrolment without a key. Courses with an enrolment key are refused by Moodle.
+    func enrolSelf(courseID: Int) async throws -> EnrolResultDTO {
+        try await call("enrol_self_enrol_user", parameters: [("courseid", String(courseID))], post: true, as: EnrolResultDTO.self)
+    }
+
     /// Requires the private token from the mobile launch handshake. Rate limited by Moodle (once per 6 minutes).
     func autologinKey(privateToken: String) async throws -> AutologinKeyDTO {
         try await call("tool_mobile_get_autologin_key", parameters: [("privatetoken", privateToken)], post: true, as: AutologinKeyDTO.self)

@@ -23,6 +23,11 @@ struct GlobalSearchView: View {
                             }
                         }
                     }
+                    Section {
+                        NavigationLink(value: CatalogRoute(query: query)) {
+                            Label("Search \u{201C}\(query)\u{201D} in the WeBeep catalogue", systemImage: "books.vertical")
+                        }
+                    }
                     Section(results.isEmpty ? "Files" : "\(results.count) files") {
                         if results.isEmpty && matchedCourses.isEmpty {
                             ContentUnavailableView.search(text: query).listRowBackground(Color.clear)
@@ -41,6 +46,7 @@ struct GlobalSearchView: View {
             .listStyle(.insetGrouped)
             .navigationTitle("Search")
             .navigationDestination(for: Int.self) { CourseDetailView(courseID: $0) }
+            .navigationDestination(for: CatalogRoute.self) { CatalogSearchView(initialQuery: $0.query) }
             .courseRoutes()
             .searchable(text: $query, prompt: "Files in every course")
             .searchScopes($scope, activation: .onSearchPresentation) {

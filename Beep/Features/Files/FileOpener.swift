@@ -46,6 +46,10 @@ final class FileOpener {
         if let target = comps?.url { UIApplication.shared.open(target) }
     }
 
+    func renameFolder(of course: Course, to name: String) throws {
+        try local.renameCourseFolder(course, to: name)
+    }
+
     func removeLocal(_ file: FileItem) {
         local.remove(file)
         file.localRelativePath = nil
@@ -96,6 +100,36 @@ struct LocalFiles: Sendable {
     func remove(_ file: FileItem) {
         guard let url = url(for: file) else { return }
         try? FileManager.default.removeItem(at: url)
+    }
+
+    /// Moves a course's folder to a new name and rewrites the stored relative paths.
+    /// Merges into an existing folder with the same name.
+    func renameCourseFolder(_ course: Course, to requested: String) throws {
+        let newName = Self.sanitize(requested)
+        let oldName = course.folderName.isEmpty ? course.title : course.folderName
+        guard newName != oldName else { return }
+        let oldDir = root.appending(path: oldName)
+        let newDir = root.appending(path: newName)
+        let fm = FileManager.default
+        if fm.fileExists(atPath: oldDir.path(percentEncoded: false)) {
+            if fm.fileExists(atPath: newDir.path(percentEncoded: false)) {
+                for item in try fm.contentsOfDirectory(at: oldDir, includingPropertiesForKeys: nil) {
+                    let dest = newDir.appending(path: item.lastPathComponent)
+                    if fm.fileExists(atPath: dest.path(percentEncoded: false)) { try fm.removeItem(at: dest) }
+                    try fm.moveItem(at: item, to: dest)
+                }
+                try fm.removeItem(at: oldDir)
+            } else {
+                try fm.createDirectory(at: root, withIntermediateDirectories: true)
+                try fm.moveItem(at: oldDir, to: newDir)
+            }
+        }
+        for file in course.files {
+            if let rel = file.localRelativePath, rel.hasPrefix(oldName + "/") {
+                file.localRelativePath = newName + rel.dropFirst(oldName.count)
+            }
+        }
+        course.folderName = newName
     }
 
     /// Bytes on disk under the root (downloaded material).

@@ -20,6 +20,7 @@ final class SyncEngine {
         var newFiles = 0
         var updatedFiles = 0
         var queuedDownloads = 0
+        var newAnnouncements = 0
         var coursesWithNews: [String] = []
         var errors: [String] = []
         var finishedAt = Date.now
@@ -127,7 +128,7 @@ final class SyncEngine {
                 phase = .indexing(done: done, total: targets.count, current: inFlight.keys.compactMap { byID[$0]?.title }.first)
             }
             if let userID, let dto = try? await client.popupNotifications(userID: userID) {
-                try? indexer.upsertNotifications(dto.notifications)
+                report.newAnnouncements = (try? indexer.upsertNotifications(dto.notifications)) ?? 0
             }
             lastSyncAt = .now
             phase = .idle
@@ -145,7 +146,7 @@ final class SyncEngine {
         if trigger == .background,
            UserDefaults.standard.bool(forKey: "settings.notifications"),
            UserDefaults.standard.bool(forKey: "onboarding.done") {
-            Notifier.notifyNewFiles(count: report.newFiles + report.updatedFiles, courses: report.coursesWithNews)
+            Notifier.notifySyncResults(newFiles: report.newFiles + report.updatedFiles, courses: report.coursesWithNews, newAnnouncements: report.newAnnouncements)
         }
         if UserDefaults.standard.bool(forKey: "settings.backgroundRefresh") { BackgroundRefresh.schedule() }
         return report
