@@ -76,6 +76,12 @@ final class AppSession {
         state = .signedIn(profile)
     }
 
+    /// Demo launches: fake signed-in user, no network.
+    func enterDemo() {
+        token = "demo"
+        state = .signedIn(UserProfile(id: 1, fullname: "Mario Rossi", username: "10812345@polimi.it", pictureURL: nil))
+    }
+
     func signOut() {
         tokenStore.clear()
         defaults.removeObject(forKey: profileKey)
