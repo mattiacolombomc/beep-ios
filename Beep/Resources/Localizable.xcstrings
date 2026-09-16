@@ -1,6 +1,1606 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
+  "sourceLanguage": "en",
+  "strings": {
+    "%lld": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        }
+      }
+    },
+    "%lld courses auto-download new files. Tap a row to toggle; use the menu for bulk changes.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld corsi scaricano automaticamente i nuovi file. Tocca una riga per attivare o disattivare; usa il menu per le azioni in blocco."
+          }
+        }
+      }
+    },
+    "%lld errors": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld errori"
+          }
+        }
+      }
+    },
+    "%lld files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld file"
+          }
+        }
+      }
+    },
+    "%lld new files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld nuovi file"
+          }
+        }
+      }
+    },
+    "%lld of %lld courses": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld di %lld corsi"
+          }
+        }
+      }
+    },
+    "%lld/%lld": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld/%lld"
+          }
+        }
+      }
+    },
+    "%lld/%lld · %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld/%lld · %@"
+          }
+        }
+      }
+    },
+    "About": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Informazioni"
+          }
+        }
+      }
+    },
+    "Acknowledgements": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ringraziamenti"
+          }
+        }
+      }
+    },
+    "Activity": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attività"
+          }
+        }
+      }
+    },
+    "All": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutti"
+          }
+        }
+      }
+    },
+    "All years": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutti gli anni"
+          }
+        }
+      }
+    },
+    "Archive": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archivia"
+          }
+        }
+      }
+    },
+    "Archive and delete %lld files (%@)": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archivia ed elimina %lld file (%@)"
+          }
+        }
+      }
+    },
+    "Archive “%@”?": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archiviare “%@”?"
+          }
+        }
+      }
+    },
+    "Archive, keep files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archivia, conserva i file"
+          }
+        }
+      }
+    },
+    "Archived": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archiviati"
+          }
+        }
+      }
+    },
+    "Archives": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archivi"
+          }
+        }
+      }
+    },
+    "Archive…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archivia…"
+          }
+        }
+      }
+    },
+    "Auto-download": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download automatico"
+          }
+        }
+      }
+    },
+    "Auto-download courses": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corsi con download automatico"
+          }
+        }
+      }
+    },
+    "Auto-download new files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scarica automaticamente i nuovi file"
+          }
+        }
+      }
+    },
+    "Auto-download on": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download automatico attivo"
+          }
+        }
+      }
+    },
+    "Beep": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beep"
+          }
+        }
+      }
+    },
+    "Beep author": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autore di Beep"
+          }
+        }
+      }
+    },
+    "Beep is inspired by and partly derived from myPoliFile, the first unofficial iOS client for WeBeep.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beep è ispirata a myPoliFile, il primo client iOS non ufficiale per WeBeep, e ne riprende in parte il codice."
+          }
+        }
+      }
+    },
+    "Beep is not affiliated with, endorsed by, or sponsored by Politecnico di Milano. WeBeep is a trademark of its owner.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beep non è affiliata, approvata o sponsorizzata dal Politecnico di Milano. WeBeep è un marchio del rispettivo proprietario."
+          }
+        }
+      }
+    },
+    "Bulk actions": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Azioni in blocco"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annulla"
+          }
+        }
+      }
+    },
+    "Course not found": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corso non trovato"
+          }
+        }
+      }
+    },
+    "Course order": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ordine del corso"
+          }
+        }
+      }
+    },
+    "Course, code or professor": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corso, codice o docente"
+          }
+        }
+      }
+    },
+    "Courses": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corsi"
+          }
+        }
+      }
+    },
+    "Courses updated": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corsi aggiornati"
+          }
+        }
+      }
+    },
+    "Current year": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anno corrente"
+          }
+        }
+      }
+    },
+    "Disable all shown": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disattiva tutti quelli mostrati"
+          }
+        }
+      }
+    },
+    "Disable everything": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disattiva tutto"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fine"
+          }
+        }
+      }
+    },
+    "Download": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scarica"
+          }
+        }
+      }
+    },
+    "Downloaded": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scaricati"
+          }
+        }
+      }
+    },
+    "Downloaded files stay on this device.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I file scaricati restano su questo dispositivo."
+          }
+        }
+      }
+    },
+    "Downloading": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In download"
+          }
+        }
+      }
+    },
+    "Empty course": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corso vuoto"
+          }
+        }
+      }
+    },
+    "Enable all shown": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attiva tutti quelli mostrati"
+          }
+        }
+      }
+    },
+    "Enter token": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inserisci token"
+          }
+        }
+      }
+    },
+    "Enter token manually": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inserisci il token a mano"
+          }
+        }
+      }
+    },
+    "Failed": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non riuscita"
+          }
+        }
+      }
+    },
+    "Favourite": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preferito"
+          }
+        }
+      }
+    },
+    "Favourites": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preferiti"
+          }
+        }
+      }
+    },
+    "File names, folders and courses across all your material.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nomi di file, cartelle e corsi in tutto il tuo materiale."
+          }
+        }
+      }
+    },
+    "Files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File"
+          }
+        }
+      }
+    },
+    "Files are saved in Files → On My iPhone → Beep, one folder per course, so any app can open and edit them.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I file sono salvati in File → Sul mio iPhone → Beep, una cartella per corso, così qualsiasi app può aprirli e modificarli."
+          }
+        }
+      }
+    },
+    "Files in every course": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File in tutti i corsi"
+          }
+        }
+      }
+    },
+    "Files live in the Files app, ready for GoodNotes, Notability or anything else.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I file vivono nell'app File, pronti per GoodNotes, Notability o qualsiasi altra app."
+          }
+        }
+      }
+    },
+    "Files you open or download appear here and in the Files app.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I file che apri o scarichi compaiono qui e nell'app File."
+          }
+        }
+      }
+    },
+    "Filter": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtri"
+          }
+        }
+      }
+    },
+    "Find anything": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trova tutto"
+          }
+        }
+      }
+    },
+    "Finished": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completata"
+          }
+        }
+      }
+    },
+    "Its material, announcements and files show up here.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Materiale, annunci e file compaiono qui."
+          }
+        }
+      }
+    },
+    "Just now": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adesso"
+          }
+        }
+      }
+    },
+    "Last sync": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultima sync"
+          }
+        }
+      }
+    },
+    "Last sync %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultima sync %@"
+          }
+        }
+      }
+    },
+    "Last update": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultimo aggiornamento"
+          }
+        }
+      }
+    },
+    "Licenses": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licenze"
+          }
+        }
+      }
+    },
+    "Loading courses…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caricamento corsi…"
+          }
+        }
+      }
+    },
+    "Login failed": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesso non riuscito"
+          }
+        }
+      }
+    },
+    "MIT License – myPoliFile": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licenza MIT – myPoliFile"
+          }
+        }
+      }
+    },
+    "Made by": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Realizzata da"
+          }
+        }
+      }
+    },
+    "Mobile web service token": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token del servizio web mobile"
+          }
+        }
+      }
+    },
+    "More": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altro"
+          }
+        }
+      }
+    },
+    "Name": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nome"
+          }
+        }
+      }
+    },
+    "Never": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mai"
+          }
+        }
+      }
+    },
+    "Never synced": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mai sincronizzato"
+          }
+        }
+      }
+    },
+    "New": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuovo"
+          }
+        }
+      }
+    },
+    "New files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuovi file"
+          }
+        }
+      }
+    },
+    "New files in these courses download automatically when you sync.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I nuovi file di questi corsi vengono scaricati automaticamente alla sincronizzazione."
+          }
+        }
+      }
+    },
+    "New material downloads itself for the courses you pick.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il nuovo materiale si scarica da solo per i corsi che scegli."
+          }
+        }
+      }
+    },
+    "Newest first": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Più recenti prima"
+          }
+        }
+      }
+    },
+    "No courses yet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora nessun corso"
+          }
+        }
+      }
+    },
+    "No downloads yet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora nessun download"
+          }
+        }
+      }
+    },
+    "No notifications": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna notifica"
+          }
+        }
+      }
+    },
+    "Not affiliated with Politecnico di Milano.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non affiliata al Politecnico di Milano."
+          }
+        }
+      }
+    },
+    "Not loaded yet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non ancora caricato"
+          }
+        }
+      }
+    },
+    "Nothing yet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora niente"
+          }
+        }
+      }
+    },
+    "Notifications": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifiche"
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        }
+      }
+    },
+    "Off": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off"
+          }
+        }
+      }
+    },
+    "On": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On"
+          }
+        }
+      }
+    },
+    "On WeBeep open Preferences → Security keys and copy the key for the *moodle_mobile_app* service.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Su WeBeep apri Preferenze → Chiavi di sicurezza e copia la chiave del servizio *moodle_mobile_app*."
+          }
+        }
+      }
+    },
+    "Once your courses are synced, the latest files from every course show up here.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dopo la sincronizzazione, qui compaiono gli ultimi file di tutti i corsi."
+          }
+        }
+      }
+    },
+    "Only auto-download": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo con download automatico"
+          }
+        }
+      }
+    },
+    "Only current year": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo anno corrente"
+          }
+        }
+      }
+    },
+    "Only new files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo file nuovi"
+          }
+        }
+      }
+    },
+    "Only with new files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo con file nuovi"
+          }
+        }
+      }
+    },
+    "Open": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri"
+          }
+        }
+      }
+    },
+    "Open WeBeep security keys": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri le chiavi di sicurezza WeBeep"
+          }
+        }
+      }
+    },
+    "Open anywhere": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri ovunque"
+          }
+        }
+      }
+    },
+    "Open in…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri in…"
+          }
+        }
+      }
+    },
+    "Open on WeBeep": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri su WeBeep"
+          }
+        }
+      }
+    },
+    "Other": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altro"
+          }
+        }
+      }
+    },
+    "PDF": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PDF"
+          }
+        }
+      }
+    },
+    "Past years": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anni passati"
+          }
+        }
+      }
+    },
+    "Pick a course": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli un corso"
+          }
+        }
+      }
+    },
+    "Programme & general": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corso di studi e generali"
+          }
+        }
+      }
+    },
+    "Pull to refresh or tap Sync to load your WeBeep courses.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trascina per aggiornare o tocca Sync per caricare i tuoi corsi WeBeep."
+          }
+        }
+      }
+    },
+    "Pull to refresh to load the course material.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trascina per aggiornare e caricare il materiale del corso."
+          }
+        }
+      }
+    },
+    "Pull to retry": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trascina per riprovare"
+          }
+        }
+      }
+    },
+    "Recent": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recenti"
+          }
+        }
+      }
+    },
+    "Reload": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ricarica"
+          }
+        }
+      }
+    },
+    "Remove download": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimuovi download"
+          }
+        }
+      }
+    },
+    "Search": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca"
+          }
+        }
+      }
+    },
+    "Search everything": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca ovunque"
+          }
+        }
+      }
+    },
+    "Search files inside a course or across all of them.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca i file dentro un corso o in tutti insieme."
+          }
+        }
+      }
+    },
+    "Search in this course": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca in questo corso"
+          }
+        }
+      }
+    },
+    "See at a glance which files appeared since your last visit.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vedi a colpo d'occhio quali file sono apparsi dall'ultima visita."
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impostazioni"
+          }
+        }
+      }
+    },
+    "Show archived": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra archiviati"
+          }
+        }
+      }
+    },
+    "Show hidden on WeBeep": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra nascosti su WeBeep"
+          }
+        }
+      }
+    },
+    "Show in Files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra in File"
+          }
+        }
+      }
+    },
+    "Show in Files app": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra nell'app File"
+          }
+        }
+      }
+    },
+    "Sign in": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accedi"
+          }
+        }
+      }
+    },
+    "Sign in with Polimi account": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accedi con account Polimi"
+          }
+        }
+      }
+    },
+    "Sign out": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esci"
+          }
+        }
+      }
+    },
+    "Sign out of WeBeep?": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uscire da WeBeep?"
+          }
+        }
+      }
+    },
+    "Signing you in…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesso in corso…"
+          }
+        }
+      }
+    },
+    "Since your last visit": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dall'ultima visita"
+          }
+        }
+      }
+    },
+    "Slides & docs": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slide e documenti"
+          }
+        }
+      }
+    },
+    "Sort": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ordina"
+          }
+        }
+      }
+    },
+    "Stop auto-download": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ferma download automatico"
+          }
+        }
+      }
+    },
+    "Storage": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Archiviazione"
+          }
+        }
+      }
+    },
+    "Sync": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync"
+          }
+        }
+      }
+    },
+    "Sync failed": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync non riuscita"
+          }
+        }
+      }
+    },
+    "Sync now": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizza ora"
+          }
+        }
+      }
+    },
+    "Syncing now": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizzazione in corso"
+          }
+        }
+      }
+    },
+    "Syncs your courses now": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizza subito i tuoi corsi"
+          }
+        }
+      }
+    },
+    "Thanks to": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grazie a"
+          }
+        }
+      }
+    },
+    "The course moves to the Archived group and stops auto-downloading. You can unarchive it any time.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il corso passa nel gruppo Archiviati e smette di scaricare in automatico. Puoi ripristinarlo quando vuoi."
+          }
+        }
+      }
+    },
+    "The login handshake with WeBeep follows the approach pioneered by WeBeep Sync for desktop.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'accesso a WeBeep segue l'approccio introdotto da WeBeep Sync per desktop."
+          }
+        }
+      }
+    },
+    "This course has no content on WeBeep yet.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questo corso non ha ancora contenuti su WeBeep."
+          }
+        }
+      }
+    },
+    "Token": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Token"
+          }
+        }
+      }
+    },
+    "Unarchive": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristina"
+          }
+        }
+      }
+    },
+    "Unfavourite": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimuovi dai preferiti"
+          }
+        }
+      }
+    },
+    "Updated files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File aggiornati"
+          }
+        }
+      }
+    },
+    "Updating courses…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiornamento corsi…"
+          }
+        }
+      }
+    },
+    "Version": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versione"
+          }
+        }
+      }
+    },
+    "Video": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Video"
+          }
+        }
+      }
+    },
+    "WeBeep Sync · GPL-3.0": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep Sync · GPL-3.0"
+          }
+        }
+      }
+    },
+    "WeBeep announcements and messages will show up here.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annunci e messaggi WeBeep compariranno qui."
+          }
+        }
+      }
+    },
+    "WeBeep login": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesso WeBeep"
+          }
+        }
+      }
+    },
+    "WeBeep rejected this token.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep ha rifiutato questo token."
+          }
+        }
+      }
+    },
+    "What's new": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Novità"
+          }
+        }
+      }
+    },
+    "Years": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anni"
+          }
+        }
+      }
+    },
+    "You're up to date": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sei aggiornato"
+          }
+        }
+      }
+    },
+    "Your WeBeep files, always in sync.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I tuoi file WeBeep, sempre sincronizzati."
+          }
+        }
+      }
+    },
+    "files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "file"
+          }
+        }
+      }
+    },
+    "myPoliFile · MIT License": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "myPoliFile · Licenza MIT"
+          }
+        }
+      }
+    },
+    "new": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nuovi"
+          }
+        }
+      }
+    },
+    "offline": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "offline"
+          }
+        }
+      }
+    },
+    "total": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "totale"
+          }
+        }
+      }
+    }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }
