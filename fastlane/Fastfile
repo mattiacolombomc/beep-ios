@@ -58,7 +58,9 @@ def auth_xcargs
     # Owner-only temp dir + exclusive create: no world-readable window, no symlink follow. Removed at exit.
     dir = Dir.mktmpdir("beep-asc-")
     path = File.join(dir, "AuthKey_#{key_id}.p8")
-    File.open(path, File::WRONLY | File::CREAT | File::EXCL, 0o600) { |f| f.write(content) }
+    # 1Password may hand the PEM over with escaped newlines; xcodebuild needs a real multi-line file.
+    pem = content.gsub('\\n', "\n").strip + "\n"
+    File.open(path, File::WRONLY | File::CREAT | File::EXCL, 0o600) { |f| f.write(pem) }
     at_exit { FileUtils.rm_rf(dir) }
   end
   "-allowProvisioningUpdates -allowProvisioningDeviceRegistration " \
