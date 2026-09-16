@@ -28,6 +28,7 @@ final class AppSession {
     private let defaults: UserDefaults
     private let profileKey = "profile"
     private let issuedKey = "tokenIssuedAt"
+    private let expiredKey = "sessionExpired"
     /// Called when a different WeBeep user signs in (the local store must be wiped).
     var onUserChanged: (() -> Void)?
 
@@ -49,7 +50,16 @@ final class AppSession {
 
     /// Restores a previous session from Keychain + cached profile.
     func restore() {
-        guard let saved = tokenStore.load(), !saved.isEmpty else { state = .signedOut; return }
+        guard let saved = tokenStore.load(), !saved.isEmpty else {
+            // Expired session survives relaunch: profile kept, token gone.
+            if defaults.bool(forKey: expiredKey), let data = defaults.data(forKey: profileKey),
+               let profile = try? JSONDecoder().decode(UserProfile.self, from: data) {
+                state = .expired(profile)
+            } else {
+                state = .signedOut
+            }
+            return
+        }
         token = saved
         privateToken = tokenStore.loadPrivateToken()
         tokenIssuedAt = defaults.object(forKey: issuedKey) as? Date
@@ -90,6 +100,7 @@ final class AppSession {
         if let newPrivate { privateToken = newPrivate }
         tokenIssuedAt = .now
         defaults.set(tokenIssuedAt, forKey: issuedKey)
+        defaults.removeObject(forKey: expiredKey)
         if case .expired(let u) = state { state = .signedIn(u) }
     }
 
@@ -102,6 +113,7 @@ final class AppSession {
         let profile = UserProfile(id: info.userid, fullname: info.fullname, username: info.username,
                                   pictureURL: info.userpictureurl.flatMap(URL.init(string:)))
         if let data = try? JSONEncoder().encode(profile) { defaults.set(data, forKey: profileKey) }
+        defaults.removeObject(forKey: expiredKey)
         if let previousID, previousID != 0, previousID != info.userid { onUserChanged?() }
         state = .signedIn(profile)
     }
@@ -111,6 +123,7 @@ final class AppSession {
         guard let user, user.id != 0 else { signOut(); return }
         token = nil
         tokenStore.clear()
+        defaults.set(true, forKey: expiredKey)
         state = .expired(user)
     }
 
@@ -124,6 +137,7 @@ final class AppSession {
         tokenStore.clear()
         defaults.removeObject(forKey: profileKey)
         defaults.removeObject(forKey: issuedKey)
+        defaults.removeObject(forKey: expiredKey)
         defaults.removeObject(forKey: "onboarding.done")
         defaults.removeObject(forKey: "lastSyncAt")
         token = nil
