@@ -63,7 +63,7 @@ final class FileOpener {
                 }
                 let expected = Double(http.expectedContentLength)
                 let temp = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
-                FileManager.default.createFile(atPath: temp.path(), contents: nil)
+                FileManager.default.createFile(atPath: temp.path(percentEncoded: false), contents: nil)
                 let handle = try FileHandle(forWritingTo: temp)
                 var buffer = Data(); buffer.reserveCapacity(64 * 1024)
                 var received: Double = 0
@@ -117,14 +117,14 @@ struct LocalFiles: Sendable {
     func url(for file: FileItem) -> URL? {
         guard let rel = file.localRelativePath else { return nil }
         let url = root.appending(path: rel)
-        return FileManager.default.fileExists(atPath: url.path()) ? url : nil
+        return FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) ? url : nil
     }
 
     func store(_ temp: URL, for file: FileItem) throws {
         let rel = relativePath(for: file)
         let dest = root.appending(path: rel)
         try FileManager.default.createDirectory(at: dest.deletingLastPathComponent(), withIntermediateDirectories: true)
-        if FileManager.default.fileExists(atPath: dest.path()) { try FileManager.default.removeItem(at: dest) }
+        if FileManager.default.fileExists(atPath: dest.path(percentEncoded: false)) { try FileManager.default.removeItem(at: dest) }
         try FileManager.default.moveItem(at: temp, to: dest)
         file.localRelativePath = rel
     }

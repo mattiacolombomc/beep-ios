@@ -33,6 +33,7 @@
 		724FD949B3D00AA7329215A2 /* FileOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8694ACF7AB5159B41777A /* FileOpener.swift */; };
 		7737B668FFFEB4C395AEF153 /* IndexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC0BE5246B5005FBF7AF7A2 /* IndexerTests.swift */; };
 		78939754EF3C3D1067462E53 /* CourseNameParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3416213C83DDF3DE7B444F5C /* CourseNameParserTests.swift */; };
+		7BA95232FC983C887333025A /* LocalFilesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB2A417054F68350208AB6C /* LocalFilesTests.swift */; };
 		7E2C6B05A3F63BBB8B50917C /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7789D4DEFC3C8FC5C88418 /* ActivityView.swift */; };
 		8321F34FABEDD4FE9A1C5467 /* LoginWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DE24B0F8748037EA115797 /* LoginWebView.swift */; };
 		8B0F59A0BEB0A339641A65CA /* Indexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D5FBE3ACEA751305B2C656 /* Indexer.swift */; };
@@ -126,6 +127,7 @@
 		ADA162076A63985DB48527FD /* AcknowledgementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowledgementsView.swift; sourceTree = "<group>"; };
 		AF462B1F1184F0A52D098EC7 /* error_invalidtoken.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = error_invalidtoken.json; sourceTree = "<group>"; };
 		B1D5FBE3ACEA751305B2C656 /* Indexer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Indexer.swift; sourceTree = "<group>"; };
+		BCB2A417054F68350208AB6C /* LocalFilesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFilesTests.swift; sourceTree = "<group>"; };
 		BCB403E03ED555E80094485A /* CourseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDTO.swift; sourceTree = "<group>"; };
 		C956A75A7DA5D53C8767CFAA /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilangTests.swift; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 				3416213C83DDF3DE7B444F5C /* CourseNameParserTests.swift */,
 				F3BF39A74533D9FEBB64D126 /* FileURLTokenizerTests.swift */,
 				5EC0BE5246B5005FBF7AF7A2 /* IndexerTests.swift */,
+				BCB2A417054F68350208AB6C /* LocalFilesTests.swift */,
 				D8A86362F900DB06EED974BA /* LoginFlowTests.swift */,
 				E5859EC2B8B8ECA33F4EA63B /* MoodleClientTests.swift */,
 				CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */,
@@ -516,6 +519,7 @@
 				78939754EF3C3D1067462E53 /* CourseNameParserTests.swift in Sources */,
 				118F5092D57A515A3426808C /* FileURLTokenizerTests.swift in Sources */,
 				7737B668FFFEB4C395AEF153 /* IndexerTests.swift in Sources */,
+				7BA95232FC983C887333025A /* LocalFilesTests.swift in Sources */,
 				14951E8148A77C6FAC5A148A /* LoginFlowTests.swift in Sources */,
 				4FBB247F1378B5331C795811 /* MoodleClientTests.swift in Sources */,
 				F8228C12F6DCDD1BD3E58ED9 /* MultilangTests.swift in Sources */,
