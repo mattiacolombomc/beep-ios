@@ -316,7 +316,7 @@ lane :review_status do
   builds = Spaceship::ConnectAPI::Build.all(app_id: app.id, includes: "betaAppReviewSubmission,preReleaseVersion", sort: "-uploadedDate", limit: 20)
   builds.each do |b|
     state = b.beta_app_review_submission&.beta_review_state || "-"
-    UI.message("#{b.pre_release_version&.version} (#{b.version})  processing=#{b.processing_state}  expired=#{b.expired}  review=#{state}")
+    UI.message("#{b.pre_release_version&.platform} #{b.pre_release_version&.version} (#{b.version})  processing=#{b.processing_state}  expired=#{b.expired}  review=#{state}")
   end
 end
 
