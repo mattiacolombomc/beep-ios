@@ -36,3 +36,6 @@ fastlane/README.md
 *.mobileprovision
 *.cer
 *.p12
+
+# /brag launch video output (large media, regenerable)
+brag-output/
