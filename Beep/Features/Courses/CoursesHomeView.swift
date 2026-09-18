@@ -398,7 +398,8 @@ private struct UnenrolDialog: ViewModifier {
         working = true
         defer { working = false; course = nil }
         do {
-            try await Unenroller.unenrol(course: c, session: session)
+            // Demo mode (App Review, screenshots): simulate, never call WeBeep.
+            if !DemoData.isEnabled { try await Unenroller.unenrol(course: c, session: session) }
             if deleteFiles { for f in c.files where f.isDownloaded { opener.removeLocal(f) } }
             context.delete(c)
             try? context.save()

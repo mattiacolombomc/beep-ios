@@ -89,7 +89,13 @@ struct CatalogSearchView: View {
     }
 
     private func search(_ q: String) async {
-        guard let client = session.client, !DemoData.isEnabled else { return }
+        if DemoData.isEnabled {
+            results = DemoData.catalog(matching: q)
+            total = results.count
+            error = nil
+            return
+        }
+        guard let client = session.client else { return }
         isLoading = true
         defer { isLoading = false }
         do {
@@ -105,6 +111,10 @@ struct CatalogSearchView: View {
     }
 
     private func enrol(_ c: CatalogCourseDTO) async {
+        if DemoData.isEnabled {
+            enrolMessage = String(localized: "Demo mode: enrolment is simulated, nothing is sent to WeBeep.")
+            return
+        }
         guard let client = session.client, let user = session.user else { return }
         enrolling = c.id
         defer { enrolling = nil }

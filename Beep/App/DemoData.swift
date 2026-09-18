@@ -60,6 +60,24 @@ enum DemoData {
         try context.save()
     }
 
+    /// Sample WeBeep catalogue for demo mode (App Review and screenshots): public-looking courses,
+    /// one of them already in the demo list so the "enrolled" state is visible too.
+    static func catalog(matching query: String) -> [CatalogCourseDTO] {
+        let all: [(Int, String, String)] = [
+            (41216, "089182 - FORMAL LANGUAGES AND COMPILERS (BREVEGLIERI LUCA ODDONE)", "2026-27"),
+            (51001, "052507 - ADVANCED COMPUTER ARCHITECTURES (SILVANO CRISTINA)", "2026-27"),
+            (51002, "097683 - MACHINE LEARNING (RESTELLI MARCELLO)", "2026-27"),
+            (51003, "088804 - COMPUTER GRAPHICS (GRIBAUDO MARCO)", "2026-27"),
+            (51004, "054306 - COMPUTING INFRASTRUCTURES (PALERMO GIANLUCA)", "2026-27"),
+            (51005, "095898 - PRINCIPLES OF PROGRAMMING LANGUAGES (PRADELLA MATTEO)", "2026-27"),
+            (51006, "051144 - ADVANCED ALGORITHMS AND PARALLEL PROGRAMMING (FERRANDI FABRIZIO)", "2026-27"),
+        ]
+        let q = query.lowercased()
+        return all
+            .filter { $0.1.lowercased().contains(q) || q.count < 3 }
+            .map { CatalogCourseDTO(id: $0.0, fullname: $0.1, displayname: $0.1, categoryid: 1210, categoryname: $0.2, summary: nil, enrollmentmethods: ["self"]) }
+    }
+
     private static func file(_ name: String, _ path: String = "/", size: Int, daysAgo: Int, id: Int) -> ContentDTO {
         // PDFs point at a public sample so downloads and Quick Look work without WeBeep.
         let url = name.hasSuffix(".pdf")

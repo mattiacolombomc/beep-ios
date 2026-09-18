@@ -600,6 +600,16 @@
         }
       }
     },
+    "Demo mode: enrolment is simulated, nothing is sent to WeBeep.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modalità demo: l'iscrizione è simulata, a WeBeep non viene inviato nulla."
+          }
+        }
+      }
+    },
     "Disable all shown": {
       "localizations": {
         "it": {
