@@ -14,11 +14,24 @@ struct RootView: View {
         case .expired(let user):
             SessionExpiredView(user: user)
         case .signedIn:
-            if onboardingDone || DemoData.isEnabled {
+            if onboardingDone || (DemoData.isEnabled && !Self.previewOnboarding) {
+                #if os(iOS)
                 MainTabs()
+                #else
+                MacMainView()
+                #endif
             } else {
                 OnboardingFlow()
             }
         }
+    }
+
+    /// Debug: `-demo -previewOnboarding` walks the onboarding on sample data.
+    private static var previewOnboarding: Bool {
+        #if DEBUG
+        ProcessInfo.processInfo.arguments.contains("-previewOnboarding")
+        #else
+        false
+        #endif
     }
 }

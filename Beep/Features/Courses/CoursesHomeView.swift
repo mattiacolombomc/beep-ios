@@ -1,6 +1,7 @@
 import SwiftData
 import SwiftUI
 
+#if os(iOS)
 /// Home: status header + grouped course list. Sidebar on regular width.
 struct CoursesHomeView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -42,6 +43,7 @@ struct CoursesHomeView: View {
         }
     }
 }
+#endif
 
 enum YearFilter: String, CaseIterable, Identifiable {
     case all, current, past
@@ -60,7 +62,6 @@ struct CoursesListView: View {
     /// True when hosted as the sidebar of a split view (rows select instead of pushing).
     /// Read from the parent: the sidebar column itself reports a compact size class.
     let isSplit: Bool
-    @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
     @Environment(AppRouter.self) private var router
@@ -170,14 +171,19 @@ struct CoursesListView: View {
                 }
             }
         }
-        .listStyle(.insetGrouped)
+        .groupedList()
         .navigationTitle("Courses")
-        .navigationBarTitleDisplayMode(.large)
+        .largeNavigationTitle()
+        #if os(macOS)
+        // One toolbar search per window on the Mac: the course detail owns it, so this one lives in the sidebar.
+        .searchable(text: $query, placement: .sidebar, prompt: "Course, code or professor")
+        #else
         .searchable(text: $query, prompt: "Course, code or professor")
-        .searchToolbarBehavior(.minimize)
+        #endif
+        .minimizedSearchToolbar()
         .refreshable { await syncNow() }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .trailingBar) {
                 Menu {
                     Picker("Years", selection: $yearFilter) {
                         ForEach(YearFilter.allCases) { Text($0.label).tag($0) }
@@ -194,11 +200,11 @@ struct CoursesListView: View {
                 }
             }
             ToolbarSpacer(.fixed)
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .trailingBar) {
                 Button("Notifications", systemImage: "bell") { router.showNotifications = true }
                     .badge(unread.count)
             }
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .trailingBar) {
                 Button("Settings", systemImage: "gearshape") { router.showSettings = true }
             }
         }
@@ -268,12 +274,18 @@ private struct RowLink: ViewModifier {
 
 private struct StatusHeader: View {
     @Environment(SyncEngine.self) private var sync
+    #if os(iOS)
     @Environment(\.horizontalSizeClass) private var sizeClass
+    private var isCompact: Bool { sizeClass == .compact }
+    #else
+    /// On the Mac the header sits in the sidebar: keep it to two tiles.
+    private let isCompact = true
+    #endif
     let newCount: Int
     @Binding var onlyNew: Bool
 
     var body: some View {
-        let layout = sizeClass == .compact ? AnyLayout(HStackLayout(spacing: Theme.Spacing.s)) : AnyLayout(HStackLayout(spacing: Theme.Spacing.m))
+        let layout = isCompact ? AnyLayout(HStackLayout(spacing: Theme.Spacing.s)) : AnyLayout(HStackLayout(spacing: Theme.Spacing.m))
         layout {
             Button {
                 onlyNew.toggle()
@@ -286,7 +298,7 @@ private struct StatusHeader: View {
             .accessibilityLabel("\(newCount) new files")
 
             StatusTile(symbol: syncSymbol, title: "Sync", value: syncValue, detail: syncDetail, tint: .secondary)
-            if sizeClass != .compact {
+            if !isCompact {
                 StatusTile(symbol: "arrow.down.circle", title: "Downloads", value: downloadValue, detail: downloadDetail, tint: .secondary)
             }
         }

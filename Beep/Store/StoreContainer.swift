@@ -8,8 +8,14 @@ enum StoreContainer {
     /// Shared store in the App Group so the widget can read it. Falls back to the
     /// app's own Application Support when the group container is unavailable.
     static var storeURL: URL {
+        #if os(macOS)
+        // No widget on the Mac: the store lives in the app's own sandbox container.
+        let base = URL.applicationSupportDirectory
+        try? FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)
+        #else
         let base = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup)
             ?? URL.applicationSupportDirectory
+        #endif
         return base.appending(path: "Beep.store")
     }
 

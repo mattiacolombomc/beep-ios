@@ -43,7 +43,7 @@ struct GlobalSearchView: View {
                     }
                 }
             }
-            .listStyle(.insetGrouped)
+            .groupedList()
             .navigationTitle("Search")
             .navigationDestination(for: Int.self) { CourseDetailView(courseID: $0) }
             .navigationDestination(for: CatalogRoute.self) { CatalogSearchView(initialQuery: $0.query) }

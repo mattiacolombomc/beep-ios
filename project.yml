@@ -3,6 +3,7 @@ options:
   bundleIdPrefix: com.mattiacolombo
   deploymentTarget:
     iOS: "26.0"
+    macOS: "26.0"
   xcodeVersion: "27.0"
   createIntermediateGroups: true
   generateEmptyDirectories: true
@@ -108,6 +109,54 @@ targets:
         SWIFT_DEFAULT_ACTOR_ISOLATION: nonisolated
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         SKIP_INSTALL: YES
+  BeepMac:
+    type: application
+    platform: macOS
+    sources:
+      - path: Beep
+        excludes:
+          - App/AppDelegate.swift
+          - App/BeepApp.swift
+          - App/MainTabs.swift
+          - Sync/BackgroundRefresh.swift
+          - Resources/Info.plist
+      - path: BeepMac
+      - path: NOTICE
+        buildPhase: resources
+    settings:
+      configs:
+        Release:
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+          PROVISIONING_PROFILE_SPECIFIER: "Beep Mac AppStore"
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mattiacolombo.Beep
+        PRODUCT_NAME: Beep
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ENABLE_PREVIEWS: YES
+        ENABLE_HARDENED_RUNTIME: YES
+        COMBINE_HIDPI_IMAGES: YES
+    info:
+      path: BeepMac/Info.plist
+      properties:
+        CFBundleDisplayName: Beep
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSApplicationCategoryType: public.app-category.education
+        ITSAppUsesNonExemptEncryption: false
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        NSHumanReadableCopyright: "© 2026 Mattia Colombo"
+        CFBundleURLTypes:
+          - CFBundleURLName: com.mattiacolombo.Beep
+            CFBundleURLSchemes: [beep]
+    entitlements:
+      path: BeepMac/BeepMac.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+        com.apple.security.files.user-selected.read-write: true
+        com.apple.security.files.bookmarks.app-scope: true
   BeepTests:
     type: bundle.unit-test
     platform: iOS

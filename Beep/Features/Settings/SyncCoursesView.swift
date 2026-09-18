@@ -64,12 +64,12 @@ struct SyncCoursesView: View {
                 ContentUnavailableView.search(text: query).listRowBackground(Color.clear)
             }
         }
-        .listStyle(.insetGrouped)
+        .groupedList()
         .navigationTitle("Auto-download")
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
         .searchable(text: $query, prompt: "Course, code or professor")
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .trailingBar) {
                 Menu {
                     Button("Enable all shown", systemImage: "checkmark.circle") { set(true, visible) }
                     Button("Disable all shown", systemImage: "circle") { set(false, visible) }

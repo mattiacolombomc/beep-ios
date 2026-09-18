@@ -1068,6 +1068,16 @@
         }
       }
     },
+    "Beep creates one folder per course and keeps it up to date. Pick an empty folder, for example “WeBeep” on your Desktop.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beep crea una cartella per ogni corso e la tiene aggiornata. Scegli una cartella vuota, per esempio “WeBeep” sulla Scrivania."
+          }
+        }
+      }
+    },
     "Beep is inspired by and partly derived from myPoliFile, the first unofficial iOS client for WeBeep.": {
       "localizations": {
         "it": {
@@ -1094,6 +1104,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Beep rinnova da solo la chiave di accesso WeBeep circa ogni 4 settimane, prima che possa scadere. Se WeBeep la rifiuta comunque ricevi una notifica e un accesso rapido."
+          }
+        }
+      }
+    },
+    "Beep starts with your Mac and keeps your courses up to date from the menu bar.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beep si avvia con il Mac e tiene aggiornati i tuoi corsi dalla barra dei menu."
           }
         }
       }
@@ -1128,6 +1148,16 @@
         }
       }
     },
+    "Change…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambia…"
+          }
+        }
+      }
+    },
     "Check frequency": {
       "localizations": {
         "it": {
@@ -1154,6 +1184,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Controlla WeBeep per nuovo materiale e lo scarica per i corsi con download automatico."
+          }
+        }
+      }
+    },
+    "Choose Another Folder…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli un’altra cartella…"
+          }
+        }
+      }
+    },
+    "Choose Folder…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli cartella…"
+          }
+        }
+      }
+    },
+    "Choose where Beep saves your courses": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli dove Beep salva i tuoi corsi"
+          }
+        }
+      }
+    },
+    "Choose…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli…"
           }
         }
       }
@@ -1333,7 +1403,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scarica cartella"
+            "value": "Cartella download"
           }
         }
       }
@@ -1830,12 +1900,32 @@
         }
       }
     },
+    "Last sync failed": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultima sincronizzazione non riuscita"
+          }
+        }
+      }
+    },
     "Last update": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Ultimo aggiornamento"
+          }
+        }
+      }
+    },
+    "Latest files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File più recenti"
           }
         }
       }
@@ -2011,6 +2101,16 @@
         }
       }
     },
+    "New files in these courses download automatically when you sync. Beep keeps checking from the menu bar while its window is closed, and catches up when your Mac wakes. Checks are skipped in Low Power Mode.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I nuovi file di questi corsi si scaricano da soli a ogni sincronizzazione. Beep continua a controllare dalla barra dei menu anche a finestra chiusa e recupera quando il Mac si riattiva. In modalità Risparmio energetico i controlli vengono saltati."
+          }
+        }
+      }
+    },
     "New files in these courses download automatically when you sync. iOS decides how often background checks run, usually a few times a day.": {
       "extractionState": "stale",
       "localizations": {
@@ -2098,6 +2198,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Non affiliata al Politecnico di Milano."
+          }
+        }
+      }
+    },
+    "Not chosen": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non scelta"
           }
         }
       }
@@ -2262,6 +2372,16 @@
         }
       }
     },
+    "One folder per course. When you pick a new folder, files already downloaded move there.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una cartella per corso. Se scegli una nuova cartella, i file già scaricati vengono spostati lì."
+          }
+        }
+      }
+    },
     "Only auto-download": {
       "localizations": {
         "it": {
@@ -2332,6 +2452,16 @@
         }
       }
     },
+    "Open Beep": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri Beep"
+          }
+        }
+      }
+    },
     "Open Beep and sign in again to keep your courses in sync. Your files are safe.": {
       "localizations": {
         "it": {
@@ -2352,6 +2482,16 @@
         }
       }
     },
+    "Open Download Folder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri cartella download"
+          }
+        }
+      }
+    },
     "Open WeBeep security keys": {
       "localizations": {
         "it": {
@@ -2368,6 +2508,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Apri ovunque"
+          }
+        }
+      }
+    },
+    "Open at login": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri al login"
           }
         }
       }
@@ -2502,6 +2652,16 @@
         }
       }
     },
+    "Quit Beep": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esci da Beep"
+          }
+        }
+      }
+    },
     "Reading your WeBeep courses…": {
       "localizations": {
         "it": {
@@ -2612,6 +2772,9 @@
         }
       }
     },
+    "Restart onboarding (debug)": {
+      "shouldTranslate": false
+    },
     "Search": {
       "localizations": {
         "it": {
@@ -2672,6 +2835,16 @@
         }
       }
     },
+    "Section": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sezione"
+          }
+        }
+      }
+    },
     "See at a glance which files appeared since your last visit.": {
       "localizations": {
         "it": {
@@ -2722,6 +2895,16 @@
         }
       }
     },
+    "Share…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Condividi…"
+          }
+        }
+      }
+    },
     "Show archived": {
       "localizations": {
         "it": {
@@ -2758,6 +2941,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostra nell'app File"
+          }
+        }
+      }
+    },
+    "Show in Finder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra nel Finder"
           }
         }
       }
@@ -2861,6 +3054,9 @@
           }
         }
       }
+    },
+    "Simulate expired session (debug)": {
+      "shouldTranslate": false
     },
     "Since your last visit": {
       "localizations": {
@@ -3032,6 +3228,16 @@
         }
       }
     },
+    "The download folder is no longer available. Choose it again in Settings.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La cartella dei download non è più disponibile. Sceglila di nuovo nelle Impostazioni."
+          }
+        }
+      }
+    },
     "The files are deleted from this device only. They stay on WeBeep and you can download them again anytime.": {
       "localizations": {
         "it": {
@@ -3182,6 +3388,22 @@
         }
       }
     },
+    "Updated %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiornato %@"
+          }
+        }
+      }
+    },
     "Updated files": {
       "localizations": {
         "it": {
@@ -3198,6 +3420,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aggiornamento corsi…"
+          }
+        }
+      }
+    },
+    "Updating courses… %lld/%lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updating courses… %lld/%lld"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiornamento corsi… %lld/%lld"
           }
         }
       }
@@ -3368,6 +3606,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Novità"
+          }
+        }
+      }
+    },
+    "Where should your courses go?": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dove vuoi salvare i tuoi corsi?"
           }
         }
       }

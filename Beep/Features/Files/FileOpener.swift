@@ -2,7 +2,6 @@ import Foundation
 import Observation
 import QuickLook
 import SwiftUI
-import UIKit
 import UniformTypeIdentifiers
 
 /// Coordinates opening, sharing and (single) downloading of files from the UI.
@@ -23,13 +22,22 @@ final class FileOpener {
 
     func open(_ file: FileItem) {
         if file.isDownloaded, let url = local.url(for: file) {
-            previewURL = url
+            present(url)
             return
         }
         downloads.enqueue(file, priority: true) { [weak self] ok in
             guard ok, let self, let url = self.local.url(for: file) else { return }
-            self.previewURL = url
+            self.present(url)
         }
+    }
+
+    /// QuickLook on iOS; on the Mac the file opens in its default app, like any file in Finder.
+    private func present(_ url: URL) {
+        #if os(iOS)
+        previewURL = url
+        #else
+        Platform.open(url)
+        #endif
     }
 
     /// The file on disk, downloading it first (priority) when needed.
@@ -87,9 +95,7 @@ final class FileOpener {
 
     func showInFiles(_ file: FileItem) {
         guard let url = local.url(for: file) else { return }
-        var comps = URLComponents(url: url.deletingLastPathComponent(), resolvingAgainstBaseURL: false)
-        comps?.scheme = "shareddocuments"
-        if let target = comps?.url { UIApplication.shared.open(target) }
+        Platform.reveal(url)
     }
 
     func renameFolder(of course: Course, to name: String) throws {
@@ -104,11 +110,14 @@ final class FileOpener {
     }
 }
 
-/// Where downloads live: Documents/<Course>/<Module>/<subpath>/<file>, visible in the Files app.
+/// Where downloads live: <root>/<Course>/<Module>/<subpath>/<file>. The root is Documents on iOS
+/// (visible in the Files app) and a user-chosen folder on macOS (see `DownloadLocation`).
 struct LocalFiles: Sendable {
-    let root: URL
+    /// Set only by tests; otherwise the root follows `DownloadLocation.root`.
+    let fixedRoot: URL?
+    var root: URL { fixedRoot ?? DownloadLocation.root }
 
-    init(root: URL = URL.documentsDirectory) { self.root = root }
+    init(root: URL? = nil) { self.fixedRoot = root }
 
     nonisolated static func sanitize(_ component: String) -> String {
         var s = component.replacing(/[\/:\\]/, with: "-")

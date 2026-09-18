@@ -40,7 +40,7 @@ struct SessionExpiredView: View {
         }
         .frame(maxWidth: 520)
         .frame(maxWidth: .infinity)
-        .background(Color(.systemBackground))
-        .fullScreenCover(isPresented: $showLogin) { LoginView() }
+        .background(Color.appBackground)
+        .coverSheet(isPresented: $showLogin) { LoginView() }
     }
 }

@@ -37,9 +37,9 @@ struct AcknowledgementsView: View {
                 Text("Beep is not affiliated with, endorsed by, or sponsored by Politecnico di Milano. WeBeep is a trademark of its owner.")
             }
         }
-        .listStyle(.insetGrouped)
+        .groupedList()
         .navigationTitle("Acknowledgements")
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
     }
 
     private var mitLicense: String {

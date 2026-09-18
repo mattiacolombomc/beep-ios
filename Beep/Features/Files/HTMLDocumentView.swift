@@ -3,7 +3,7 @@ import WebKit
 
 /// Renders Moodle HTML (notifications, forum posts, labels) in a WKWebView with
 /// system typography and automatic dark mode. Links open in the browser.
-struct HTMLDocumentView: UIViewRepresentable {
+struct HTMLDocumentView: PlatformViewRepresentable {
     let title: String?
     let meta: String?
     let bodyHTML: String
@@ -11,6 +11,7 @@ struct HTMLDocumentView: UIViewRepresentable {
 
     func makeCoordinator() -> Coordinator { Coordinator() }
 
+    #if os(iOS)
     func makeUIView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
         config.dataDetectorTypes = [.link, .phoneNumber]
@@ -24,6 +25,17 @@ struct HTMLDocumentView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {}
+    #else
+    func makeNSView(context: Context) -> WKWebView {
+        let view = WKWebView(frame: .zero, configuration: WKWebViewConfiguration())
+        view.setValue(false, forKey: "drawsBackground")   // let the window background show through
+        view.navigationDelegate = context.coordinator
+        view.loadHTMLString(document, baseURL: WeBeep.host)
+        return view
+    }
+
+    func updateNSView(_ nsView: WKWebView, context: Context) {}
+    #endif
 
     private var document: String {
         var parts: [String] = []
@@ -56,7 +68,7 @@ struct HTMLDocumentView: UIViewRepresentable {
     final class Coordinator: NSObject, WKNavigationDelegate {
         func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
             if navigationAction.navigationType == .linkActivated, let url = navigationAction.request.url {
-                await UIApplication.shared.open(url)
+                Platform.open(url)
                 return .cancel
             }
             return .allow

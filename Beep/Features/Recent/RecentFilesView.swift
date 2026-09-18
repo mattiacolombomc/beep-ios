@@ -37,7 +37,7 @@ struct RecentFilesView: View {
                     }
                 }
             }
-            .listStyle(.insetGrouped)
+            .groupedList()
             .navigationTitle("Recent")
         }
     }

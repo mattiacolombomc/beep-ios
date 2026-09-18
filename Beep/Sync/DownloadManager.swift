@@ -1,7 +1,6 @@
 import Foundation
 import Observation
 import SwiftData
-import UIKit
 
 /// Background-URLSession download queue. Survives app suspension and relaunch:
 /// each task carries the file key + destination path in `taskDescription`, so
@@ -53,7 +52,7 @@ final class DownloadManager {
         config.httpMaximumConnectionsPerHost = maxConcurrent
         session = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
         delegate.manager = self
-        delegate.root = local.root
+        delegate.fixedRoot = local.fixedRoot
         reconcile()
     }
 
@@ -190,7 +189,9 @@ final class DownloadManager {
 
     final class Delegate: NSObject, URLSessionDownloadDelegate, Sendable {
         nonisolated(unsafe) weak var manager: DownloadManager?
-        nonisolated(unsafe) var root: URL = .documentsDirectory
+        /// Fixed root (tests); nil = follow `DownloadLocation.root`, which the Mac can change at runtime.
+        nonisolated(unsafe) var fixedRoot: URL?
+        var root: URL { fixedRoot ?? DownloadLocation.root }
 
         struct Info: Codable { let key: String; let relativePath: String; let filename: String }
 

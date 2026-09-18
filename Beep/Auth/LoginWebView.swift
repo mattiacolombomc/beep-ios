@@ -4,25 +4,31 @@ import WebKit
 /// Drives the WeBeep SSO in a web view and intercepts the mobile-token callback.
 /// Flow: shibboleth login → lands on /my/ → we load launch.php → Moodle redirects to
 /// moodlemobile://token=… which WebKit refuses to open; we catch it in the policy delegate.
-struct LoginWebView: UIViewRepresentable {
+struct LoginWebView: PlatformViewRepresentable {
     let passport: String
     let onToken: (LoginFlow.Credentials) -> Void
     let onProgress: (Double) -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
 
-    func makeUIView(context: Context) -> WKWebView {
+    #if os(iOS)
+    func makeUIView(context: Context) -> WKWebView { makeWebView(context.coordinator) }
+    func updateUIView(_ uiView: WKWebView, context: Context) {}
+    #else
+    func makeNSView(context: Context) -> WKWebView { makeWebView(context.coordinator) }
+    func updateNSView(_ nsView: WKWebView, context: Context) {}
+    #endif
+
+    private func makeWebView(_ coordinator: Coordinator) -> WKWebView {
         let config = WKWebViewConfiguration()
         config.websiteDataStore = .nonPersistent()
         let webView = WKWebView(frame: .zero, configuration: config)
-        webView.navigationDelegate = context.coordinator
+        webView.navigationDelegate = coordinator
         webView.isInspectable = true
-        context.coordinator.observe(webView)
+        coordinator.observe(webView)
         webView.load(URLRequest(url: WeBeep.shibbolethLogin))
         return webView
     }
-
-    func updateUIView(_ uiView: WKWebView, context: Context) {}
 
     final class Coordinator: NSObject, WKNavigationDelegate {
         private let parent: LoginWebView

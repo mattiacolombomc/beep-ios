@@ -26,13 +26,13 @@ struct LoginView: View {
                         Text("Signing you in…")
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color(.systemBackground))
+                    .background(Color.appBackground)
                 }
             }
             .navigationTitle("WeBeep login")
-            .navigationBarTitleDisplayMode(.inline)
+            .inlineNavigationTitle()
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .trailingBar) {
                     Menu {
                         Button("Enter token manually", systemImage: "key") { showManualToken = true }
                         Button("Reload", systemImage: "arrow.clockwise") { passport = LoginFlow.makePassport() }
@@ -85,7 +85,7 @@ struct ManualTokenSheet: View {
                     TextField("Token", text: $token, axis: .vertical)
                         .lineLimit(3...5)
                         .font(.system(.body, design: .monospaced))
-                        .textInputAutocapitalization(.never)
+                        .plainTextInput()
                         .autocorrectionDisabled()
                 } header: {
                     Text("Mobile web service token")
@@ -100,7 +100,7 @@ struct ManualTokenSheet: View {
                 }
             }
             .navigationTitle("Enter token")
-            .navigationBarTitleDisplayMode(.inline)
+            .inlineNavigationTitle()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {

@@ -44,13 +44,13 @@ struct NotificationsView: View {
                     .buttonStyle(.plain)
                 }
             }
-            .listStyle(.insetGrouped)
+            .groupedList()
             .navigationTitle("Notifications")
-            .navigationBarTitleDisplayMode(.inline)
+            .inlineNavigationTitle()
             .overlay { if isLoading && notifications.isEmpty { ProgressView() } }
             .refreshable { await refresh() }
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
+                ToolbarItem(placement: .leadingBar) {
                     Button("Mark all read") { for n in notifications where !n.read { markRead(n) } }
                         .disabled(!notifications.contains { !$0.read })
                 }
@@ -100,11 +100,11 @@ struct NotificationDetail: View {
                 bodyHTML: NotificationHTML.cleaned(notification.htmlBody ?? "")
             )
             .ignoresSafeArea(edges: .bottom)
-            .navigationBarTitleDisplayMode(.inline)
+            .inlineNavigationTitle()
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
                 if let s = notification.contextURL, let url = URL(string: s) {
-                    ToolbarItem(placement: .topBarLeading) {
+                    ToolbarItem(placement: .leadingBar) {
                         Button("Open on WeBeep", systemImage: "safari") { openURL(url) }
                     }
                 }

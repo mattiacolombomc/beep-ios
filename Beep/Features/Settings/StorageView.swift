@@ -65,9 +65,9 @@ struct StorageView: View {
                 }
             }
         }
-        .listStyle(.insetGrouped)
+        .groupedList()
         .navigationTitle("Storage by course")
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
         // `presenting:` hands the course to the button: dismissal clears `removeTarget`
         // before a plain closure could read it.
         .confirmationDialog(removeTarget.map { Text("Remove the downloads of \u{201C}\($0.title)\u{201D}?") } ?? Text(""),

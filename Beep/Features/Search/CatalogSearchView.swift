@@ -32,7 +32,7 @@ struct CatalogSearchView: View {
                 HStack(spacing: Theme.Spacing.s) {
                     Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
                     TextField("Course name or code", text: $query)
-                        .textInputAutocapitalization(.never)
+                        .plainTextInput()
                         .autocorrectionDisabled()
                         .submitLabel(.search)
                         .focused($focused)
@@ -63,9 +63,9 @@ struct CatalogSearchView: View {
                 }
             }
         }
-        .listStyle(.insetGrouped)
+        .groupedList()
         .navigationTitle("WeBeep catalogue")
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
         .overlay { if isLoading && results.isEmpty { ProgressView() } }
         .onAppear { if query.isEmpty { focused = true } }
         .task(id: query) {

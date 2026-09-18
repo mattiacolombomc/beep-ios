@@ -13,7 +13,9 @@ struct TokenStore: Sendable {
     private func query(_ account: String) -> [String: Any] {
         [kSecClass as String: kSecClassGenericPassword,
          kSecAttrService as String: service,
-         kSecAttrAccount as String: account]
+         kSecAttrAccount as String: account,
+         // macOS: the modern keychain (same semantics as iOS), not the legacy login keychain.
+         kSecUseDataProtectionKeychain as String: true]
     }
 
     private func read(_ account: String) -> String? {

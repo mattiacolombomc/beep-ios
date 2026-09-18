@@ -20,10 +20,10 @@ struct PageView: View {
             }
         }
         .navigationTitle(module.name)
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
         .toolbar {
             if let s = module.url, let url = URL(string: s) {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .trailingBar) {
                     Button("Open on WeBeep", systemImage: "safari") { openURL(url) }
                 }
             }

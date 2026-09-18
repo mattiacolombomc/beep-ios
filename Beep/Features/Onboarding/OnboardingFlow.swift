@@ -15,6 +15,9 @@ struct OnboardingFlow: View {
                 switch step {
                 case 0: FirstSyncStep(indexed: $indexed) { step = 1 }
                 case 1: CourseSelectionStep { step = 2 }
+                #if os(macOS)
+                case 2: DownloadFolderStep { step = 3 }
+                #endif
                 default: NotificationsStep { finish() }
                 }
             }
@@ -46,7 +49,7 @@ private struct FirstSyncStep: View {
         VStack(spacing: Theme.Spacing.l) {
             Spacer()
             ZStack {
-                Circle().stroke(Color(.secondarySystemBackground), lineWidth: 10).frame(width: 120, height: 120)
+                Circle().stroke(Color.secondaryBackground, lineWidth: 10).frame(width: 120, height: 120)
                 Circle()
                     .trim(from: 0, to: indexed ? 1 : fraction)
                     .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 10, lineCap: .round))
@@ -78,7 +81,7 @@ private struct FirstSyncStep: View {
         .frame(maxWidth: 520)
         .frame(maxWidth: .infinity)
         .navigationTitle("Welcome")
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
     }
 
     private var fraction: Double {
@@ -178,6 +181,6 @@ private struct NotificationsStep: View {
         .frame(maxWidth: 520)
         .frame(maxWidth: .infinity)
         .navigationTitle("Notifications")
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
     }
 }

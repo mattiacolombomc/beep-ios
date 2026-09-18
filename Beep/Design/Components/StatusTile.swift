@@ -34,8 +34,11 @@ struct StatusTile: View {
         .padding(.bottom, Theme.Spacing.m + 2)
         .padding(.horizontal, Theme.Spacing.m)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(isProminent ? AnyShapeStyle(tint.opacity(0.12)) : AnyShapeStyle(Color(.secondarySystemGroupedBackground)),
+        .background(isProminent ? AnyShapeStyle(tint.opacity(0.12)) : AnyShapeStyle(Color.cardBackground),
                     in: .rect(cornerRadius: Theme.cardRadius, style: .continuous))
+        #if os(macOS)
+        .overlay(RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous).strokeBorder(.separator))
+        #endif
         .contentShape(.rect(cornerRadius: Theme.cardRadius))
     }
 }

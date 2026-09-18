@@ -103,16 +103,16 @@ private struct CourseContentView: View {
                 }
             }
         }
-        .listStyle(.insetGrouped)
+        .groupedList()
         .navigationTitle(course.title)
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
         .searchable(text: $query, prompt: "Search in this course")
         .searchScopes($scope, activation: .onSearchPresentation) {
             ForEach(FileTypeScope.allCases) { Text($0.label).tag($0) }
         }
         .refreshable { await refresh() }
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItem(placement: .trailingBar) {
                 Menu {
                     Picker("Sort", selection: $sort) {
                         ForEach(FileSort.allCases) { Text($0.label).tag($0) }

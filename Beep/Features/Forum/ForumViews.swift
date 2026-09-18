@@ -40,9 +40,9 @@ struct ForumDiscussionsView: View {
                 }
             }
         }
-        .listStyle(.insetGrouped)
+        .groupedList()
         .navigationTitle(module.name)
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
         .overlay { if isLoading { ProgressView() } }
         .refreshable { await load() }
         .task { await load() }
@@ -102,7 +102,7 @@ struct DiscussionView: View {
             }
         }
         .navigationTitle(route.forumName)
-        .navigationBarTitleDisplayMode(.inline)
+        .inlineNavigationTitle()
         .task {
             guard let client = session.client, !DemoData.isEnabled else { posts = []; return }
             posts = (try? await client.discussionPosts(discussionID: route.discussion.discussion).posts) ?? []

@@ -66,7 +66,7 @@ struct ActivityView: View {
                     Text("Downloaded")
                 }
             }
-            .listStyle(.insetGrouped)
+            .groupedList()
             .navigationTitle("Activity")
             .refreshable {
                 if let client = session.client, let user = session.user { _ = await sync.syncAll(client: client, userID: user.id) }

@@ -153,7 +153,11 @@ final class SyncEngine {
            UserDefaults.standard.bool(forKey: "onboarding.done") {
             Notifier.notifySyncResults(newFiles: report.newFiles + report.updatedFiles, courses: report.coursesWithNews, newAnnouncements: report.newAnnouncements)
         }
+        #if os(iOS)
         if UserDefaults.standard.bool(forKey: "settings.backgroundRefresh") { BackgroundRefresh.schedule() }
+        #else
+        MacSyncScheduler.shared?.reschedule()
+        #endif
         return report
     }
 

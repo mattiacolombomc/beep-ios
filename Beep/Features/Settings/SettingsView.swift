@@ -13,6 +13,20 @@ struct SettingsView: View {
     @AppStorage("settings.backgroundWifiOnly") private var backgroundWifiOnly = false
     @Environment(TokenRenewer.self) private var renewer
     @Environment(SyncEngine.self) private var sync
+    #if os(macOS)
+    @Environment(DownloadFolder.self) private var folder
+    @State private var launchAtLogin = LaunchAtLogin.isEnabled
+    @State private var pickFolder = false
+    #endif
+
+    /// Re-arms (or stops) periodic checks after a settings change.
+    private func rescheduleChecks() {
+        #if os(iOS)
+        backgroundRefresh ? BackgroundRefresh.schedule() : BackgroundRefresh.cancel()
+        #else
+        MacSyncScheduler.shared?.reschedule()
+        #endif
+    }
 
     private func outcomeLabel(_ o: TokenRenewer.Outcome) -> String {
         switch o {
@@ -54,7 +68,7 @@ struct SettingsView: View {
                         LabeledContent("Auto-download courses", value: "\(courses.filter(\.syncEnabled).count)")
                     }
                     Toggle("Check in the background", systemImage: "clock.arrow.2.circlepath", isOn: $backgroundRefresh)
-                        .onChange(of: backgroundRefresh) { _, on in on ? BackgroundRefresh.schedule() : BackgroundRefresh.cancel() }
+                        .onChange(of: backgroundRefresh) { _, _ in rescheduleChecks() }
                     if backgroundRefresh {
                         Picker(selection: $refreshMinutes) {
                             Text("Every hour at most").tag(60.0)
@@ -64,8 +78,10 @@ struct SettingsView: View {
                         } label: {
                             Label("Check frequency", systemImage: "timer")
                         }
-                        .onChange(of: refreshMinutes) { _, _ in BackgroundRefresh.schedule() }
+                        .onChange(of: refreshMinutes) { _, _ in rescheduleChecks() }
+                        #if os(iOS)
                         Toggle("Background downloads on Wi-Fi only", systemImage: "wifi", isOn: $backgroundWifiOnly)
+                        #endif
                     }
                     Toggle("Notify about new files", systemImage: "bell.badge", isOn: $notifications)
                         .onChange(of: notifications) { _, on in
@@ -74,7 +90,11 @@ struct SettingsView: View {
                 } header: {
                     Text("Sync")
                 } footer: {
+                    #if os(iOS)
                     Text("New files in these courses download automatically when you sync. Background checks are skipped in Low Power Mode; iOS may space them out further than the frequency you pick. Wi-Fi only postpones background downloads until you open the app or reach Wi-Fi.")
+                    #else
+                    Text("New files in these courses download automatically when you sync. Beep keeps checking from the menu bar while its window is closed, and catches up when your Mac wakes. Checks are skipped in Low Power Mode.")
+                    #endif
                 }
                 Section {
                     NavigationLink {
@@ -82,16 +102,44 @@ struct SettingsView: View {
                     } label: {
                         LabeledContent("Downloaded", value: String(localized: "\(downloadedCount) files · \(downloadedSize.fileSizeLabel)"))
                     }
+                    #if os(iOS)
                     Button("Show in Files app", systemImage: "folder") {
                         var comps = URLComponents(url: URL.documentsDirectory, resolvingAgainstBaseURL: false)
                         comps?.scheme = "shareddocuments"
                         if let url = comps?.url { openURL(url) }
                     }
+                    #else
+                    LabeledContent("Download folder") {
+                        Text(folder.url?.path(percentEncoded: false).abbreviatingHome ?? String(localized: "Not chosen"))
+                            .truncationMode(.middle)
+                            .lineLimit(1)
+                    }
+                    HStack {
+                        Button("Choose…") { pickFolder = true }
+                        Button("Show in Finder") { folder.showInFinder() }
+                            .disabled(!folder.isChosen)
+                    }
+                    if let error = folder.lastError {
+                        Text(error).font(.footnote).foregroundStyle(.red)
+                    }
+                    #endif
                 } header: {
                     Text("Storage")
                 } footer: {
+                    #if os(iOS)
                     Text("Files are saved in Files → On My iPhone → Beep, one folder per course, so any app can open and edit them.")
+                    #else
+                    Text("One folder per course. When you pick a new folder, files already downloaded move there.")
+                    #endif
                 }
+                #if os(macOS)
+                Section {
+                    Toggle("Open at login", systemImage: "power", isOn: $launchAtLogin)
+                        .onChange(of: launchAtLogin) { _, on in launchAtLogin = LaunchAtLogin.set(on) }
+                } footer: {
+                    Text("Beep starts with your Mac and keeps your courses up to date from the menu bar.")
+                }
+                #endif
                 Section {
                     LabeledContent("Access key obtained", value: session.tokenIssuedAt?.formatted(date: .abbreviated, time: .shortened) ?? "—")
                     LabeledContent("Silent renewal", value: session.privateToken == nil ? String(localized: "Unavailable, sign in again once") : String(localized: "Enabled"))
@@ -134,8 +182,14 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.inline)
+            .inlineNavigationTitle()
+            #if os(iOS)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
+            #else
+            .fileImporter(isPresented: $pickFolder, allowedContentTypes: [.folder]) { result in
+                if case .success(let url) = result { folder.choose(url) }
+            }
+            #endif
             .confirmationDialog("Sign out of WeBeep?", isPresented: $confirmSignOut, titleVisibility: .visible) {
                 Button("Sign out", role: .destructive) { session.signOut(); dismiss() }
             } message: {
