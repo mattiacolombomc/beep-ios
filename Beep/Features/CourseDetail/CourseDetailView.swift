@@ -188,6 +188,7 @@ private struct CourseHeader: View {
                 }
                 .buttonStyle(.bordered)
                 .buttonBorderShape(.capsule)
+                .keyboardShortcut("d", modifiers: [.command, .shift])
                 .disabled(missing == 0)
                 Toggle(isOn: $course.syncEnabled) {
                     Label("Auto", systemImage: "arrow.triangle.2.circlepath")

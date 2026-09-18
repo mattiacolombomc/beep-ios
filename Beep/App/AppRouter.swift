@@ -15,6 +15,9 @@ final class AppRouter {
     var pending: Destination?
     /// Tab to select when a destination arrives.
     var selectedTab: AppTab = .courses
+    /// App-wide sheets, driven by toolbar buttons and keyboard commands alike.
+    var showSettings = false
+    var showNotifications = false
 
     enum AppTab: String { case courses, recent, activity, search }
 

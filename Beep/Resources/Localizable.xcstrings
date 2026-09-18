@@ -82,6 +82,16 @@
         }
       }
     },
+    "%lld files · %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld file · %@"
+          }
+        }
+      }
+    },
     "%lld new announcements": {
       "localizations": {
         "it": {
@@ -590,6 +600,16 @@
         }
       }
     },
+    "Courses with auto-download get new files again at the next sync. Turn auto-download off for a course to keep its space free.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I corsi con download automatico riscaricano i nuovi file alla prossima sincronizzazione. Disattiva il download automatico di un corso per tenere libero il suo spazio."
+          }
+        }
+      }
+    },
     "Current year": {
       "localizations": {
         "it": {
@@ -986,6 +1006,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "I file di “%@” stanno in File → Beep → questa cartella. I download esistenti vengono spostati."
+          }
+        }
+      }
+    },
+    "Files you download or that sync automatically show up here, course by course.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I file che scarichi o che si sincronizzano da soli compaiono qui, corso per corso."
           }
         }
       }
@@ -1428,6 +1458,16 @@
         }
       }
     },
+    "Nothing downloaded": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niente di scaricato"
+          }
+        }
+      }
+    },
     "Nothing downloads automatically. Pick courses now or later in Settings.": {
       "localizations": {
         "it": {
@@ -1828,6 +1868,26 @@
         }
       }
     },
+    "Remove downloads": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimuovi download"
+          }
+        }
+      }
+    },
+    "Remove the downloads of “%@”?": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimuovere i download di “%@”?"
+          }
+        }
+      }
+    },
     "Rename": {
       "localizations": {
         "it": {
@@ -1974,6 +2034,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Impostazioni"
+          }
+        }
+      }
+    },
+    "Settings…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impostazioni…"
           }
         }
       }
@@ -2158,12 +2228,32 @@
         }
       }
     },
+    "Storage by course": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spazio per corso"
+          }
+        }
+      }
+    },
     "Sync": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Sync"
+          }
+        }
+      }
+    },
+    "Sync Now": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizza ora"
           }
         }
       }
@@ -2248,6 +2338,16 @@
         }
       }
     },
+    "The files are deleted from this device only. They stay on WeBeep and you can download them again anytime.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I file vengono eliminati solo da questo dispositivo. Restano su WeBeep e puoi riscaricarli quando vuoi."
+          }
+        }
+      }
+    },
     "The login handshake with WeBeep follows the approach pioneered by WeBeep Sync for desktop.": {
       "localizations": {
         "it": {
@@ -2294,6 +2394,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Token"
+          }
+        }
+      }
+    },
+    "Total": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Totale"
           }
         }
       }
@@ -2424,6 +2534,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Video"
+          }
+        }
+      }
+    },
+    "WeBeep": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep"
           }
         }
       }

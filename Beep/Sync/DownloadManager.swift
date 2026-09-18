@@ -37,7 +37,8 @@ final class DownloadManager {
     private let delegate: Delegate
     private var queue: [String] = []                 // file keys waiting
     private var inFlight: [String: URLSessionDownloadTask] = [:]
-    private var completions: [String: [() -> Void]] = [:]
+    /// Called once per enqueue with the outcome (`true` = file on disk).
+    private var completions: [String: [(Bool) -> Void]] = [:]
     /// Set by the app delegate when iOS relaunches us for background events.
     var backgroundCompletionHandler: (() -> Void)?
 
@@ -59,7 +60,7 @@ final class DownloadManager {
     // MARK: Public API
 
     /// Queue a file. `priority: true` jumps the queue (user tapped it).
-    func enqueue(_ file: FileItem, priority: Bool = false, completion: (() -> Void)? = nil) {
+    func enqueue(_ file: FileItem, priority: Bool = false, completion: ((Bool) -> Void)? = nil) {
         if let completion { completions[file.key, default: []].append(completion) }
         guard inFlight[file.key] == nil else { return }
         if queue.contains(file.key) {
@@ -125,7 +126,7 @@ final class DownloadManager {
         progress.currentFileName = inFlight.values.first?.taskDescription.flatMap(Delegate.parse)?.filename
     }
 
-    private func file(for key: String) -> FileItem? {
+    func file(for key: String) -> FileItem? {
         var d = FetchDescriptor<FileItem>(predicate: #Predicate { $0.key == key })
         d.fetchLimit = 1
         return try? context.fetch(d).first
@@ -176,7 +177,7 @@ final class DownloadManager {
             try? context.save()
         }
         let callbacks = completions.removeValue(forKey: key) ?? []
-        if error == nil { for cb in callbacks { cb() } }
+        for cb in callbacks { cb(error == nil) }
         pump()
     }
 

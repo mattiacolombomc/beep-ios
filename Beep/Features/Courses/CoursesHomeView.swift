@@ -63,6 +63,7 @@ struct CoursesListView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
+    @Environment(AppRouter.self) private var router
     @Query(sort: \Course.title) private var courses: [Course]
     @Query(filter: #Predicate<WebeepNotification> { !$0.read }) private var unread: [WebeepNotification]
     @State private var query = ""
@@ -76,8 +77,6 @@ struct CoursesListView: View {
     @State private var renameTarget: Course?
     @State private var unenrolTarget: Course?
     @State private var showCatalog = false
-    @State private var showSettings = false
-    @State private var showNotifications = false
 
     private var visible: [Course] {
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
@@ -196,15 +195,13 @@ struct CoursesListView: View {
             }
             ToolbarSpacer(.fixed)
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Notifications", systemImage: "bell") { showNotifications = true }
+                Button("Notifications", systemImage: "bell") { router.showNotifications = true }
                     .badge(unread.count)
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Settings", systemImage: "gearshape") { showSettings = true }
+                Button("Settings", systemImage: "gearshape") { router.showSettings = true }
             }
         }
-        .sheet(isPresented: $showSettings) { SettingsView() }
-        .sheet(isPresented: $showNotifications) { NotificationsView() }
         .archiveDialog(course: $archiveTarget)
         .renameFolderDialog(course: $renameTarget)
         .unenrolDialog(course: $unenrolTarget)

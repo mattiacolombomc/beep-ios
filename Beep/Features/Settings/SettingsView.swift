@@ -77,7 +77,11 @@ struct SettingsView: View {
                     Text("New files in these courses download automatically when you sync. Background checks are skipped in Low Power Mode; iOS may space them out further than the frequency you pick. Wi-Fi only postpones background downloads until you open the app or reach Wi-Fi.")
                 }
                 Section {
-                    LabeledContent("Downloaded", value: "\(downloadedCount) files · \(downloadedSize.fileSizeLabel)")
+                    NavigationLink {
+                        StorageView()
+                    } label: {
+                        LabeledContent("Downloaded", value: String(localized: "\(downloadedCount) files · \(downloadedSize.fileSizeLabel)"))
+                    }
                     Button("Show in Files app", systemImage: "folder") {
                         var comps = URLComponents(url: URL.documentsDirectory, resolvingAgainstBaseURL: false)
                         comps?.scheme = "shareddocuments"

@@ -36,6 +36,8 @@ struct MainTabs: View {
         .tabBarMinimizeBehavior(.onScrollDown)
         .tabViewBottomAccessory { SyncStatusBar() }
         .filePresenters()
+        .sheet(isPresented: $router.showSettings) { SettingsView() }
+        .sheet(isPresented: $router.showNotifications) { NotificationsView() }
         .task {
             // Refresh the index on launch if it's stale (> 15 min) or empty.
             if !DemoData.isEnabled, let client = session.client, let user = session.user, user.id != 0 {

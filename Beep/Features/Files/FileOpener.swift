@@ -3,6 +3,7 @@ import Observation
 import QuickLook
 import SwiftUI
 import UIKit
+import UniformTypeIdentifiers
 
 /// Coordinates opening, sharing and (single) downloading of files from the UI.
 /// Downloads go through the background `DownloadManager`.
@@ -25,10 +26,55 @@ final class FileOpener {
             previewURL = url
             return
         }
-        downloads.enqueue(file, priority: true) { [weak self] in
-            guard let self, let url = self.local.url(for: file) else { return }
+        downloads.enqueue(file, priority: true) { [weak self] ok in
+            guard ok, let self, let url = self.local.url(for: file) else { return }
             self.previewURL = url
         }
+    }
+
+    /// The file on disk, downloading it first (priority) when needed.
+    func localURL(for file: FileItem) async throws -> URL {
+        if file.isDownloaded, let url = local.url(for: file) { return url }
+        return try await withCheckedThrowingContinuation { continuation in
+            downloads.enqueue(file, priority: true) { [local] ok in
+                if ok, let url = local.url(for: file) {
+                    continuation.resume(returning: url)
+                } else {
+                    continuation.resume(throwing: CocoaError(.fileReadNoSuchFile))
+                }
+            }
+        }
+    }
+
+    /// Drag payload: the real file, downloaded on demand if it is not on the device yet.
+    func itemProvider(for file: FileItem) -> NSItemProvider {
+        if file.isDownloaded, let url = local.url(for: file), let provider = NSItemProvider(contentsOf: url) {
+            provider.suggestedName = file.filename
+            return provider
+        }
+        let provider = NSItemProvider()
+        provider.suggestedName = file.filename
+        let type = UTType(filenameExtension: file.fileExtension) ?? .data
+        let key = file.key  // models are main-actor bound: carry the key, look the file up again
+        provider.registerFileRepresentation(for: type, visibility: .all, openInPlace: false) { [weak self] completion in
+            let progress = Progress(totalUnitCount: 1)
+            // NSItemProvider's completion may be called from any thread.
+            nonisolated(unsafe) let completion = completion
+            Task { @MainActor in
+                guard let self, let item = self.downloads.file(for: key) else {
+                    completion(nil, false, CocoaError(.fileReadNoSuchFile)); return
+                }
+                do {
+                    let url = try await self.localURL(for: item)
+                    progress.completedUnitCount = 1
+                    completion(url, false, nil)
+                } catch {
+                    completion(nil, false, error)
+                }
+            }
+            return progress
+        }
+        return provider
     }
 
     func download(_ file: FileItem) {

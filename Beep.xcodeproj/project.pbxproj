@@ -53,7 +53,9 @@
 		769FC084E0C34B5FC753F513 /* OnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909D07C337AEE2C18713073D /* OnboardingFlow.swift */; };
 		7737B668FFFEB4C395AEF153 /* IndexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC0BE5246B5005FBF7AF7A2 /* IndexerTests.swift */; };
 		78939754EF3C3D1067462E53 /* CourseNameParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3416213C83DDF3DE7B444F5C /* CourseNameParserTests.swift */; };
+		7AE0E7905AB80B3BAA225ED2 /* StorageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD40491BB0CB19AF68AF25A3 /* StorageView.swift */; };
 		7BA95232FC983C887333025A /* LocalFilesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB2A417054F68350208AB6C /* LocalFilesTests.swift */; };
+		7C255764E2D1BC6AE93AB4A6 /* StorageUsageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7C6702A357FF323A160C90 /* StorageUsageTests.swift */; };
 		7E2C6B05A3F63BBB8B50917C /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7789D4DEFC3C8FC5C88418 /* ActivityView.swift */; };
 		8321F34FABEDD4FE9A1C5467 /* LoginWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DE24B0F8748037EA115797 /* LoginWebView.swift */; };
 		8B0F59A0BEB0A339641A65CA /* Indexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D5FBE3ACEA751305B2C656 /* Indexer.swift */; };
@@ -208,11 +210,13 @@
 		D2C85291D5C3B76770B43878 /* WebSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSession.swift; sourceTree = "<group>"; };
 		D5DDC33A2E7014A4565C4823 /* Beep.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Beep.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8A86362F900DB06EED974BA /* LoginFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFlowTests.swift; sourceTree = "<group>"; };
+		DD40491BB0CB19AF68AF25A3 /* StorageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageView.swift; sourceTree = "<group>"; };
 		E5859EC2B8B8ECA33F4EA63B /* MoodleClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodleClientTests.swift; sourceTree = "<group>"; };
 		E87CF57754DAA246400A385A /* site_info.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = site_info.json; sourceTree = "<group>"; };
 		EA49ED7BCABAB45AB8683EB2 /* NotificationHTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHTML.swift; sourceTree = "<group>"; };
 		EC0BB1DC0D87DE1F7BCDE019 /* users_courses.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = users_courses.json; sourceTree = "<group>"; };
 		ED2785533331D773CF0D25D5 /* AppSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSession.swift; sourceTree = "<group>"; };
+		EE7C6702A357FF323A160C90 /* StorageUsageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageUsageTests.swift; sourceTree = "<group>"; };
 		EFB947E1DDE4DB52EA62CD43 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		F3B13A614078AA947AC892F4 /* AppServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppServices.swift; sourceTree = "<group>"; };
 		F3BF39A74533D9FEBB64D126 /* FileURLTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileURLTokenizerTests.swift; sourceTree = "<group>"; };
@@ -324,6 +328,7 @@
 			children = (
 				ADA162076A63985DB48527FD /* AcknowledgementsView.swift */,
 				18DC03A9A41FBAA63B81F471 /* SettingsView.swift */,
+				DD40491BB0CB19AF68AF25A3 /* StorageView.swift */,
 				310DD6AAE1D1B781EFA5601C /* SyncCoursesView.swift */,
 			);
 			path = Settings;
@@ -376,6 +381,7 @@
 				CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */,
 				591204CDA9D4449A5DF917D4 /* NotificationHTMLTests.swift */,
 				03582BA59A9B5D1BEC9FF227 /* SmokeTests.swift */,
+				EE7C6702A357FF323A160C90 /* StorageUsageTests.swift */,
 				684A3781B2025117449208B9 /* TokenRenewerTests.swift */,
 				5C7A2E54BF998D3B7522D9D5 /* Fixtures */,
 			);
@@ -694,6 +700,7 @@
 				F8228C12F6DCDD1BD3E58ED9 /* MultilangTests.swift in Sources */,
 				616BF66625739DBCB3C5AE70 /* NotificationHTMLTests.swift in Sources */,
 				DB9A38011CA86FD6B9C5B993 /* SmokeTests.swift in Sources */,
+				7C255764E2D1BC6AE93AB4A6 /* StorageUsageTests.swift in Sources */,
 				9DA61CE0986AD0667456853F /* TokenRenewerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -755,6 +762,7 @@
 				0BFCB4E536F0DEF226744E67 /* SiteInfoDTO.swift in Sources */,
 				1474FA15CD12B3496C465550 /* SpotlightIndexer.swift in Sources */,
 				38E915034426D597D953CB8A /* StatusTile.swift in Sources */,
+				7AE0E7905AB80B3BAA225ED2 /* StorageView.swift in Sources */,
 				205CD762DB8C6F586EBBE93B /* StoreContainer.swift in Sources */,
 				ACD6B2DBB3ACF96620808FC5 /* SyncCoursesView.swift in Sources */,
 				D2090CA81A5389D97FE3C779 /* SyncEngine.swift in Sources */,

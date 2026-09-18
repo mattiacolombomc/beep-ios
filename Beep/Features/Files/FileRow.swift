@@ -48,6 +48,8 @@ struct FileRow: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        // Drag the real file into another app or window (iPad split view, Stage Manager).
+        .onDrag { opener.itemProvider(for: file) }
         .contextMenu { FileContextMenu(file: file) }
         .swipeActions(edge: .trailing) {
             if file.isDownloaded {
