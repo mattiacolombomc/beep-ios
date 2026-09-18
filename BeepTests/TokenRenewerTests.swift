@@ -23,6 +23,7 @@ struct TokenRenewerTests {
         let renewer = TokenRenewer(session: session)
         #expect(!renewer.isDue)   // not signed in
         let outcome = await renewer.renewNow()
-        #expect(outcome == .unavailable("not signed in"))
+        // The reason is localized (it depends on the device language): check the case, not the text.
+        guard case .unavailable = outcome else { Issue.record("expected .unavailable, got \(outcome)"); return }
     }
 }
