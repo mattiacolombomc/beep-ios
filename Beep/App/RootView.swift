@@ -6,6 +6,21 @@ struct RootView: View {
     @AppStorage("onboarding.done") private var onboardingDone = false
 
     var body: some View {
+        content.preferredColorScheme(Self.forcedScheme)
+    }
+
+    /// Debug: `-forceDark` / `-forceLight` override the system appearance for screenshots and checks.
+    private static var forcedScheme: ColorScheme? {
+        #if DEBUG
+        let args = ProcessInfo.processInfo.arguments
+        if args.contains("-forceDark") { return .dark }
+        if args.contains("-forceLight") { return .light }
+        #endif
+        return nil
+    }
+
+    @ViewBuilder
+    private var content: some View {
         switch session.state {
         case .loading:
             ProgressView()
