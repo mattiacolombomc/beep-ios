@@ -143,8 +143,11 @@ end
 def ensure_mac_signing(api_key)
   out = Dir.mktmpdir("beep-mac-signing-")
   get_certificates(api_key: api_key, generate_apple_certs: true, team_id: TEAM_ID, output_path: out)
+  # cert publishes the last certificate it handled, and sigh would reuse it: keep the Apple Distribution one.
+  distribution_cert = lane_context[SharedValues::CERT_CERTIFICATE_ID]
   get_certificates(api_key: api_key, type: "mac_installer_distribution", platform: "macos", team_id: TEAM_ID, output_path: out)
-  get_provisioning_profile(api_key: api_key, app_identifier: APP_BUNDLE, provisioning_name: MAC_PROFILE, platform: "macos", force: true, team_id: TEAM_ID, output_path: out)
+  get_provisioning_profile(api_key: api_key, app_identifier: APP_BUNDLE, provisioning_name: MAC_PROFILE, platform: "macos",
+                           cert_id: distribution_cert, force: true, team_id: TEAM_ID, output_path: out)
 end
 
 desc "One-time: add the macOS platform to the App Store Connect record (universal purchase with iOS)"
