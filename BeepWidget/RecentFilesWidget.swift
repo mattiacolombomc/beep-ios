@@ -86,7 +86,8 @@ struct RecentFilesView: View {
                 Text("\(entry.newCount)").font(.title.weight(.bold)).monospacedDigit()
                 Spacer()
             }
-            Text(entry.newCount == 1 ? "new file" : "new files").font(.caption.weight(.medium))
+            (entry.newCount == 1 ? Text("new file") : Text("new files"))
+                .font(.caption.weight(.medium))
             Spacer(minLength: 0)
             if let first = entry.items.first {
                 Text(first.filename).font(.caption2).lineLimit(2).foregroundStyle(.secondary)

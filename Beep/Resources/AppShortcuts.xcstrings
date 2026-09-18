@@ -1,0 +1,36 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Check WeBeep with ${applicationName}": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla WeBeep con ${applicationName}"
+          }
+        }
+      }
+    },
+    "Open a course in ${applicationName}": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri un corso in ${applicationName}"
+          }
+        }
+      }
+    },
+    "Sync ${applicationName}": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizza ${applicationName}"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

@@ -41,7 +41,7 @@ struct SettingsView: View {
                             .frame(width: 48, height: 48)
                             .clipShape(Circle())
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(user.fullname.isEmpty ? "Signed in" : user.fullname).font(.headline)
+                                Text(user.fullname.isEmpty ? String(localized: "Signed in") : user.fullname).font(.headline)
                                 Text(user.username).font(.subheadline).foregroundStyle(.secondary)
                             }
                         }

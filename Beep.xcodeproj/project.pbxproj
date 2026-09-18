@@ -50,6 +50,7 @@
 		61E1CAC843B541E29EC8870F /* AppServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3B13A614078AA947AC892F4 /* AppServices.swift */; };
 		6C4AB023B505AD19B002477E /* CoursesHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8C5004148D51BFD22BB6DE /* CoursesHomeView.swift */; };
 		724FD949B3D00AA7329215A2 /* FileOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF8694ACF7AB5159B41777A /* FileOpener.swift */; };
+		73C9B5082C906B3F0F2489F2 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 15E5C366DA05649911C45C67 /* Localizable.xcstrings */; };
 		769FC084E0C34B5FC753F513 /* OnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909D07C337AEE2C18713073D /* OnboardingFlow.swift */; };
 		7737B668FFFEB4C395AEF153 /* IndexerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EC0BE5246B5005FBF7AF7A2 /* IndexerTests.swift */; };
 		78939754EF3C3D1067462E53 /* CourseNameParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3416213C83DDF3DE7B444F5C /* CourseNameParserTests.swift */; };
@@ -70,6 +71,7 @@
 		A853F8004BE198CCB38C66C6 /* MainTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDBE80ED4DAF175F43E0A6E /* MainTabs.swift */; };
 		AADE8FBF9ECEDF46090BC31A /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C956A75A7DA5D53C8767CFAA /* Theme.swift */; };
 		ACD6B2DBB3ACF96620808FC5 /* SyncCoursesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310DD6AAE1D1B781EFA5601C /* SyncCoursesView.swift */; };
+		AEEEE12384A1DF047AB23FB7 /* AppShortcuts.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = D08AF1F2615097E65A6709CB /* AppShortcuts.xcstrings */; };
 		B8661C44B8E696AAB53C7C46 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 855198D4868B1F4408DD06A0 /* AppRouter.swift */; };
 		B9287AE1401A76332A60CBF8 /* CourseContentsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632F9C4E22DDA97925F567A1 /* CourseContentsDTO.swift */; };
 		BE100D9ECE10FC95B2C345A1 /* CourseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E4840D462EF098CE10FD83 /* CourseDetailView.swift */; };
@@ -138,6 +140,7 @@
 		058D5135C8218E91EC87E438 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		135FEEAF58474DF5713A782B /* LoginFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFlow.swift; sourceTree = "<group>"; };
 		152BE74F23E3DD600A31C753 /* ForumViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumViews.swift; sourceTree = "<group>"; };
+		15E5C366DA05649911C45C67 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		18DC03A9A41FBAA63B81F471 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		19452E311E45FA947869B393 /* StoreContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreContainer.swift; sourceTree = "<group>"; };
 		1A8C5004148D51BFD22BB6DE /* CoursesHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursesHomeView.swift; sourceTree = "<group>"; };
@@ -206,6 +209,7 @@
 		CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilangTests.swift; sourceTree = "<group>"; };
 		CE09B0D0E5769EBAB31D00DD /* NotificationDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDTO.swift; sourceTree = "<group>"; };
 		CFC5102FB94F5091EBB3B0D2 /* BeepWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepWidgetBundle.swift; sourceTree = "<group>"; };
+		D08AF1F2615097E65A6709CB /* AppShortcuts.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = AppShortcuts.xcstrings; sourceTree = "<group>"; };
 		D0A9F48A8D454DFCDEA10154 /* CatalogSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSearchView.swift; sourceTree = "<group>"; };
 		D2C85291D5C3B76770B43878 /* WebSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSession.swift; sourceTree = "<group>"; };
 		D5DDC33A2E7014A4565C4823 /* Beep.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Beep.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -428,6 +432,7 @@
 			isa = PBXGroup;
 			children = (
 				0478DD28AE32D428A6FF72E7 /* AppIcon.icon */,
+				D08AF1F2615097E65A6709CB /* AppShortcuts.xcstrings */,
 				8DF4144FD06449B7635ED698 /* Assets.xcassets */,
 				B15B3C2D5080241C175CE54B /* Info.plist */,
 				864BC64E7643ABBFBF2CCFD3 /* Localizable.xcstrings */,
@@ -458,6 +463,7 @@
 				66C13C4FB7A36CFB78061D0E /* BeepWidget.entitlements */,
 				CFC5102FB94F5091EBB3B0D2 /* BeepWidgetBundle.swift */,
 				561EC702E9838D3510C5B494 /* Info.plist */,
+				15E5C366DA05649911C45C67 /* Localizable.xcstrings */,
 				77EC9966A7EADC3B41F7D0F2 /* RecentFilesWidget.swift */,
 			);
 			path = BeepWidget;
@@ -643,6 +649,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D3D0FA805AC782F3CB21E08D /* Assets.xcassets in Resources */,
+				73C9B5082C906B3F0F2489F2 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -663,6 +670,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8BFBAD8978D84465EDC8B377 /* AppIcon.icon in Resources */,
+				AEEEE12384A1DF047AB23FB7 /* AppShortcuts.xcstrings in Resources */,
 				D9CDB25E96CD7637AE81F4A9 /* Assets.xcassets in Resources */,
 				21E5BFDB220B7863B2DC91FC /* Localizable.xcstrings in Resources */,
 				D5054C1FB88A83275883BAC2 /* NOTICE in Resources */,

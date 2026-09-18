@@ -45,26 +45,26 @@ final class TokenRenewer {
     }
 
     private func perform() async -> Outcome {
-        guard let client = session.client, let user = session.user, user.id != 0 else { return .unavailable("not signed in") }
-        guard let privateToken = session.privateToken else { return .unavailable("no private token: sign in again once to enable silent renewal") }
+        guard let client = session.client, let user = session.user, user.id != 0 else { return .unavailable(String(localized: "not signed in")) }
+        guard let privateToken = session.privateToken else { return .unavailable(String(localized: "sign in again once to enable silent renewal")) }
         let autologin: AutologinKeyDTO
         do {
             autologin = try await client.autologinKey(privateToken: privateToken)
         } catch MoodleError.invalidToken {
             session.markExpired()
-            return .failed("token already invalid")
+            return .failed(String(localized: "the access key had already expired"))
         } catch {
             return .failed(String(describing: error))
         }
         let passport = LoginFlow.makePassport()
         let launch = LoginFlow.launchURL(passport: passport)
-        guard var comps = URLComponents(string: autologin.autologinurl) else { return .failed("bad autologin url") }
+        guard var comps = URLComponents(string: autologin.autologinurl) else { return .failed(String(localized: "WeBeep sent an unexpected sign-in link")) }
         comps.queryItems = [
             URLQueryItem(name: "userid", value: String(user.id)),
             URLQueryItem(name: "key", value: autologin.key),
             URLQueryItem(name: "urltogo", value: launch.absoluteString),
         ]
-        guard let url = comps.url else { return .failed("bad autologin url") }
+        guard let url = comps.url else { return .failed(String(localized: "WeBeep sent an unexpected sign-in link")) }
         let handshake = HiddenHandshake()
         hidden = handshake
         defer { hidden = nil }

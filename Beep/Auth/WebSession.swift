@@ -14,16 +14,16 @@ final class WebSession: NSObject, WKNavigationDelegate {
 
     /// Builds the autologin URL that lands on `target` with a live web session.
     static func autologinURL(session: AppSession, target: URL) async throws -> URL {
-        guard let client = session.client, let user = session.user, user.id != 0 else { throw Failed(reason: "not signed in") }
-        guard let privateToken = session.privateToken else { throw Failed(reason: "sign in again once to enable web actions") }
+        guard let client = session.client, let user = session.user, user.id != 0 else { throw Failed(reason: String(localized: "You are not signed in.")) }
+        guard let privateToken = session.privateToken else { throw Failed(reason: String(localized: "Sign in again once to enable this action.")) }
         let auto = try await client.autologinKey(privateToken: privateToken)
-        guard var comps = URLComponents(string: auto.autologinurl) else { throw Failed(reason: "bad autologin url") }
+        guard var comps = URLComponents(string: auto.autologinurl) else { throw Failed(reason: String(localized: "WeBeep sent an unexpected sign-in link.")) }
         comps.queryItems = [
             URLQueryItem(name: "userid", value: String(user.id)),
             URLQueryItem(name: "key", value: auto.key),
             URLQueryItem(name: "urltogo", value: target.absoluteString),
         ]
-        guard let url = comps.url else { throw Failed(reason: "bad autologin url") }
+        guard let url = comps.url else { throw Failed(reason: String(localized: "WeBeep sent an unexpected sign-in link.")) }
         return url
     }
 
@@ -72,7 +72,7 @@ final class WebSession: NSObject, WKNavigationDelegate {
 enum Unenroller {
     @MainActor
     static func unenrol(course: Course, session: AppSession) async throws {
-        guard let client = session.client else { throw WebSession.Failed(reason: "not signed in") }
+        guard let client = session.client else { throw WebSession.Failed(reason: String(localized: "You are not signed in.")) }
         let methods = try await client.enrolmentMethods(courseID: course.id)
         guard let selfEnrol = methods.first(where: { $0.type == "self" }) else {
             throw WebSession.Failed(reason: String(localized: "This course has no self-enrolment, so you cannot leave it from here. Ask the professor or WeBeep support."))

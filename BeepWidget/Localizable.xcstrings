@@ -1,0 +1,66 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Latest material": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultimo materiale"
+          }
+        }
+      }
+    },
+    "Nothing synced yet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora niente di sincronizzato"
+          }
+        }
+      }
+    },
+    "Open Beep to sync your courses.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri Beep per sincronizzare i tuoi corsi."
+          }
+        }
+      }
+    },
+    "The newest files from your WeBeep courses.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I file più recenti dei tuoi corsi WeBeep."
+          }
+        }
+      }
+    },
+    "new file": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nuovo file"
+          }
+        }
+      }
+    },
+    "new files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nuovi file"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

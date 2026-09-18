@@ -24,90 +24,414 @@
     },
     "%lld courses": {
       "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld course"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld courses"
+                }
+              }
+            }
+          }
+        },
         "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld corsi"
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld corsi"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld corso"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld corsi"
+                }
+              }
+            }
           }
         }
       }
     },
     "%lld courses auto-download new files. Tap a row to toggle; use the menu for bulk changes.": {
       "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld course auto-downloads new files. Tap a row to toggle; use the menu for bulk changes."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld courses auto-download new files. Tap a row to toggle; use the menu for bulk changes."
+                }
+              }
+            }
+          }
+        },
         "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld corsi scaricano automaticamente i nuovi file. Tocca una riga per attivare o disattivare; usa il menu per le azioni in blocco."
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld corsi scaricano automaticamente i nuovi file. Tocca una riga per attivare o disattivare; usa il menu per le azioni in blocco."
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld corso scarica automaticamente i nuovi file. Tocca una riga per attivare o disattivare; usa il menu per le azioni in blocco."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld corsi scaricano automaticamente i nuovi file. Tocca una riga per attivare o disattivare; usa il menu per le azioni in blocco."
+                }
+              }
+            }
           }
         }
       }
     },
     "%lld courses indexed": {
       "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld course indexed"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld courses indexed"
+                }
+              }
+            }
+          }
+        },
         "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld corsi indicizzati"
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld corsi indicizzati"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld corso indicizzato"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld corsi indicizzati"
+                }
+              }
+            }
           }
         }
       }
     },
     "%lld courses will download new files automatically.": {
       "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld course will download new files automatically."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld courses will download new files automatically."
+                }
+              }
+            }
+          }
+        },
         "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld corsi scaricheranno i nuovi file automaticamente."
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld corsi scaricheranno i nuovi file automaticamente."
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld corso scaricherà i nuovi file automaticamente."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld corsi scaricheranno i nuovi file automaticamente."
+                }
+              }
+            }
           }
         }
       }
     },
     "%lld errors": {
       "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld error"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld errors"
+                }
+              }
+            }
+          }
+        },
         "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld errori"
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld errori"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld errore"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld errori"
+                }
+              }
+            }
           }
         }
       }
     },
     "%lld files": {
       "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld files"
+                }
+              }
+            }
+          }
+        },
         "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld file"
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file"
+                }
+              }
+            }
           }
         }
       }
     },
     "%lld files · %@": {
       "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file · %@"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld files · %@"
+                }
+              }
+            }
+          }
+        },
         "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld file · %@"
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file · %@"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file · %@"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file · %@"
+                }
+              }
+            }
           }
         }
       }
     },
     "%lld new announcements": {
       "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld new announcement"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld new announcements"
+                }
+              }
+            }
+          }
+        },
         "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld nuovi annunci"
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld nuovi annunci"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld nuovo annuncio"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld nuovi annunci"
+                }
+              }
+            }
           }
         }
       }
     },
     "%lld new files": {
       "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld new file"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld new files"
+                }
+              }
+            }
+          }
+        },
         "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld nuovi file"
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld nuovi file"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld nuovo file"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld nuovi file"
+                }
+              }
+            }
           }
         }
       }
@@ -116,14 +440,110 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
-            "value": "%1$lld new files across %2$lld courses. Downloading now."
+            "state": "translated",
+            "value": "%#@files@ across %#@courses@. Downloading now."
+          },
+          "substitutions": {
+            "courses": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg course"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg courses"
+                    }
+                  }
+                }
+              }
+            },
+            "files": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg new file"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg new files"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld nuovi file in %lld corsi. Download in corso."
+            "value": "%#@files@ in %#@courses@. Download in corso."
+          },
+          "substitutions": {
+            "courses": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "many": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg corsi"
+                    }
+                  },
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg corso"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg corsi"
+                    }
+                  }
+                }
+              }
+            },
+            "files": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "many": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg nuovi file"
+                    }
+                  },
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg nuovo file"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg nuovi file"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -131,15 +551,45 @@
     "%lld new files in %@": {
       "localizations": {
         "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": "%1$lld new files in %2$@"
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld new file in %@"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld new files in %@"
+                }
+              }
+            }
           }
         },
         "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld nuovi file in %@"
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld nuovi file in %@"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld nuovo file in %@"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld nuovi file in %@"
+                }
+              }
+            }
           }
         }
       }
@@ -148,24 +598,176 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
-            "value": "%1$lld new files in %2$@ and %3$lld more"
+            "state": "translated",
+            "value": "%#@files@ in %2$@ and %#@more@"
+          },
+          "substitutions": {
+            "files": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg new file"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg new files"
+                    }
+                  }
+                }
+              }
+            },
+            "more": {
+              "argNum": 3,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg more course"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg more courses"
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld nuovi file in %@ e altri %lld corsi"
+            "value": "%#@files@ in %2$@ e %#@more@"
+          },
+          "substitutions": {
+            "files": {
+              "argNum": 1,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "many": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg nuovi file"
+                    }
+                  },
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg nuovo file"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg nuovi file"
+                    }
+                  }
+                }
+              }
+            },
+            "more": {
+              "argNum": 3,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "many": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "in altri %arg corsi"
+                    }
+                  },
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "in un altro corso"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "in altri %arg corsi"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
     "%lld of %lld courses": {
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld of %#@total@"
+          },
+          "substitutions": {
+            "total": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg course"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg courses"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld di %lld corsi"
+            "value": "%1$lld di %#@total@"
+          },
+          "substitutions": {
+            "total": {
+              "argNum": 2,
+              "formatSpecifier": "lld",
+              "variations": {
+                "plural": {
+                  "many": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg corsi"
+                    }
+                  },
+                  "one": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg corso"
+                    }
+                  },
+                  "other": {
+                    "stringUnit": {
+                      "state": "translated",
+                      "value": "%arg corsi"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -282,10 +884,46 @@
     },
     "Archive and delete %lld files (%@)": {
       "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Archive and delete %lld file (%@)"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Archive and delete %lld files (%@)"
+                }
+              }
+            }
+          }
+        },
         "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Archivia ed elimina %lld file (%@)"
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Archivia ed elimina %lld file (%@)"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Archivia ed elimina %lld file (%@)"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Archivia ed elimina %lld file (%@)"
+                }
+              }
+            }
           }
         }
       }
@@ -772,10 +1410,46 @@
     },
     "Enable %lld courses of this year": {
       "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Enable %lld course of this year"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Enable %lld courses of this year"
+                }
+              }
+            }
+          }
+        },
         "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abilita i %lld corsi di quest'anno"
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Abilita i %lld corsi di quest'anno"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Abilita %lld corso di quest'anno"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Abilita i %lld corsi di quest'anno"
+                }
+              }
+            }
           }
         }
       }
@@ -2108,6 +2782,16 @@
         }
       }
     },
+    "Sign in again once to enable this action.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accedi di nuovo una volta per usare questa funzione."
+          }
+        }
+      }
+    },
     "Sign in with Polimi account": {
       "localizations": {
         "it": {
@@ -2144,6 +2828,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uscire da WeBeep?"
+          }
+        }
+      }
+    },
+    "Signed in": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesso effettuato"
           }
         }
       }
@@ -2608,6 +3302,26 @@
         }
       }
     },
+    "WeBeep sent an unexpected sign-in link": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep ha inviato un link di accesso inatteso"
+          }
+        }
+      }
+    },
+    "WeBeep sent an unexpected sign-in link.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep ha inviato un link di accesso inatteso."
+          }
+        }
+      }
+    },
     "WeBeep session expired": {
       "localizations": {
         "it": {
@@ -2664,6 +3378,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anni"
+          }
+        }
+      }
+    },
+    "You are not signed in.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non hai effettuato l'accesso."
           }
         }
       }
@@ -2748,12 +3472,42 @@
         }
       }
     },
+    "not signed in": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "non hai effettuato l'accesso"
+          }
+        }
+      }
+    },
     "offline": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "offline"
+          }
+        }
+      }
+    },
+    "sign in again once to enable silent renewal": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "accedi di nuovo una volta per attivare il rinnovo silenzioso"
+          }
+        }
+      }
+    },
+    "the access key had already expired": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la chiave di accesso era già scaduta"
           }
         }
       }

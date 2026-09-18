@@ -85,11 +85,11 @@ struct OpenCourseIntent: AppIntent {
 struct BeepShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(intent: SyncNowIntent(),
-                    phrases: ["Sync \(.applicationName)", "Sincronizza \(.applicationName)", "Check WeBeep with \(.applicationName)"],
+                    phrases: ["Sync \(.applicationName)", "Check WeBeep with \(.applicationName)"],
                     shortTitle: "Sync now",
                     systemImageName: "arrow.triangle.2.circlepath")
         AppShortcut(intent: OpenCourseIntent(),
-                    phrases: ["Open a course in \(.applicationName)", "Apri un corso in \(.applicationName)"],
+                    phrases: ["Open a course in \(.applicationName)"],
                     shortTitle: "Open course",
                     systemImageName: "graduationcap")
     }
