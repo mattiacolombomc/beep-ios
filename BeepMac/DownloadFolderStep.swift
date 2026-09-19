@@ -79,10 +79,11 @@ extension URL {
 }
 
 extension String {
-    /// "/Users/name/Desktop/WeBeep" → "~/Desktop/WeBeep".
+    /// "/Users/name/Desktop/WeBeep/" → "~/Desktop/WeBeep".
     var abbreviatingHome: String {
         let home = URL.userHome.path(percentEncoded: false)
         let trimmedHome = home.hasSuffix("/") ? String(home.dropLast()) : home
-        return hasPrefix(trimmedHome) ? "~" + dropFirst(trimmedHome.count) : self
+        let path = hasSuffix("/") && count > 1 ? String(dropLast()) : self
+        return path.hasPrefix(trimmedHome) ? "~" + path.dropFirst(trimmedHome.count) : path
     }
 }
