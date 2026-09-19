@@ -304,8 +304,8 @@ lane :public_group do |options|
   UI.success("Public link: #{group.public_link || "(appears once a build is approved for the group)"}")
 end
 
-desc "Testers per TestFlight group (public-link joins included): fastlane tester_stats"
-lane :tester_stats do
+desc "Testers per TestFlight group (public-link joins included): fastlane tester_stats [details:true]"
+lane :tester_stats do |options|
   api_key = asc_api_key
   Spaceship::ConnectAPI.token = Spaceship::ConnectAPI::Token.create(**api_key)
   app = Spaceship::ConnectAPI::App.find(APP_BUNDLE) or UI.user_error!("App not found")
@@ -315,6 +315,14 @@ lane :tester_stats do
     kind = g.is_internal_group ? "interno" : "esterno"
     by_state = testers.group_by { |t| t.invite_type || "?" }.map { |k, v| "#{k}=#{v.size}" }.join(" ")
     UI.message("#{g.name} (#{kind}): #{testers.size} tester  #{by_state}#{g.public_link ? "  link: #{g.public_link}" : ""}")
+    next unless options[:details]
+    testers.each do |t|
+      who = [t.first_name, t.last_name].compact.join(" ").strip
+      who = "anonimo" if who.empty?
+      build = t.installed_cf_bundle_version ? "build #{t.installed_cf_bundle_version}" : "non installata"
+      device = [t.installed_device || t.latest_installed_device, t.installed_os_version || t.latest_installed_os_version].compact.join(" ")
+      UI.message("   - #{who} <#{t.email || "-"}>  invito=#{t.invite_type}  stato=#{t.beta_tester_state}  #{build}  #{device}")
+    end
   end
 end
 
