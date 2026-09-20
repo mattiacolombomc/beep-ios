@@ -57,6 +57,17 @@ enum DemoData {
             for (i, f) in course.files.enumerated() where i % 3 == 0 { f.firstSeenAt = Date.now.addingTimeInterval(-3600) }
             course.recountNewFiles()
         }
+        // Sample announcements for the notifications screen.
+        context.insert(WebeepNotification(
+            id: 900_001, subject: "Software Engineering 2: Lab groups and first deadline",
+            htmlBody: "<p>Dear students,</p><p>lab groups of <b>three people</b> must be registered by Friday. The first deliverable is due on October 12.</p><p>See the course page for the template.</p>",
+            contextURL: "https://webeep.polimi.it/course/view.php?id=41213", contextName: "Lab groups and first deadline",
+            timecreated: Date.now.addingTimeInterval(-3600 * 5), read: false))
+        context.insert(WebeepNotification(
+            id: 900_002, subject: "Formal Languages and Compilers: calendar change",
+            htmlBody: "<p>The lecture of Thursday moves to room <b>3.1.3</b>, same time.</p>",
+            contextURL: nil, contextName: "calendar change",
+            timecreated: Date.now.addingTimeInterval(-86_400 * 2), read: true))
         try context.save()
     }
 

@@ -50,7 +50,7 @@ struct NotificationsView: View {
             .overlay { if isLoading && notifications.isEmpty { ProgressView() } }
             .refreshable { await refresh() }
             .toolbar {
-                ToolbarItem(placement: .leadingBar) {
+                ToolbarItem(placement: Self.markAllPlacement) {
                     Button("Mark all read") { for n in notifications where !n.read { markRead(n) } }
                         .disabled(!notifications.contains { !$0.read })
                 }
@@ -61,6 +61,14 @@ struct NotificationsView: View {
             }
             .task { await refresh() }
         }
+    }
+
+    private static var markAllPlacement: ToolbarItemPlacement {
+        #if os(macOS)
+        .cancellationAction
+        #else
+        .leadingBar
+        #endif
     }
 
     private func refresh() async {
@@ -104,12 +112,23 @@ struct NotificationDetail: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
                 if let s = notification.contextURL, let url = URL(string: s) {
+                    // Mac sheets only show the action placements at the bottom.
+                    #if os(macOS)
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Open on WeBeep", systemImage: "safari") { openURL(url) }
+                    }
+                    #else
                     ToolbarItem(placement: .leadingBar) {
                         Button("Open on WeBeep", systemImage: "safari") { openURL(url) }
                     }
+                    #endif
                 }
             }
         }
         .presentationDetents([.medium, .large])
+        #if os(macOS)
+        // The web view has no intrinsic size: without a frame the Mac sheet collapses to its toolbar.
+        .frame(minWidth: 520, idealWidth: 600, minHeight: 480, idealHeight: 620)
+        #endif
     }
 }
