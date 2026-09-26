@@ -64,6 +64,7 @@ struct FileRow: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .listRowBackground(isSelected ? Color.accentColor.opacity(0.12) : nil)
         .modifier(RowActions(file: file, enabled: !selecting))
     }
 }

@@ -7,12 +7,17 @@ struct FilePresenters: ViewModifier {
 
     func body(content: Content) -> some View {
         @Bindable var opener = opener
+        #if os(iOS)
         content
             .quickLookPreview($opener.previewURL)
             .sheet(item: Binding(get: { opener.shareURLs.map(ShareItem.init) }, set: { opener.shareURLs = $0?.urls })) { item in
                 ShareSheet(urls: item.urls)
                     .presentationDetents([.medium, .large])
             }
+        #else
+        // Shares requested without an anchor (context menu) pop up from the window content.
+        content.background(MacSharePicker(urls: $opener.shareURLs))
+        #endif
     }
 }
 
@@ -30,24 +35,38 @@ struct ShareSheet: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 #else
-/// macOS: the system share menu, anchored to a small sheet with the file name(s).
-struct ShareSheet: View {
-    let urls: [URL]
-    @Environment(\.dismiss) private var dismiss
-    var body: some View {
-        VStack(spacing: Theme.Spacing.m) {
-            if urls.count == 1, let url = urls.first {
-                Label(url.lastPathComponent, systemImage: "doc").font(.headline)
-            } else {
-                Label("\(urls.count) files", systemImage: "doc.on.doc").font(.headline)
-            }
-            HStack {
-                Button("Cancel") { dismiss() }
-                ShareLink(items: urls) { Label("Share…", systemImage: "square.and.arrow.up") }
-                    .buttonStyle(.borderedProminent)
-            }
+/// macOS: the native sharing picker (AirDrop, Mail, Notes, apps…) as a popover anchored to
+/// the view this sits behind. Setting `urls` shows it once and clears the binding.
+struct MacSharePicker: NSViewRepresentable {
+    @Binding var urls: [URL]?
+    /// Called when the picker closes, whether a service was chosen or not.
+    var onDismiss: (() -> Void)? = nil
+
+    func makeNSView(context: Context) -> NSView { NSView(frame: .zero) }
+    func makeCoordinator() -> Coordinator { Coordinator(onDismiss: onDismiss) }
+
+    func updateNSView(_ view: NSView, context: Context) {
+        guard let urls, !urls.isEmpty else { return }
+        context.coordinator.onDismiss = onDismiss
+        DispatchQueue.main.async {
+            self.urls = nil
+            guard view.window != nil else { return }
+            let picker = NSSharingServicePicker(items: urls)
+            picker.delegate = context.coordinator
+            context.coordinator.picker = picker  // keep it alive while shown
+            picker.show(relativeTo: view.bounds, of: view, preferredEdge: .minY)
         }
-        .padding(Theme.Spacing.l)
+    }
+
+    final class Coordinator: NSObject, NSSharingServicePickerDelegate {
+        var onDismiss: (() -> Void)?
+        var picker: NSSharingServicePicker?
+        init(onDismiss: (() -> Void)?) { self.onDismiss = onDismiss }
+
+        func sharingServicePicker(_ sharingServicePicker: NSSharingServicePicker, didChoose service: NSSharingService?) {
+            picker = nil
+            onDismiss?()
+        }
     }
 }
 #endif

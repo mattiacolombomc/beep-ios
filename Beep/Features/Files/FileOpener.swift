@@ -96,16 +96,17 @@ final class FileOpener {
 
     /// Shares several files at once, downloading the missing ones first (priority queue).
     /// Files that fail to download are skipped; returns whether the sheet was shown and how many failed.
-    func share(_ files: [FileItem], progress: ((Int) -> Void)? = nil) async -> (shared: Bool, failed: Int) {
+    /// With `present: false` the caller shows the sheet itself (e.g. anchored to its button).
+    @discardableResult
+    func share(_ files: [FileItem], present: Bool = true, progress: ((Int) -> Void)? = nil) async -> (urls: [URL], failed: Int) {
         var urls: [URL] = []
         var failed = 0
         for (i, file) in files.enumerated() {
             if let url = try? await localURL(for: file) { urls.append(url) } else { failed += 1 }
             progress?(i + 1)
         }
-        guard !urls.isEmpty else { return (false, failed) }
-        shareURLs = urls
-        return (true, failed)
+        if present, !urls.isEmpty { shareURLs = urls }
+        return (urls, failed)
     }
 
     func showInFiles(_ file: FileItem) {

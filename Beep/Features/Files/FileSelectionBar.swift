@@ -6,6 +6,9 @@ struct FileSelectionBar: View {
     let candidates: [FileItem]
     @Environment(FileSelection.self) private var selection
     @Environment(FileOpener.self) private var opener
+    #if os(macOS)
+    @State private var pickerURLs: [URL]?
+    #endif
 
     var body: some View {
         HStack(spacing: Theme.Spacing.m) {
@@ -41,6 +44,9 @@ struct FileSelectionBar: View {
             }
             .buttonStyle(.borderedProminent)
             .disabled(selection.count == 0 || selection.isPreparing)
+            #if os(macOS)
+            .background(MacSharePicker(urls: $pickerURLs) { selection.end() })
+            #endif
         }
         .lineLimit(1)
         .padding(.horizontal, Theme.Spacing.m)
@@ -53,9 +59,16 @@ struct FileSelectionBar: View {
         let files = selection.selected(from: candidates)
         selection.failedCount = 0
         selection.preparing = (0, files.count)
+        #if os(macOS)
+        // The picker is anchored to the Share button: keep the bar until the picker closes.
+        let outcome = await opener.share(files, present: false) { done in selection.preparing = (done, files.count) }
+        selection.preparing = nil
+        if !outcome.urls.isEmpty { pickerURLs = outcome.urls } else { selection.failedCount = outcome.failed }
+        #else
         let outcome = await opener.share(files) { done in selection.preparing = (done, files.count) }
         selection.preparing = nil
-        if outcome.shared { selection.end() } else { selection.failedCount = outcome.failed }
+        if !outcome.urls.isEmpty { selection.end() } else { selection.failedCount = outcome.failed }
+        #endif
     }
 }
 
