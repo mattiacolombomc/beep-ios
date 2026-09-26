@@ -66,8 +66,22 @@ private struct CourseContentView: View {
     @State private var onlyNew = false
     @State private var lastSeenAtOpen: Date?
     @State private var renameTarget: Course?
+    @State private var selection = FileSelection()
 
     private var isFiltering: Bool { !query.isEmpty || scope != .all || onlyNew || sort != .position }
+
+    /// Files the selection bar can act on: the filtered list, or every file of the course.
+    private var selectableFiles: [FileItem] {
+        isFiltering
+            ? FilteredFilesSection.files(of: course, query: query, scope: scope, sort: sort, onlyNew: onlyNew, lastSeen: lastSeenAtOpen)
+            : course.files.sorted { a, b in
+                let sa = a.module?.section?.position ?? 0, sb = b.module?.section?.position ?? 0
+                if sa != sb { return sa < sb }
+                let ma = a.module?.position ?? 0, mb = b.module?.position ?? 0
+                if ma != mb { return ma < mb }
+                return a.filename.localizedStandardCompare(b.filename) == .orderedAscending
+            }
+    }
 
     var body: some View {
         List {
@@ -104,6 +118,9 @@ private struct CourseContentView: View {
             }
         }
         .groupedList()
+                .selectionBar(selection, candidates: selectableFiles)
+        .animation(.snappy, value: selection.isActive)
+        .environment(selection)
         .navigationTitle(course.title)
         .inlineNavigationTitle()
         .searchable(text: $query, prompt: "Search in this course")
@@ -113,19 +130,28 @@ private struct CourseContentView: View {
         .refreshable { await refresh() }
         .toolbar {
             ToolbarItem(placement: .trailingBar) {
-                Menu {
-                    Picker("Sort", selection: $sort) {
-                        ForEach(FileSort.allCases) { Text($0.label).tag($0) }
+                if selection.isActive {
+                    Button("Done") { selection.end() }
+                } else {
+                    Menu {
+                        Button("Select", systemImage: "checkmark.circle") { selection.begin() }
+                            .disabled(course.files.isEmpty)
+                        Divider()
+                        Picker("Sort", selection: $sort) {
+                            ForEach(FileSort.allCases) { Text($0.label).tag($0) }
+                        }
+                        Toggle("Only new files", systemImage: "sparkles", isOn: $onlyNew)
+                        Divider()
+                        CourseContextMenu(course: course, onRename: { renameTarget = course })
+                    } label: {
+                        Label("More", systemImage: "ellipsis.circle")
                     }
-                    Toggle("Only new files", systemImage: "sparkles", isOn: $onlyNew)
-                    Divider()
-                    CourseContextMenu(course: course, onRename: { renameTarget = course })
-                } label: {
-                    Label("More", systemImage: "ellipsis.circle")
                 }
             }
         }
         .renameFolderDialog(course: $renameTarget)
+        .onChange(of: course.id) { _, _ in selection.end() }
+        .onDisappear { selection.end() }
         .task(id: course.id) {
             // Remember what "new" meant when the screen opened, then mark everything seen.
             lastSeenAtOpen = course.lastSeenAt
@@ -229,6 +255,10 @@ private struct FilteredFilesSection: View {
     let lastSeen: Date?
 
     private var files: [FileItem] {
+        Self.files(of: course, query: query, scope: scope, sort: sort, onlyNew: onlyNew, lastSeen: lastSeen)
+    }
+
+    static func files(of course: Course, query: String, scope: FileTypeScope, sort: FileSort, onlyNew: Bool, lastSeen: Date?) -> [FileItem] {
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
         var list = course.files.filter { f in
             guard scope.matches(f.fileExtension) else { return false }

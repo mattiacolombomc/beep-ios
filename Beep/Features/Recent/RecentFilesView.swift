@@ -11,6 +11,7 @@ struct RecentFilesView: View {
         return d
     }
     @Query(RecentFilesView.recent) private var files: [FileItem]
+    @State private var selection = FileSelection()
 
     private var grouped: [(day: Date, files: [FileItem])] {
         let recent = files
@@ -38,7 +39,20 @@ struct RecentFilesView: View {
                 }
             }
             .groupedList()
+                        .selectionBar(selection, candidates: files)
+            .animation(.snappy, value: selection.isActive)
+            .environment(selection)
             .navigationTitle("Recent")
+            .toolbar {
+                ToolbarItem(placement: .trailingBar) {
+                    if selection.isActive {
+                        Button("Done") { selection.end() }
+                    } else {
+                        Button("Select") { selection.begin() }.disabled(files.isEmpty)
+                    }
+                }
+            }
+            .onDisappear { selection.end() }
         }
     }
 }

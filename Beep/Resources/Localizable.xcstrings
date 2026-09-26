@@ -772,6 +772,52 @@
         }
       }
     },
+    "%lld selected": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld selected"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld selected"
+                }
+              }
+            }
+          }
+        },
+        "it": {
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld selezionati"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld selezionato"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld selezionati"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld/%lld": {
       "localizations": {
         "it": {
@@ -1238,6 +1284,52 @@
         }
       }
     },
+    "Couldn't download %lld files": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Couldn't download %lld file"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Couldn't download %lld files"
+                }
+              }
+            }
+          }
+        },
+        "it": {
+          "variations": {
+            "plural": {
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file non scaricati"
+                }
+              },
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file non scaricato"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file non scaricati"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Course": {
       "localizations": {
         "it": {
@@ -1338,6 +1430,16 @@
         }
       }
     },
+    "Deselect All": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deseleziona tutto"
+          }
+        }
+      }
+    },
     "Disable all shown": {
       "localizations": {
         "it": {
@@ -1403,7 +1505,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cartella download"
+            "value": "Scarica cartella"
           }
         }
       }
@@ -2242,6 +2344,16 @@
         }
       }
     },
+    "Not selected": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non selezionato"
+          }
+        }
+      }
+    },
     "Nothing downloaded": {
       "localizations": {
         "it": {
@@ -2602,6 +2714,22 @@
         }
       }
     },
+    "Preparing %lld of %lld…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparing %lld of %lld…"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparo %lld di %lld…"
+          }
+        }
+      }
+    },
     "Programme & general": {
       "localizations": {
         "it": {
@@ -2855,6 +2983,36 @@
         }
       }
     },
+    "Select": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seleziona"
+          }
+        }
+      }
+    },
+    "Select All": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seleziona tutto"
+          }
+        }
+      }
+    },
+    "Selected": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selezionato"
+          }
+        }
+      }
+    },
     "Session": {
       "localizations": {
         "it": {
@@ -2891,6 +3049,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Impostazioni…"
+          }
+        }
+      }
+    },
+    "Share": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Condividi"
           }
         }
       }

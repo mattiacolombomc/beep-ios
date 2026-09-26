@@ -9,38 +9,41 @@ struct FilePresenters: ViewModifier {
         @Bindable var opener = opener
         content
             .quickLookPreview($opener.previewURL)
-            .sheet(item: Binding(get: { opener.shareURL.map(ShareItem.init) }, set: { opener.shareURL = $0?.url })) { item in
-                ShareSheet(url: item.url)
+            .sheet(item: Binding(get: { opener.shareURLs.map(ShareItem.init) }, set: { opener.shareURLs = $0?.urls })) { item in
+                ShareSheet(urls: item.urls)
                     .presentationDetents([.medium, .large])
             }
     }
 }
 
 private struct ShareItem: Identifiable {
-    let url: URL
-    var id: URL { url }
+    let urls: [URL]
+    var id: String { urls.map(\.path).joined(separator: "\n") }
 }
 
 #if os(iOS)
 struct ShareSheet: UIViewControllerRepresentable {
-    let url: URL
+    let urls: [URL]
     func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        UIActivityViewController(activityItems: urls, applicationActivities: nil)
     }
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 #else
-/// macOS: the system share menu, anchored to a small sheet with the file name.
+/// macOS: the system share menu, anchored to a small sheet with the file name(s).
 struct ShareSheet: View {
-    let url: URL
+    let urls: [URL]
     @Environment(\.dismiss) private var dismiss
     var body: some View {
         VStack(spacing: Theme.Spacing.m) {
-            Label(url.lastPathComponent, systemImage: "doc")
-                .font(.headline)
+            if urls.count == 1, let url = urls.first {
+                Label(url.lastPathComponent, systemImage: "doc").font(.headline)
+            } else {
+                Label("\(urls.count) files", systemImage: "doc.on.doc").font(.headline)
+            }
             HStack {
                 Button("Cancel") { dismiss() }
-                ShareLink(item: url) { Label("Share…", systemImage: "square.and.arrow.up") }
+                ShareLink(items: urls) { Label("Share…", systemImage: "square.and.arrow.up") }
                     .buttonStyle(.borderedProminent)
             }
         }

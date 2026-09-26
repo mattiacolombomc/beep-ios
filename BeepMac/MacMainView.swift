@@ -15,8 +15,12 @@ struct MacMainView: View {
 
     var body: some View {
         @Bindable var router = router
-        content
-            .safeAreaInset(edge: .bottom, spacing: 0) { SyncFolderBar() }
+        // The folder bar sits below the split view (not as a safe-area inset): the detail
+        // column would otherwise extend under it and hide its own bottom insets.
+        VStack(spacing: 0) {
+            content
+            SyncFolderBar()
+        }
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Picker("Section", selection: $router.selectedTab) {

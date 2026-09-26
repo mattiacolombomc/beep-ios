@@ -9,7 +9,8 @@ import UniformTypeIdentifiers
 @Observable
 final class FileOpener {
     var previewURL: URL?
-    var shareURL: URL?
+    /// Files handed to the system share sheet (one or many).
+    var shareURLs: [URL]?
     private let local: LocalFiles
     private let downloads: DownloadManager
 
@@ -90,7 +91,21 @@ final class FileOpener {
     }
 
     func share(_ file: FileItem) {
-        shareURL = local.url(for: file)
+        Task { _ = await share([file]) }
+    }
+
+    /// Shares several files at once, downloading the missing ones first (priority queue).
+    /// Files that fail to download are skipped; returns whether the sheet was shown and how many failed.
+    func share(_ files: [FileItem], progress: ((Int) -> Void)? = nil) async -> (shared: Bool, failed: Int) {
+        var urls: [URL] = []
+        var failed = 0
+        for (i, file) in files.enumerated() {
+            if let url = try? await localURL(for: file) { urls.append(url) } else { failed += 1 }
+            progress?(i + 1)
+        }
+        guard !urls.isEmpty else { return (false, failed) }
+        shareURLs = urls
+        return (true, failed)
     }
 
     func showInFiles(_ file: FileItem) {

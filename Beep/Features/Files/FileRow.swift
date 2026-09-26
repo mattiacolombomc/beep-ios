@@ -7,6 +7,11 @@ struct FileRow: View {
     var title: String? = nil
     var showsLocation = false
     @Environment(FileOpener.self) private var opener
+    /// Present only on screens that support multi-select.
+    @Environment(FileSelection.self) private var selection: FileSelection?
+
+    private var selecting: Bool { selection?.isActive ?? false }
+    private var isSelected: Bool { selection?.isSelected(file) ?? false }
 
     private var subtitle: String {
         var parts: [String] = []
@@ -27,9 +32,20 @@ struct FileRow: View {
 
     var body: some View {
         Button {
-            opener.open(file)
+            if let selection, selection.isActive {
+                withAnimation(.snappy) { selection.toggle(file) }
+            } else {
+                opener.open(file)
+            }
         } label: {
             HStack(spacing: Theme.Spacing.m - 4) {
+                if selecting {
+                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                        .font(.title3)
+                        .foregroundStyle(isSelected ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
+                        .contentTransition(.symbolEffect(.replace))
+                        .accessibilityLabel(isSelected ? "Selected" : "Not selected")
+                }
                 FileTypeIcon(extension: file.fileExtension)
                     .frame(width: 32)
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
@@ -48,15 +64,31 @@ struct FileRow: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        // Drag the real file into another app or window (iPad split view, Stage Manager).
-        .onDrag { opener.itemProvider(for: file) }
-        .contextMenu { FileContextMenu(file: file) }
-        .swipeActions(edge: .trailing) {
-            if file.isDownloaded {
-                Button(role: .destructive) { opener.removeLocal(file) } label: { Label("Remove download", systemImage: "trash") }
-            } else {
-                Button { opener.download(file) } label: { Label("Download", systemImage: "arrow.down.circle") }.tint(.accentColor)
-            }
+        .modifier(RowActions(file: file, enabled: !selecting))
+    }
+}
+
+/// Drag, context menu and swipe actions of a file row; switched off while selecting.
+private struct RowActions: ViewModifier {
+    let file: FileItem
+    let enabled: Bool
+    @Environment(FileOpener.self) private var opener
+
+    func body(content: Content) -> some View {
+        if enabled {
+            content
+                // Drag the real file into another app or window (iPad split view, Stage Manager).
+                .onDrag { opener.itemProvider(for: file) }
+                .contextMenu { FileContextMenu(file: file) }
+                .swipeActions(edge: .trailing) {
+                    if file.isDownloaded {
+                        Button(role: .destructive) { opener.removeLocal(file) } label: { Label("Remove download", systemImage: "trash") }
+                    } else {
+                        Button { opener.download(file) } label: { Label("Download", systemImage: "arrow.down.circle") }.tint(.accentColor)
+                    }
+                }
+        } else {
+            content
         }
     }
 }
@@ -128,8 +160,8 @@ struct FileContextMenu: View {
 
     var body: some View {
         Button { opener.open(file) } label: { Label("Open", systemImage: "eye") }
+        Button { opener.share(file) } label: { Label("Open in…", systemImage: "square.and.arrow.up") }
         if file.isDownloaded {
-            Button { opener.share(file) } label: { Label("Open in…", systemImage: "square.and.arrow.up") }
             Button { opener.showInFiles(file) } label: { Label("Show in Files", systemImage: "folder") }
             Divider()
             Button(role: .destructive) { opener.removeLocal(file) } label: { Label("Remove download", systemImage: "trash") }

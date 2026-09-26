@@ -7,6 +7,7 @@ struct GlobalSearchView: View {
     @State private var query = ""
     @State private var scope: FileTypeScope = .all
     @State private var results: [FileItem] = []
+    @State private var selection = FileSelection()
 
     var body: some View {
         NavigationStack {
@@ -44,6 +45,19 @@ struct GlobalSearchView: View {
                 }
             }
             .groupedList()
+                        .selectionBar(selection, candidates: results)
+            .animation(.snappy, value: selection.isActive)
+            .environment(selection)
+            .toolbar {
+                ToolbarItem(placement: .trailingBar) {
+                    if selection.isActive {
+                        Button("Done") { selection.end() }
+                    } else if !results.isEmpty {
+                        Button("Select") { selection.begin() }
+                    }
+                }
+            }
+            .onChange(of: results.map(\.key)) { _, _ in if results.isEmpty { selection.end() } }
             .navigationTitle("Search")
             .navigationDestination(for: Int.self) { CourseDetailView(courseID: $0) }
             .navigationDestination(for: CatalogRoute.self) { CatalogSearchView(initialQuery: $0.query) }
