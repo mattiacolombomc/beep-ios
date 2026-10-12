@@ -5,8 +5,17 @@ struct RootView: View {
     @Environment(AppSession.self) private var session
     @AppStorage("onboarding.done") private var onboardingDone = false
 
+    @Environment(SyncEngine.self) private var sync
+
     var body: some View {
-        content.preferredColorScheme(Self.forcedScheme)
+        content
+            .preferredColorScheme(Self.forcedScheme)
+            #if DEBUG
+            .task {
+                guard DemoData.isEnabled, ProcessInfo.processInfo.arguments.contains("-simulatePhase") else { return }
+                await sync.simulatePhaseOnly()
+            }
+            #endif
     }
 
     /// Debug: `-forceDark` / `-forceLight` override the system appearance for screenshots and checks.

@@ -162,6 +162,20 @@ final class SyncEngine {
     }
 
     /// Main-context models for keys the background indexer just wrote.
+    #if DEBUG
+    /// Debug harness (`-demo -simulatePhase`): flips `phase` every 200 ms forever, no store
+    /// writes. Reproduces the UI churn of a real sync; used to check that toolbars and menus
+    /// survive it.
+    func simulatePhaseOnly() async {
+        var i = 0
+        while !Task.isCancelled {
+            i += 1
+            phase = .indexing(done: i % 56, total: 56, current: "Course \(i)")
+            try? await Task.sleep(for: .milliseconds(200))
+        }
+    }
+    #endif
+
     private func files(withKeys keys: [String]) throws -> [FileItem] {
         let descriptor = FetchDescriptor<FileItem>(predicate: #Predicate { keys.contains($0.key) })
         return try context.fetch(descriptor)

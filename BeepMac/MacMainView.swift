@@ -99,27 +99,25 @@ struct MacMainView: View {
     }
 }
 
-/// Toolbar sync control: a spinner with progress while running.
+/// Toolbar sync control.
+///
+/// This body must not read anything that changes during a sync (`phase`, `isRunning`,
+/// download progress): every re-evaluation of a toolbar item makes NSToolbar rebuild its
+/// items, which blanks them for a frame and closes any open toolbar menu. With `phase`
+/// changing once per course that made every menu unusable while syncing. The live progress
+/// is drawn by `SyncToolbarIndicator`, an AppKit view that observes the engine on its own.
 struct SyncButton: View {
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
 
     var body: some View {
-        if case .indexing(let done, let total, _) = sync.phase {
-            HStack(spacing: 6) {
-                ProgressView().controlSize(.small)
-                Text("\(done)/\(total)").monospacedDigit().foregroundStyle(.secondary)
-            }
-            .help("Updating courses…")
-        } else {
-            Button {
-                guard let client = session.client, let user = session.user else { return }
-                Task { _ = await sync.syncAll(client: client, userID: user.id) }
-            } label: {
-                Label("Sync Now", systemImage: "arrow.triangle.2.circlepath")
-            }
-            .help("Sync Now")
-            .disabled(session.client == nil || DemoData.isEnabled)
+        Button {
+            guard let client = session.client, let user = session.user else { return }
+            Task { _ = await sync.syncAll(client: client, userID: user.id) }   // coalesced if already running
+        } label: {
+            SyncToolbarIndicator(sync: sync)
         }
+        .help("Sync Now")
+        .disabled(session.client == nil || DemoData.isEnabled)
     }
 }
