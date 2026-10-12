@@ -19,7 +19,7 @@ final class FileOpener {
         self.local = local
     }
 
-    func progress(for file: FileItem) -> Double { downloads.fileProgress[file.key] ?? 0 }
+    func progress(for file: FileItem) -> DownloadManager.FileProgress? { downloads.fileProgress[file.key] }
 
     func open(_ file: FileItem) {
         if file.isDownloaded, let url = local.url(for: file) {

@@ -108,10 +108,7 @@ struct FileStateBadge: View {
             Group {
                 switch file.state {
                 case .downloading, .queued:
-                    let p = opener.progress(for: file)
-                    ProgressView(value: p)
-                        .progressViewStyle(.circular)
-                        .controlSize(.small)
+                    DownloadProgressRing(progress: opener.progress(for: file))
                 case .downloaded:
                     Image(systemName: file.hasUpdate ? "arrow.triangle.2.circlepath.circle" : "checkmark.circle.fill")
                         .foregroundStyle(file.hasUpdate ? AnyShapeStyle(.orange) : AnyShapeStyle(.tint))
@@ -124,6 +121,16 @@ struct FileStateBadge: View {
             .font(.body)
             .frame(width: 24, height: 24)
         }
+    }
+}
+
+/// Observes one file's progress box: a byte update re-renders only this ring.
+private struct DownloadProgressRing: View {
+    let progress: DownloadManager.FileProgress?
+    var body: some View {
+        ProgressView(value: progress?.fraction ?? 0)
+            .progressViewStyle(.circular)
+            .controlSize(.small)
     }
 }
 

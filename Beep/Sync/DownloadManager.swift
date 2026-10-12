@@ -27,7 +27,20 @@ final class DownloadManager {
     }
 
     private(set) var progress = Progress()
-    private(set) var fileProgress: [String: Double] = [:]
+    /// One observable box per in-flight file, so a progress tick re-renders only that file's
+    /// badge instead of every row reading a shared dictionary. The dictionary itself changes
+    /// only when a download starts or ends.
+    private(set) var fileProgress: [String: FileProgress] = [:]
+
+    @Observable
+    final class FileProgress {
+        var fraction: Double = 0
+    }
+
+    /// Model changes from finished downloads are saved at most every `saveInterval`: every
+    /// save re-fetches every @Query (course list, recents) and re-renders their screens.
+    private let saveInterval: TimeInterval = 0.5
+    private var saveScheduled = false
 
     private let context: ModelContext
     private let local: LocalFiles
@@ -99,6 +112,7 @@ final class DownloadManager {
         queue.removeAll()
         progress = Progress()
         fileProgress.removeAll()
+        delegate.resetThrottles()
     }
 
     func resetSessionCounters() {
@@ -117,7 +131,7 @@ final class DownloadManager {
             task.countOfBytesClientExpectsToReceive = Int64(max(file.filesize, 1))
             inFlight[key] = task
             file.state = .downloading
-            fileProgress[key] = 0
+            fileProgress[key] = FileProgress()
             task.resume()
         }
         progress.queued = queue.count
@@ -155,7 +169,24 @@ final class DownloadManager {
     // MARK: Delegate callbacks (already on main actor)
 
     fileprivate func didProgress(key: String, received: Int64, expected: Int64) {
-        if expected > 0 { fileProgress[key] = min(Double(received) / Double(expected), 0.99) }
+        if expected > 0 { fileProgress[key]?.fraction = min(Double(received) / Double(expected), 0.99) }
+    }
+
+    /// Saves the main context once per burst of completions, and immediately when the queue drains.
+    private func scheduleSave() {
+        if inFlight.isEmpty && queue.isEmpty {
+            saveScheduled = false
+            try? context.save()
+            return
+        }
+        guard !saveScheduled else { return }
+        saveScheduled = true
+        Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(self?.saveInterval ?? 0.5))
+            guard let self else { return }
+            self.saveScheduled = false
+            try? self.context.save()
+        }
     }
 
     fileprivate func didFinish(key: String, relativePath: String?, error: String?) {
@@ -173,8 +204,8 @@ final class DownloadManager {
                 file.lastError = nil
                 progress.completedInSession += 1
             }
-            try? context.save()
         }
+        scheduleSave()
         let callbacks = completions.removeValue(forKey: key) ?? []
         for cb in callbacks { cb(error == nil) }
         pump()
@@ -193,6 +224,23 @@ final class DownloadManager {
         nonisolated(unsafe) var fixedRoot: URL?
         var root: URL { fixedRoot ?? DownloadLocation.root }
 
+        /// Progress callbacks arrive hundreds of times per second per task; only ~10/s per file
+        /// reach the main actor. Decided here, before the hop, so the main thread is not touched.
+        private let throttleLock = NSLock()
+        nonisolated(unsafe) private var lastProgressAt: [String: TimeInterval] = [:]
+        private let progressInterval: TimeInterval = 0.1
+
+        fileprivate func shouldReportProgress(key: String, now: TimeInterval = Date.now.timeIntervalSinceReferenceDate) -> Bool {
+            throttleLock.withLock {
+                if let last = lastProgressAt[key], now - last < progressInterval { return false }
+                lastProgressAt[key] = now
+                return true
+            }
+        }
+
+        fileprivate func clearThrottle(key: String) { throttleLock.withLock { _ = lastProgressAt.removeValue(forKey: key) } }
+        fileprivate func resetThrottles() { throttleLock.withLock { lastProgressAt.removeAll() } }
+
         struct Info: Codable { let key: String; let relativePath: String; let filename: String }
 
         static func describe(key: String, relativePath: String, filename: String) -> String {
@@ -204,6 +252,7 @@ final class DownloadManager {
 
         func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
             guard let info = downloadTask.taskDescription.flatMap(Self.parse) else { return }
+            clearThrottle(key: info.key)
             if let http = downloadTask.response as? HTTPURLResponse, !(200...299).contains(http.statusCode) {
                 let status = http.statusCode
                 Task { @MainActor in self.manager?.didFinish(key: info.key, relativePath: nil, error: "HTTP \(status)") }
@@ -224,7 +273,7 @@ final class DownloadManager {
         }
 
         func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-            guard let info = downloadTask.taskDescription.flatMap(Self.parse) else { return }
+            guard let info = downloadTask.taskDescription.flatMap(Self.parse), shouldReportProgress(key: info.key) else { return }
             Task { @MainActor in self.manager?.didProgress(key: info.key, received: totalBytesWritten, expected: totalBytesExpectedToWrite) }
         }
 

@@ -4,13 +4,20 @@ import Foundation
 /// year rolls over in September.
 nonisolated enum AcademicYear {
     static func isAcademicYear(_ categoryName: String) -> Bool {
-        categoryName.wholeMatch(of: /\d{4}-\d{2}/) != nil
+        startYear(categoryName) != nil
     }
+
+    /// Parsed start years by category name: the course list asks for every course on every
+    /// render, and a regex match per call showed up in profiles.
+    private static let cacheLock = NSLock()
+    nonisolated(unsafe) private static var cache: [String: Int?] = [:]
 
     /// Start year of an academic-year category, e.g. 2026 for "2026-27".
     static func startYear(_ categoryName: String) -> Int? {
-        guard let m = categoryName.wholeMatch(of: /(\d{4})-\d{2}/) else { return nil }
-        return Int(m.1)
+        if let hit = cacheLock.withLock({ cache[categoryName] }) { return hit }
+        let year: Int? = categoryName.wholeMatch(of: /(\d{4})-\d{2}/).flatMap { Int($0.1) }
+        cacheLock.withLock { cache[categoryName] = year }
+        return year
     }
 
     /// Start year of the academic year that is current at `date`.

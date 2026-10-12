@@ -118,7 +118,7 @@ private struct CourseContentView: View {
             }
         }
         .groupedList()
-                .selectionBar(selection, candidates: selectableFiles)
+                .selectionBar(selection, candidates: selection.isActive ? selectableFiles : [])
         .animation(.snappy, value: selection.isActive)
         .environment(selection)
         .navigationTitle(course.title)
@@ -171,13 +171,25 @@ private struct CourseHeader: View {
     @Bindable var course: Course
     let lastSeen: Date?
     @Environment(SyncEngine.self) private var sync
-    private var missing: Int { course.files.reduce(0) { $0 + (($1.isDownloaded && !$1.hasUpdate) ? 0 : 1) } }
 
-    private var totalSize: Int { course.files.reduce(0) { $0 + $1.filesize } }
-    private var newCount: Int { course.files.reduce(0) { $0 + ($1.isNew(relativeTo: lastSeen) ? 1 : 0) } }
-    private var downloaded: Int { course.files.reduce(0) { $0 + ($1.isDownloaded ? 1 : 0) } }
+    /// One pass over the files per render instead of four.
+    private struct Stats { var count = 0, missing = 0, totalSize = 0, newCount = 0, downloaded = 0 }
+    private var stats: Stats {
+        var s = Stats()
+        for f in course.files {
+            s.count += 1
+            s.totalSize += f.filesize
+            let offline = f.isDownloaded
+            if offline { s.downloaded += 1 }
+            if !offline || f.hasUpdate { s.missing += 1 }
+            if f.isNew(relativeTo: lastSeen) { s.newCount += 1 }
+        }
+        return s
+    }
 
     var body: some View {
+        let stats = stats
+        let missing = stats.missing
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             HStack(alignment: .top, spacing: Theme.Spacing.m - 4) {
                 CourseTile(monogram: course.monogram, color: course.color, size: 56)
@@ -200,10 +212,10 @@ private struct CourseHeader: View {
                 Spacer(minLength: 0)
             }
             HStack(spacing: Theme.Spacing.l) {
-                Stat(value: "\(course.files.count)", label: "files")
-                Stat(value: "\(newCount)", label: "new", highlighted: newCount > 0)
-                Stat(value: totalSize == 0 ? "0 KB" : ByteCountFormatter.string(fromByteCount: Int64(totalSize), countStyle: .file), label: "total")
-                Stat(value: "\(downloaded)", label: "offline")
+                Stat(value: "\(stats.count)", label: "files")
+                Stat(value: "\(stats.newCount)", label: "new", highlighted: stats.newCount > 0)
+                Stat(value: stats.totalSize == 0 ? "0 KB" : ByteCountFormatter.string(fromByteCount: Int64(stats.totalSize), countStyle: .file), label: "total")
+                Stat(value: "\(stats.downloaded)", label: "offline")
                 Spacer(minLength: 0)
             }
             HStack(spacing: Theme.Spacing.s) {
