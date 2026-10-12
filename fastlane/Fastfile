@@ -88,13 +88,14 @@ def commit_and_push(message)
   rescue => e
     UI.important("Skip commit: #{e.message}")
   end
-  push_to_git_remote(remote: "origin", local_branch: "HEAD", remote_branch: "main")
+  branch = git_branch
+  push_to_git_remote(remote: "origin", local_branch: "HEAD", remote_branch: branch)
 end
 
 before_all do |lane|
   next unless [:beta_ios, :beta_mac].include?(lane)   # tester management lanes don't touch the tree
   ensure_git_status_clean(show_uncommitted_changes: true)
-  sh "git pull --rebase --autostash origin main"
+  sh "git pull --rebase --autostash origin #{git_branch}"
   sh "cd .. && xcodegen generate -q"
   ensure_git_status_clean(show_uncommitted_changes: true)
 end
