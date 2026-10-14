@@ -109,6 +109,16 @@ enum Platform {
         #endif
     }
 
+    /// Puts plain text on the system clipboard.
+    @MainActor static func copyToClipboard(_ text: String) {
+        #if os(iOS)
+        UIPasteboard.general.string = text
+        #else
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        #endif
+    }
+
     /// Opens a folder in Files (iOS) or Finder (macOS).
     @MainActor static func openFolder(_ folder: URL) {
         #if os(iOS)

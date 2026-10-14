@@ -164,6 +164,9 @@ struct FileContextMenu: View {
         Button { opener.share(file) } label: { Label("Open in…", systemImage: "square.and.arrow.up") }
         if file.isDownloaded {
             Button { opener.showInFiles(file) } label: { Label("Show in Files", systemImage: "folder") }
+            #if os(macOS)
+            Button { opener.copyPath(of: file) } label: { Label("Copy Path", systemImage: "document.on.document") }
+            #endif
             Divider()
             Button(role: .destructive) { opener.removeLocal(file) } label: { Label("Remove download", systemImage: "trash") }
         } else {

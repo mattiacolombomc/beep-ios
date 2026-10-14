@@ -1284,6 +1284,16 @@
         }
       }
     },
+    "Copy Path": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copia percorso"
+          }
+        }
+      }
+    },
     "Couldn't download %lld files": {
       "localizations": {
         "en": {

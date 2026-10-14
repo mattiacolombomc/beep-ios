@@ -114,6 +114,12 @@ final class FileOpener {
         Platform.reveal(url)
     }
 
+    /// Copies the full on-disk path of a downloaded file to the clipboard.
+    func copyPath(of file: FileItem) {
+        guard let url = local.url(for: file) else { return }
+        Platform.copyToClipboard(url.path(percentEncoded: false))
+    }
+
     func renameFolder(of course: Course, to name: String) throws {
         try local.renameCourseFolder(course, to: name)
     }
