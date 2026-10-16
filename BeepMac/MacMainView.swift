@@ -63,6 +63,7 @@ struct MacMainView: View {
             .task {
                 #if DEBUG || BENCH
                 if SwitchBenchmark.isEnabled { await SwitchBenchmark.run(router: router); return }
+                if let tab = SwitchBenchmark.startTab { router.selectedTab = tab; return }
                 if TypingBenchmark.isEnabled { if !ProcessInfo.processInfo.arguments.contains("-sidebar") { router.selectedTab = .search }; return }
                 #endif
                 // Refresh the index on launch if it's stale (> 15 min) or empty.

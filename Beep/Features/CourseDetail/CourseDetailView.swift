@@ -60,7 +60,13 @@ private struct CourseContentView: View {
     @Bindable var course: Course
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
+    #if os(macOS)
+    /// Native toolbar field (see `ToolbarSearch`): `.searchable` rebuilt the toolbar per keystroke.
+    @State private var search = SearchText()
+    private var query: String { search.text }
+    #else
     @State private var query = ""
+    #endif
     @State private var scope: FileTypeScope = .all
     @State private var sort: FileSort = .position
     @State private var onlyNew = false
@@ -123,10 +129,28 @@ private struct CourseContentView: View {
         .environment(selection)
         .navigationTitle(course.title)
         .inlineNavigationTitle()
+        #if os(macOS)
+        .modifier(ToolbarSearch(search: search, prompt: "Search in this course"))
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if !query.isEmpty {
+                Picker("Type", selection: $scope) {
+                    ForEach(FileTypeScope.allCases) { Text($0.label).tag($0) }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .fixedSize()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, Theme.Spacing.m)
+                .padding(.vertical, Theme.Spacing.s)
+                .background(.bar)
+            }
+        }
+        #else
         .searchable(text: $query, prompt: "Search in this course")
         .searchScopes($scope, activation: .onSearchPresentation) {
             ForEach(FileTypeScope.allCases) { Text($0.label).tag($0) }
         }
+        #endif
         .refreshable { await refresh() }
         .toolbar {
             ToolbarItem(placement: .trailingBar) {

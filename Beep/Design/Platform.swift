@@ -191,4 +191,64 @@ struct SidebarSearchField: NSViewRepresentable {
         }
     }
 }
+
+/// Text of a search field that lives in the window toolbar. A reference type on purpose: views
+/// that host the field hold the same object across renders, so typing never changes their inputs.
+@Observable
+final class SearchText {
+    var text = ""
+    /// Bumped to move the cursor into the field.
+    var focusRequest = 0
+}
+
+/// Native NSSearchField for the window toolbar, used instead of `.searchable` on the Mac: the
+/// latter turns every keystroke into a toolbar change and SwiftUI rebuilds every toolbar item.
+struct ToolbarSearchField: NSViewRepresentable {
+    let search: SearchText
+    let prompt: String
+
+    func makeNSView(context: Context) -> NSSearchField {
+        let field = NSSearchField()
+        field.placeholderString = prompt
+        field.sendsSearchStringImmediately = true
+        field.delegate = context.coordinator
+        field.widthAnchor.constraint(greaterThanOrEqualToConstant: 180).isActive = true
+        field.widthAnchor.constraint(lessThanOrEqualToConstant: 280).isActive = true
+        return field
+    }
+
+    func updateNSView(_ field: NSSearchField, context: Context) {
+        if field.stringValue != search.text { field.stringValue = search.text }
+        if context.coordinator.handledFocus != search.focusRequest {
+            context.coordinator.handledFocus = search.focusRequest
+            DispatchQueue.main.async { field.window?.makeFirstResponder(field) }
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(search: search) }
+
+    final class Coordinator: NSObject, NSSearchFieldDelegate {
+        let search: SearchText
+        var handledFocus = 0
+        init(search: SearchText) { self.search = search }
+        func controlTextDidChange(_ note: Notification) {
+            if let field = note.object as? NSSearchField { search.text = field.stringValue }
+        }
+    }
+}
+
+/// Puts a `ToolbarSearchField` in the toolbar. Its only input is the `SearchText` object, so
+/// the host's re-renders (results arriving, every keystroke) do not re-emit this toolbar item.
+struct ToolbarSearch: ViewModifier {
+    let search: SearchText
+    let prompt: LocalizedStringResource
+
+    func body(content: Content) -> some View {
+        content.toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                ToolbarSearchField(search: search, prompt: String(localized: prompt))
+            }
+        }
+    }
+}
 #endif
