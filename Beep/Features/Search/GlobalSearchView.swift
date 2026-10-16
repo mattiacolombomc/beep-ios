@@ -16,7 +16,7 @@ struct GlobalSearchView: View {
                     ContentUnavailableView("Search everything", systemImage: "magnifyingglass", description: Text("File names, folders and courses across all your material."))
                         .listRowBackground(Color.clear)
                 } else {
-                    let matchedCourses = courses.filter { $0.title.localizedCaseInsensitiveContains(query) || ($0.code?.contains(query) ?? false) }
+                    let matchedCourses = courses.filter { $0.title.localizedCaseInsensitiveContains(query) || ($0.code?.contains(query) ?? false) || ($0.professors?.localizedCaseInsensitiveContains(query) ?? false) }
                     if !matchedCourses.isEmpty {
                         Section("Courses") {
                             ForEach(matchedCourses) { course in

@@ -1,12 +1,20 @@
+import SwiftData
 import SwiftUI
 
 /// Auth gate: welcome/login when signed out, onboarding after the first login, then the main tabs.
 struct RootView: View {
     @Environment(AppSession.self) private var session
     @AppStorage("onboarding.done") private var onboardingDone = false
+    @Environment(FileOpener.self) private var opener
+    @Environment(\.modelContext) private var context
 
     var body: some View {
-        content.preferredColorScheme(Self.forcedScheme)
+        content
+            .preferredColorScheme(Self.forcedScheme)
+            .task {
+                guard !DemoData.isEnabled else { return }
+                opener.migrateLayout(context: context)
+            }
     }
 
     /// Debug: `-forceDark` / `-forceLight` override the system appearance for screenshots and checks.

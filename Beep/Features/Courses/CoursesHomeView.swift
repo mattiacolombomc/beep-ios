@@ -346,10 +346,16 @@ struct CourseContextMenu: View {
     var onRename: (() -> Void)? = nil
     var onUnenrol: (() -> Void)? = nil
     @Environment(\.openURL) private var openURL
+    @Environment(FileOpener.self) private var opener
 
     var body: some View {
         Toggle(isOn: $course.isFavourite) { Label("Favourite", systemImage: "star") }
         Toggle(isOn: $course.syncEnabled) { Label("Auto-download new files", systemImage: "arrow.down.circle") }
+        #if os(macOS)
+        if let dir = opener.directory(of: course) {
+            Button { opener.reveal(dir) } label: { Label("Show in Finder", systemImage: "folder") }
+        }
+        #endif
         if let onRename {
             Button(action: onRename) { Label("Rename folder…", systemImage: "folder.badge.gearshape") }
         }

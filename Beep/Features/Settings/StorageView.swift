@@ -100,7 +100,8 @@ private struct StorageRow: View {
                     .progressViewStyle(.linear)
                     .tint(item.course.color)
                     .accessibilityHidden(true)
-                Text("\(item.files) files").font(.subheadline).foregroundStyle(.secondary).monospacedDigit()
+                (Text(verbatim: item.course.isAcademicYear ? "\(item.course.categoryName) · " : "") + Text("\(item.files) files"))
+                    .font(.subheadline).foregroundStyle(.secondary).monospacedDigit()
             }
             Spacer(minLength: Theme.Spacing.s)
             Text(item.bytes.fileSizeLabel)

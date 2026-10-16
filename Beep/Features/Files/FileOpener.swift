@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import QuickLook
+import SwiftData
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -114,6 +115,25 @@ final class FileOpener {
         Platform.reveal(url)
     }
 
+    /// The course's folder on disk (this edition), if anything was downloaded.
+    func directory(of course: Course) -> URL? { local.directory(of: course) }
+
+    /// A folder module's directory on disk, if anything was downloaded.
+    func directory(of module: CourseModule) -> URL? { local.directory(of: module) }
+
+    func reveal(_ folder: URL) { Platform.reveal(folder) }
+
+    /// Runs `LocalFiles.migrateLayout` once per download root (the Mac folder can change).
+    func migrateLayout(context: ModelContext) {
+        let key = "files.layout2." + local.root.standardizedFileURL.path(percentEncoded: false)
+        guard !UserDefaults.standard.bool(forKey: key),
+              FileManager.default.fileExists(atPath: local.root.path(percentEncoded: false)) else { return }
+        let courses = (try? context.fetch(FetchDescriptor<Course>())) ?? []
+        local.migrateLayout(courses: courses)
+        try? context.save()
+        UserDefaults.standard.set(true, forKey: key)
+    }
+
     /// Copies the full on-disk path of a downloaded file to the clipboard.
     func copyPath(of file: FileItem) {
         guard let url = local.url(for: file) else { return }
@@ -150,13 +170,28 @@ struct LocalFiles: Sendable {
 
     /// Relative path for a file, computed from its course/module/filepath.
     func relativePath(for file: FileItem) -> String {
-        var parts: [String] = []
-        let folder = file.course.map { $0.folderName.isEmpty ? $0.title : $0.folderName } ?? "Course"
-        parts.append(Self.sanitize(folder))
+        var parts = file.course?.folderDirectory.map(Self.sanitize) ?? ["Course"]
         if let module = file.module, module.kind == .folder { parts.append(Self.sanitize(module.name)) }
         for sub in file.filepath.split(separator: "/") where !sub.isEmpty { parts.append(Self.sanitize(String(sub))) }
         parts.append(Self.sanitize(file.filename))
         return parts.joined(separator: "/")
+    }
+
+    /// Existing directory of a course edition, or nil when nothing was downloaded yet.
+    func directory(of course: Course) -> URL? {
+        existingDirectory(root.appending(path: course.folderDirectory.map(Self.sanitize).joined(separator: "/")))
+    }
+
+    /// Existing directory of a folder module (other module kinds put files straight in the course folder).
+    func directory(of module: CourseModule) -> URL? {
+        guard module.kind == .folder, let course = module.section?.course,
+              let courseDir = directory(of: course) else { return nil }
+        return existingDirectory(courseDir.appending(path: Self.sanitize(module.name)))
+    }
+
+    private func existingDirectory(_ url: URL) -> URL? {
+        var isDir: ObjCBool = false
+        return FileManager.default.fileExists(atPath: url.path(percentEncoded: false), isDirectory: &isDir) && isDir.boolValue ? url : nil
     }
 
     func url(for file: FileItem) -> URL? {
@@ -179,34 +214,88 @@ struct LocalFiles: Sendable {
         try? FileManager.default.removeItem(at: url)
     }
 
-    /// Moves a course's folder to a new name and rewrites the stored relative paths.
-    /// Merges into an existing folder with the same name.
+    /// Moves this edition's folder to a new course folder name and rewrites the stored relative
+    /// paths. Other editions of the course keep their own year sub-folder. Merges into an
+    /// existing folder with the same name.
     func renameCourseFolder(_ course: Course, to requested: String) throws {
         let newName = Self.sanitize(requested)
-        let oldName = course.folderName.isEmpty ? course.title : course.folderName
+        let oldName = Self.sanitize(course.folderName.isEmpty ? course.title : course.folderName)
         guard newName != oldName else { return }
-        let oldDir = root.appending(path: oldName)
-        let newDir = root.appending(path: newName)
-        let fm = FileManager.default
-        if fm.fileExists(atPath: oldDir.path(percentEncoded: false)) {
-            if fm.fileExists(atPath: newDir.path(percentEncoded: false)) {
-                for item in try fm.contentsOfDirectory(at: oldDir, includingPropertiesForKeys: nil) {
-                    let dest = newDir.appending(path: item.lastPathComponent)
-                    if fm.fileExists(atPath: dest.path(percentEncoded: false)) { try fm.removeItem(at: dest) }
-                    try fm.moveItem(at: item, to: dest)
-                }
-                try fm.removeItem(at: oldDir)
-            } else {
-                try fm.createDirectory(at: root, withIntermediateDirectories: true)
-                try fm.moveItem(at: oldDir, to: newDir)
-            }
-        }
+        let year = course.isAcademicYear ? Self.sanitize(course.categoryName) : nil
+        let oldParts = [oldName] + (year.map { [$0] } ?? [])
+        let newParts = [newName] + (year.map { [$0] } ?? [])
+        try Self.moveMerging(root.appending(path: oldParts.joined(separator: "/")), into: root.appending(path: newParts.joined(separator: "/")))
+        if year != nil { removeEmptyDirectories(from: root.appending(path: oldName)) }
+        let oldPrefix = oldParts.joined(separator: "/") + "/"
+        let newPrefix = newParts.joined(separator: "/") + "/"
         for file in course.files {
-            if let rel = file.localRelativePath, rel.hasPrefix(oldName + "/") {
-                file.localRelativePath = newName + rel.dropFirst(oldName.count)
+            if let rel = file.localRelativePath, rel.hasPrefix(oldPrefix) {
+                file.localRelativePath = newPrefix + rel.dropFirst(oldPrefix.count)
             }
         }
         course.folderName = newName
+    }
+
+    /// Moves `source` to `target`; when `target` exists, its contents are merged (replacing files).
+    private static func moveMerging(_ source: URL, into target: URL) throws {
+        let fm = FileManager.default
+        guard fm.fileExists(atPath: source.path(percentEncoded: false)) else { return }
+        if fm.fileExists(atPath: target.path(percentEncoded: false)) {
+            for item in try fm.contentsOfDirectory(at: source, includingPropertiesForKeys: nil) {
+                let dest = target.appending(path: item.lastPathComponent)
+                if fm.fileExists(atPath: dest.path(percentEncoded: false)) { try fm.removeItem(at: dest) }
+                try fm.moveItem(at: item, to: dest)
+            }
+            try fm.removeItem(at: source)
+        } else {
+            try fm.createDirectory(at: target.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try fm.moveItem(at: source, to: target)
+        }
+    }
+
+    /// Moves downloads from the flat layout of earlier versions ("Title (Professor)/file", or
+    /// "Title/file") into "Title/2026-27/file". Idempotent: files already in place are left alone,
+    /// files missing on disk are not touched.
+    func migrateLayout(courses: [Course]) {
+        let fm = FileManager.default
+        var emptied: Set<URL> = []
+        for course in courses {
+            // Drop the suffixes the old indexer added to tell editions apart; user renames stay.
+            let autoNames = [course.professors.map { "\(course.title) (\($0))" }, "\(course.title) (\(course.id))"].compactMap { $0 }
+            if autoNames.contains(course.folderName) { course.folderName = course.title }
+            for file in course.files {
+                guard let rel = file.localRelativePath else { continue }
+                let target = relativePath(for: file)
+                guard rel != target else { continue }
+                let src = root.appending(path: rel), dst = root.appending(path: target)
+                guard fm.fileExists(atPath: src.path(percentEncoded: false)) else { continue }
+                do {
+                    try fm.createDirectory(at: dst.deletingLastPathComponent(), withIntermediateDirectories: true)
+                    if fm.fileExists(atPath: dst.path(percentEncoded: false)) { try fm.removeItem(at: dst) }
+                    try fm.moveItem(at: src, to: dst)
+                    file.localRelativePath = target
+                    emptied.insert(src.deletingLastPathComponent())
+                } catch { continue }
+            }
+        }
+        for dir in emptied { removeEmptyDirectories(from: dir) }
+    }
+
+    /// Removes `dir` and then its parents while they are empty, never the root itself.
+    private func removeEmptyDirectories(from dir: URL) {
+        func path(_ url: URL) -> String {
+            var p = url.standardizedFileURL.path(percentEncoded: false)
+            while p.count > 1, p.hasSuffix("/") { p.removeLast() }
+            return p
+        }
+        let rootPath = path(root)
+        var current = dir
+        while path(current) != rootPath, path(current).hasPrefix(rootPath + "/") {
+            guard let items = try? FileManager.default.contentsOfDirectory(atPath: path(current)),
+                  items.allSatisfy({ $0 == ".DS_Store" }) else { return }
+            try? FileManager.default.removeItem(at: current)
+            current = current.deletingLastPathComponent()
+        }
     }
 
     /// Bytes on disk under the root (downloaded material).

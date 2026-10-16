@@ -18,7 +18,8 @@ final class Course {
     var syncEnabled: Bool
     /// Hidden locally by the user (independent from Moodle's `hidden`).
     var isArchived: Bool = false
-    /// On-disk folder name; equals `title` unless another course shares it (then "Title (Professors)").
+    /// On-disk folder of the course (user-renamable); defaults to `title`. Editions of the same
+    /// course share it and are kept apart by `folderDirectory`.
     var folderName: String = ""
     var lastIndexedAt: Date?
     /// Last time the user opened the course; files first seen after this are "new".
@@ -48,6 +49,14 @@ final class Course {
 
     var isAcademicYear: Bool { AcademicYear.isAcademicYear(categoryName) }
     var isCurrentYear: Bool { AcademicYear.isCurrent(categoryName) }
+
+    /// Where this course's downloads live, relative to the download root: the course folder plus
+    /// one sub-folder per academic year ("Data Bases 2/2026-27"), so two editions never mix.
+    var folderDirectory: [String] {
+        var parts = [folderName.isEmpty ? title : folderName]
+        if isAcademicYear { parts.append(categoryName) }
+        return parts
+    }
 
     func recountNewFiles() {
         newFilesCount = files.reduce(0) { $0 + ($1.isNew(relativeTo: lastSeenAt) ? 1 : 0) }

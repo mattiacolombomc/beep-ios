@@ -3,8 +3,12 @@ import SwiftUI
 struct CourseRow: View {
     let course: Course
 
+    /// Year first: two editions of a course must be telling apart at a glance.
     private var subtitle: String {
-        [course.code, course.professors].compactMap { $0 }.joined(separator: " · ")
+        var parts: [String] = []
+        if course.isAcademicYear { parts.append(course.categoryName) }
+        parts += [course.code, course.professors].compactMap { $0 }
+        return parts.joined(separator: " · ")
     }
 
     var body: some View {
