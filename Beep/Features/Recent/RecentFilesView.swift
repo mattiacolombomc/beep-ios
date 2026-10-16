@@ -42,16 +42,8 @@ struct RecentFilesView: View {
                         .selectionBar(selection, candidates: files)
             .animation(.snappy, value: selection.isActive)
             .environment(selection)
-            .navigationTitle("Recent")
-            .toolbar {
-                ToolbarItem(placement: .trailingBar) {
-                    if selection.isActive {
-                        Button("Done") { selection.end() }
-                    } else {
-                        Button("Select") { selection.begin() }.disabled(files.isEmpty)
-                    }
-                }
-            }
+            .sectionTitle("Recent")
+            .modifier(SelectionToolbar(selection: selection, canSelect: !files.isEmpty))
             .onDisappear { selection.end() }
         }
     }

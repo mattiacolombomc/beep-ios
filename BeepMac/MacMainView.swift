@@ -1,8 +1,12 @@
 import SwiftData
 import SwiftUI
 
-/// Main window: courses in the sidebar, the selected course on the right.
-/// Recent, Activity and Search replace the split view, picked from the toolbar or ⌘1/⌘2/⌘3/⌘F.
+/// Main window: courses in the sidebar, the selected course on the right; Recent, Activity and
+/// Search are picked from the toolbar or ⌘1/⌘2/⌘3/⌘F.
+///
+/// Every section stays mounted (`SectionLayer`) and only the visible one shows: rebuilding a
+/// section on each switch recreated its split view and lists and re-attached them to the window.
+/// Section toolbars and titles follow `isActiveSection`, read only by their small modifiers.
 struct MacMainView: View {
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
@@ -22,16 +26,7 @@ struct MacMainView: View {
             SyncFolderBar()
         }
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Picker("Section", selection: $router.selectedTab) {
-                        Label("Courses", systemImage: "graduationcap").tag(AppRouter.AppTab.courses)
-                        Label("Recent", systemImage: "clock").tag(AppRouter.AppTab.recent)
-                        Label("Activity", systemImage: "arrow.down.circle").tag(AppRouter.AppTab.activity)
-                        Label("Search", systemImage: "magnifyingglass").tag(AppRouter.AppTab.search)
-                    }
-                    .pickerStyle(.segmented)
-                    .labelStyle(.titleAndIcon)
-                }
+                ToolbarItem(placement: .principal) { SectionPicker() }
                 ToolbarItem(placement: .primaryAction) {
                     SyncButton()
                 }
@@ -83,31 +78,99 @@ struct MacMainView: View {
             }
     }
 
-    @ViewBuilder
     private var content: some View {
-        switch router.selectedTab {
-        case .courses:
-            NavigationSplitView {
-                CoursesListView(selection: $selection, isSplit: true)
-                    .navigationSplitViewColumnWidth(min: 300, ideal: 340, max: 460)
-            } detail: {
-                if let selection {
-                    NavigationStack {
-                        CourseDetailView(courseID: selection)
-                            .courseRoutes()
+        ZStack {
+            SectionLayer(tab: .courses) {
+                NavigationSplitView {
+                    CoursesListView(selection: $selection, isSplit: true)
+                        .navigationSplitViewColumnWidth(min: 300, ideal: 340, max: 460)
+                        .modifier(SidebarToggleWhenActive())
+                } detail: {
+                    if let selection {
+                        NavigationStack {
+                            CourseDetailView(courseID: selection)
+                                .courseRoutes()
+                        }
+                        .id(selection)
+                    } else {
+                        RecentFilesView()
                     }
-                    .id(selection)
-                } else {
-                    RecentFilesView()
                 }
             }
-        case .recent:
-            RecentFilesView()
-        case .activity:
-            ActivityView()
-        case .search:
-            GlobalSearchView()
+            SectionLayer(tab: .recent) { RecentFilesView() }
+            SectionLayer(tab: .activity) { ActivityView() }
+            SectionLayer(tab: .search) { GlobalSearchView() }
         }
+        .modifier(WindowTitle(courseID: selection))
+    }
+}
+
+/// The hidden Courses split view would keep its sidebar button in the toolbar.
+private struct SidebarToggleWhenActive: ViewModifier {
+    @Environment(\.isActiveSection) private var isActive
+    func body(content: Content) -> some View {
+        content.toolbar(removing: isActive ? nil : .sidebarToggle)
+    }
+}
+
+/// The window title: the open course, or the visible section's name.
+private struct WindowTitle: ViewModifier {
+    let courseID: Int?
+    @Environment(AppRouter.self) private var router
+    @Query private var course: [Course]
+
+    init(courseID: Int?) {
+        self.courseID = courseID
+        let id = courseID ?? -1
+        _course = Query(filter: #Predicate<Course> { $0.id == id })
+    }
+
+    private var title: String {
+        switch router.selectedTab {
+        case .courses: course.first?.title ?? String(localized: "Recent")
+        case .recent: String(localized: "Recent")
+        case .activity: String(localized: "Activity")
+        case .search: String(localized: "Search")
+        }
+    }
+
+    func body(content: Content) -> some View {
+        content.navigationTitle(title)
+    }
+}
+
+/// Only the picker and the layers read `selectedTab`: a switch re-renders them, not the window.
+private struct SectionPicker: View {
+    @Environment(AppRouter.self) private var router
+    var body: some View {
+        @Bindable var router = router
+        Picker("Section", selection: $router.selectedTab) {
+            Label("Courses", systemImage: "graduationcap").tag(AppRouter.AppTab.courses)
+            Label("Recent", systemImage: "clock").tag(AppRouter.AppTab.recent)
+            Label("Activity", systemImage: "arrow.down.circle").tag(AppRouter.AppTab.activity)
+            Label("Search", systemImage: "magnifyingglass").tag(AppRouter.AppTab.search)
+        }
+        .pickerStyle(.segmented)
+        .labelStyle(.titleAndIcon)
+    }
+}
+
+/// A section that stays in the window while another one is visible. SwiftUI detaches fully
+/// transparent views from the AppKit hierarchy and re-attaches (and lays out) them when they
+/// come back, so a hidden section keeps a near-zero opacity instead of 0. The visible one is
+/// raised with `zIndex` and receives the clicks; toggling `allowsHitTesting` or
+/// `accessibilityHidden` instead made SwiftUI re-attach the hidden lists on every switch.
+private struct SectionLayer<Content: View>: View {
+    let tab: AppRouter.AppTab
+    @ViewBuilder let content: Content
+    @Environment(AppRouter.self) private var router
+
+    var body: some View {
+        let active = router.selectedTab == tab
+        content
+            .environment(\.isActiveSection, active)
+            .opacity(active ? 1 : 0.001)
+            .zIndex(active ? 1 : 0)
     }
 }
 

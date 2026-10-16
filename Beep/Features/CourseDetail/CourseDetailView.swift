@@ -137,7 +137,7 @@ private struct CourseContentView: View {
         .selectionBar(selection, candidates: selectableFiles(filtered: filtered))
         .animation(.snappy, value: selection.isActive)
         .environment(selection)
-        .navigationTitle(course.title)
+        .sectionTitle(verbatim: course.title)
         .inlineNavigationTitle()
         #if os(macOS)
         .modifier(ToolbarSearch(search: search, prompt: "Search in this course"))
@@ -331,10 +331,12 @@ private struct CourseToolbar: ViewModifier {
     let course: Course
     let options: CourseViewOptions
     let selection: FileSelection
+    @Environment(\.isActiveSection) private var isActive
 
     func body(content: Content) -> some View {
         @Bindable var options = options
         return content.toolbar {
+            if isActive {
             ToolbarItem(placement: .trailingBar) {
                 if selection.isActive {
                     Button("Done") { selection.end() }
@@ -353,6 +355,7 @@ private struct CourseToolbar: ViewModifier {
                         Label("More", systemImage: "ellipsis.circle")
                     }
                 }
+            }
             }
         }
     }

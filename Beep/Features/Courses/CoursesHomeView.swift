@@ -170,7 +170,7 @@ struct CoursesListView: View {
             }
         }
         .groupedList()
-        .navigationTitle("Courses")
+        .sectionTitle("Courses")
         .largeNavigationTitle()
         #if os(macOS)
         // Not `.searchable`: on the Mac it is a toolbar item, and each keystroke rebuilt the toolbar.
@@ -506,12 +506,14 @@ private struct CoursesListToolbar: ViewModifier {
     @AppStorage("home.onlyNew") private var onlyNew = false
     @AppStorage("home.onlyAutoDownload") private var onlyAutoDownload = false
     @State private var showCatalog = false
+    @Environment(\.isActiveSection) private var isActive
 
     private var isFilterActive: Bool { yearFilter != .all || showHidden || showArchived || onlyNew || onlyAutoDownload }
 
     func body(content: Content) -> some View {
         content
             .toolbar {
+                if isActive {
                 ToolbarItem(placement: .trailingBar) {
                     Menu {
                         Picker("Years", selection: $yearFilter) {
@@ -535,6 +537,7 @@ private struct CoursesListToolbar: ViewModifier {
                 }
                 ToolbarItem(placement: .trailingBar) {
                     Button("Settings", systemImage: "gearshape") { router.showSettings = true }
+                }
                 }
             }
             .navigationDestination(isPresented: $showCatalog) { CatalogSearchView(initialQuery: "") }

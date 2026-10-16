@@ -62,17 +62,9 @@ struct GlobalSearchView: View {
                         .selectionBar(selection, candidates: results)
             .animation(.snappy, value: selection.isActive)
             .environment(selection)
-            .toolbar {
-                ToolbarItem(placement: .trailingBar) {
-                    if selection.isActive {
-                        Button("Done") { selection.end() }
-                    } else if !results.isEmpty {
-                        Button("Select") { selection.begin() }
-                    }
-                }
-            }
+            .modifier(SelectionToolbar(selection: selection, canSelect: !results.isEmpty, hidesWhenEmpty: true))
             .onChange(of: results.map(\.key)) { _, _ in if results.isEmpty { selection.end() } }
-            .navigationTitle("Search")
+            .sectionTitle("Search")
             .navigationDestination(for: Int.self) { CourseDetailView(courseID: $0) }
             .navigationDestination(for: CatalogRoute.self) { CatalogSearchView(initialQuery: $0.query) }
             .courseRoutes()
@@ -93,11 +85,7 @@ struct GlobalSearchView: View {
                 }
             }
             // Opening the Search section puts the cursor in the field.
-            .task(id: router.selectedTab) {
-                guard router.selectedTab == .search else { return }
-                try? await Task.sleep(for: .milliseconds(150))
-                search.focusRequest += 1
-            }
+            .modifier(FocusWhenShown(search: search))
             #else
             .searchable(text: $query, prompt: "Files in every course")
             .searchFocused($searchFocused)
@@ -153,3 +141,19 @@ struct GlobalSearchView: View {
         return Array(found.lazy.filter { scope.matches($0.fileExtension) }.prefix(limit))
     }
 }
+
+#if os(macOS)
+/// Moves the cursor into the search field whenever the section becomes visible. Reads only
+/// `isActiveSection`, so switching sections does not re-render the search screen.
+private struct FocusWhenShown: ViewModifier {
+    let search: SearchText
+    @Environment(\.isActiveSection) private var isActive
+    func body(content: Content) -> some View {
+        content.task(id: isActive) {
+            guard isActive else { return }
+            try? await Task.sleep(for: .milliseconds(150))
+            search.focusRequest += 1
+        }
+    }
+}
+#endif

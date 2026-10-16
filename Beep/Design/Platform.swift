@@ -242,11 +242,14 @@ struct ToolbarSearchField: NSViewRepresentable {
 struct ToolbarSearch: ViewModifier {
     let search: SearchText
     let prompt: LocalizedStringResource
+    @Environment(\.isActiveSection) private var isActive
 
     func body(content: Content) -> some View {
         content.toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                ToolbarSearchField(search: search, prompt: String(localized: prompt))
+            if isActive {
+                ToolbarItem(placement: .primaryAction) {
+                    ToolbarSearchField(search: search, prompt: String(localized: prompt))
+                }
             }
         }
     }
