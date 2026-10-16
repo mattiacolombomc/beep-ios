@@ -226,16 +226,11 @@ private struct CourseHeader: View {
                         .font(.title2.weight(.bold))
                         .lineLimit(3)
                         .padding(.bottom, 2)
-                    if let code = course.code {
-                        Text(code)
-                            .font(.caption.weight(.semibold))
-                            .tracking(1.2)
-                            .foregroundStyle(.secondary)
+                    // Same year tag, code and professors as the course rows in the sidebar.
+                    CourseMetaLine(course: course)
+                    if !course.isAcademicYear {
+                        Text(course.categoryName).font(.subheadline).foregroundStyle(.tertiary)
                     }
-                    if let profs = course.professors {
-                        Text(profs).font(.subheadline).foregroundStyle(.secondary)
-                    }
-                    Text(course.categoryName).font(.subheadline).foregroundStyle(.tertiary)
                 }
                 Spacer(minLength: 0)
             }

@@ -106,7 +106,7 @@ struct MacMainView: View {
             SectionLayer(tab: .activity) { ActivityView() }
             SectionLayer(tab: .search) { GlobalSearchView() }
         }
-        .modifier(WindowTitle(selection: courseSelection))
+        .modifier(WindowTitle())
     }
 }
 
@@ -149,27 +149,14 @@ private struct CoursesSplit: View {
     }
 }
 
-/// The window title: the open course, or the visible section's name.
+/// No title in the toolbar: the picker names the section and the course header names the
+/// course. A title that changed on every course opened made AppKit re-tile the toolbar each time.
+/// The window keeps the app name for the Window menu and Mission Control.
 private struct WindowTitle: ViewModifier {
-    let selection: CourseSelection
-    @Environment(AppRouter.self) private var router
-    @Environment(\.modelContext) private var context
-
-    private var title: String {
-        switch router.selectedTab {
-        case .courses:
-            guard let id = selection.id else { return String(localized: "Recent") }
-            var d = FetchDescriptor<Course>(predicate: #Predicate { $0.id == id })
-            d.fetchLimit = 1
-            return (try? context.fetch(d).first?.title) ?? String(localized: "Recent")
-        case .recent: return String(localized: "Recent")
-        case .activity: return String(localized: "Activity")
-        case .search: return String(localized: "Search")
-        }
-    }
-
     func body(content: Content) -> some View {
-        content.navigationTitle(title)
+        content
+            .navigationTitle("Beep")
+            .toolbar(removing: .title)
     }
 }
 
