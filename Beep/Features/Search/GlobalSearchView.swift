@@ -22,7 +22,7 @@ struct GlobalSearchView: View {
         NavigationStack {
             List {
                 if !query.isEmpty {
-                    let matchedCourses = courses.filter { $0.title.localizedCaseInsensitiveContains(query) || ($0.code?.contains(query) ?? false) || ($0.professors?.localizedCaseInsensitiveContains(query) ?? false) }
+                    let matchedCourses = courses.filter { $0.matches(query) }
                     if !matchedCourses.isEmpty {
                         Section("Courses") {
                             ForEach(matchedCourses) { course in

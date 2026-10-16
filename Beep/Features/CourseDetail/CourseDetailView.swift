@@ -270,7 +270,7 @@ private struct CourseHeader: View {
 }
 
 /// Flat, filtered view of the course's files with section › folder breadcrumbs.
-private struct FilteredFilesSection: View {
+struct FilteredFilesSection: View {
     let files: [FileItem]
     let query: String
     let lastSeen: Date?

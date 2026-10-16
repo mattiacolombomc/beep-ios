@@ -50,6 +50,16 @@ final class Course {
         self.syncEnabled = syncEnabled
     }
 
+    /// Search rule shared by every course search: title, code or professors contain the text,
+    /// ignoring case and accents. An empty or blank query matches everything.
+    func matches(_ query: String) -> Bool {
+        let q = query.trimmingCharacters(in: .whitespaces)
+        guard !q.isEmpty else { return true }
+        return title.localizedStandardContains(q)
+            || (code?.localizedStandardContains(q) ?? false)
+            || (professors?.localizedStandardContains(q) ?? false)
+    }
+
     var isAcademicYear: Bool { AcademicYear.isAcademicYear(categoryName) }
     var isCurrentYear: Bool { AcademicYear.isCurrent(categoryName) }
 

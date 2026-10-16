@@ -78,7 +78,6 @@ struct CoursesListView: View {
     @State private var unenrolTarget: Course?
 
     private var visible: [Course] {
-        let q = query.trimmingCharacters(in: .whitespaces).lowercased()
         return courses.filter { c in
             if c.isHidden && !showHidden { return false }
             if c.isArchived && !showArchived { return false }
@@ -89,8 +88,7 @@ struct CoursesListView: View {
             case .current: if c.isAcademicYear && !c.isCurrentYear { return false }
             case .past: if !c.isAcademicYear || c.isCurrentYear { return false }
             }
-            guard !q.isEmpty else { return true }
-            return c.title.lowercased().contains(q) || (c.code?.contains(q) ?? false) || (c.professors?.lowercased().contains(q) ?? false)
+            return c.matches(query)
         }
     }
 

@@ -192,15 +192,6 @@ struct SidebarSearchField: NSViewRepresentable {
     }
 }
 
-/// Text of a search field that lives in the window toolbar. A reference type on purpose: views
-/// that host the field hold the same object across renders, so typing never changes their inputs.
-@Observable
-final class SearchText {
-    var text = ""
-    /// Bumped to move the cursor into the field.
-    var focusRequest = 0
-}
-
 /// Native NSSearchField for the window toolbar, used instead of `.searchable` on the Mac: the
 /// latter turns every keystroke into a toolbar change and SwiftUI rebuilds every toolbar item.
 struct ToolbarSearchField: NSViewRepresentable {
@@ -255,3 +246,12 @@ struct ToolbarSearch: ViewModifier {
     }
 }
 #endif
+
+/// Text of a search field. A reference type on purpose: views and toolbar modifiers hold the
+/// same object across renders, so typing never changes their inputs (see `ToolbarSearch`).
+@Observable
+final class SearchText {
+    var text = ""
+    /// Bumped to move the cursor into the field (Mac toolbar field).
+    var focusRequest = 0
+}

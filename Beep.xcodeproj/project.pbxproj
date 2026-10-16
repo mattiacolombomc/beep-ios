@@ -14,6 +14,7 @@
 		04EEDD128E3DD53F7C4A9FCD /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB8DD2552D68CA4F2DAB7922 /* DownloadManager.swift */; };
 		08565BE1761ADCDA22C31FD1 /* FilePresenters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF0B94F1558DB6DA49A610F /* FilePresenters.swift */; };
 		08A9ECF4EF260AF2E2EA31DC /* CourseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB403E03ED555E80094485A /* CourseDTO.swift */; };
+		0A007D04A7D8879E7BF81CCE /* ActiveSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECB2251E1F23DF902EB827 /* ActiveSection.swift */; };
 		0B1704EAB59D17E78F41D5E3 /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6239253FDE3EEE913FFD0B /* PageView.swift */; };
 		0BF2B5D7501DB0902B3F3ED0 /* Indexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1D5FBE3ACEA751305B2C656 /* Indexer.swift */; };
 		0BFCB4E536F0DEF226744E67 /* SiteInfoDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FEEA578AD0563216F3CD65A /* SiteInfoDTO.swift */; };
@@ -120,6 +121,7 @@
 		9FEF5A7A095D2FA9AB77273F /* error_invalidtoken.json in Resources */ = {isa = PBXBuildFile; fileRef = AF462B1F1184F0A52D098EC7 /* error_invalidtoken.json */; };
 		A0114C51E08AE5E466CCCE2F /* StatusTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CC05CAD9EE8A0567A6406E7 /* StatusTile.swift */; };
 		A02F6D034B55300C468AEBD2 /* RecentFilesWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EC9966A7EADC3B41F7D0F2 /* RecentFilesWidget.swift */; };
+		A16C3EF0CBFD2BA1E7327AE3 /* ActiveSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECB2251E1F23DF902EB827 /* ActiveSection.swift */; };
 		A17B535957C22F5DCCF9322A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DC03A9A41FBAA63B81F471 /* SettingsView.swift */; };
 		A1FD17704A581986987016AD /* CourseNameParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F027F03142CE65043329E3 /* CourseNameParser.swift */; };
 		A46A7CF1B1510E9189B8DDD2 /* BeepApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DE5789C80BF2E517E67978 /* BeepApp.swift */; };
@@ -136,6 +138,7 @@
 		B8661C44B8E696AAB53C7C46 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 855198D4868B1F4408DD06A0 /* AppRouter.swift */; };
 		B9287AE1401A76332A60CBF8 /* CourseContentsDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 632F9C4E22DDA97925F567A1 /* CourseContentsDTO.swift */; };
 		B9EFE6AEE02E09AD2E2E040F /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7244B2A38FD30B29696052BF /* DemoData.swift */; };
+		BA644685481B1E13EAB7A98A /* UIArchitectureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2D1D050399C61955E3A0B1 /* UIArchitectureTests.swift */; };
 		BE100D9ECE10FC95B2C345A1 /* CourseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71E4840D462EF098CE10FD83 /* CourseDetailView.swift */; };
 		BE7B33F40AE6CD6F14FE064A /* MacMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A39A90F532A5B7C094EB94 /* MacMainView.swift */; };
 		BF038CD2388D43A3015CD751 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808CD1C374D0352A1F0E37 /* Models.swift */; };
@@ -184,6 +187,7 @@
 		F28890687C63A36F5619EAB9 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C956A75A7DA5D53C8767CFAA /* Theme.swift */; };
 		F32BB5DC458206774BF0C107 /* FilePresenters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF0B94F1558DB6DA49A610F /* FilePresenters.swift */; };
 		F36095FF2D18E3B90ADE52C7 /* BeepWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC5102FB94F5091EBB3B0D2 /* BeepWidgetBundle.swift */; };
+		F5FB05BC9C5D8F9C6F017105 /* SearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7ECA4B213C32A75D01B15E0 /* SearchTests.swift */; };
 		F79A8F7EC2051591EB2FFF82 /* FileSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1785ECB33E2120F74210ACAE /* FileSelectionTests.swift */; };
 		F8228C12F6DCDD1BD3E58ED9 /* MultilangTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */; };
 		F88C63FF58702E351E7DD4D9 /* SwitchBenchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1381077E90889ED860A5B5A /* SwitchBenchmark.swift */; };
@@ -251,6 +255,7 @@
 		3CB34AA4EAD533461613DC3C /* FileDrag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDrag.swift; sourceTree = "<group>"; };
 		3E0A9DEA0B195D1C341C16A8 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		3F0D756C3B06D3C63DA23AB7 /* categories.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = categories.json; sourceTree = "<group>"; };
+		42ECB2251E1F23DF902EB827 /* ActiveSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSection.swift; sourceTree = "<group>"; };
 		45D6B05C73E46F07902DEE37 /* HTMLDocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLDocumentView.swift; sourceTree = "<group>"; };
 		482F95F0759BFE87A14120AC /* MacSyncScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSyncScheduler.swift; sourceTree = "<group>"; };
 		50A3A42D947FB5BA2B6AFB70 /* FileURLTokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileURLTokenizer.swift; sourceTree = "<group>"; };
@@ -332,8 +337,10 @@
 		F3BF39A74533D9FEBB64D126 /* FileURLTokenizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileURLTokenizerTests.swift; sourceTree = "<group>"; };
 		F4DE5789C80BF2E517E67978 /* BeepApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepApp.swift; sourceTree = "<group>"; };
 		F6EBD1D30A4573151B77A38B /* FileRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileRow.swift; sourceTree = "<group>"; };
+		F7ECA4B213C32A75D01B15E0 /* SearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTests.swift; sourceTree = "<group>"; };
 		F9067B06949346483A092C39 /* IndexActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexActor.swift; sourceTree = "<group>"; };
 		FA2CD4C29988299E34B4B689 /* BeepIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepIntents.swift; sourceTree = "<group>"; };
+		FC2D1D050399C61955E3A0B1 /* UIArchitectureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIArchitectureTests.swift; sourceTree = "<group>"; };
 		FCB37E15497DFA26FCC7A2E2 /* BeepWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BeepWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD97A9140370D1F545AF1CC8 /* MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -495,9 +502,11 @@
 				E5859EC2B8B8ECA33F4EA63B /* MoodleClientTests.swift */,
 				CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */,
 				591204CDA9D4449A5DF917D4 /* NotificationHTMLTests.swift */,
+				F7ECA4B213C32A75D01B15E0 /* SearchTests.swift */,
 				03582BA59A9B5D1BEC9FF227 /* SmokeTests.swift */,
 				EE7C6702A357FF323A160C90 /* StorageUsageTests.swift */,
 				684A3781B2025117449208B9 /* TokenRenewerTests.swift */,
+				FC2D1D050399C61955E3A0B1 /* UIArchitectureTests.swift */,
 				5C7A2E54BF998D3B7522D9D5 /* Fixtures */,
 			);
 			path = BeepTests;
@@ -592,6 +601,7 @@
 		B078BF5C42F27229DED2E9E3 /* Design */ = {
 			isa = PBXGroup;
 			children = (
+				42ECB2251E1F23DF902EB827 /* ActiveSection.swift */,
 				BF6B066E9E6BA18F6A3E1B38 /* Platform.swift */,
 				C956A75A7DA5D53C8767CFAA /* Theme.swift */,
 				BB35BCC420CA1AB0276F3928 /* Components */,
@@ -863,6 +873,7 @@
 			files = (
 				D22389311B69D6C1A23C94DF /* AcademicYear.swift in Sources */,
 				1D0E13F72BC9F2673D38FB19 /* AcknowledgementsView.swift in Sources */,
+				A16C3EF0CBFD2BA1E7327AE3 /* ActiveSection.swift in Sources */,
 				7431B883F7538096A48F2EAB /* ActivityView.swift in Sources */,
 				2FE8CE4666871486209F0CDD /* AppRouter.swift in Sources */,
 				0CDBC62CA23785709BC980D5 /* AppServices.swift in Sources */,
@@ -966,9 +977,11 @@
 				4FBB247F1378B5331C795811 /* MoodleClientTests.swift in Sources */,
 				F8228C12F6DCDD1BD3E58ED9 /* MultilangTests.swift in Sources */,
 				616BF66625739DBCB3C5AE70 /* NotificationHTMLTests.swift in Sources */,
+				F5FB05BC9C5D8F9C6F017105 /* SearchTests.swift in Sources */,
 				DB9A38011CA86FD6B9C5B993 /* SmokeTests.swift in Sources */,
 				7C255764E2D1BC6AE93AB4A6 /* StorageUsageTests.swift in Sources */,
 				9DA61CE0986AD0667456853F /* TokenRenewerTests.swift in Sources */,
+				BA644685481B1E13EAB7A98A /* UIArchitectureTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -978,6 +991,7 @@
 			files = (
 				2B905BE00D958210F2A57479 /* AcademicYear.swift in Sources */,
 				4CF4BEA7E412F3ACA05D20CA /* AcknowledgementsView.swift in Sources */,
+				0A007D04A7D8879E7BF81CCE /* ActiveSection.swift in Sources */,
 				7E2C6B05A3F63BBB8B50917C /* ActivityView.swift in Sources */,
 				EDF824725C2A3DFDFC277F99 /* AppDelegate.swift in Sources */,
 				61333CBBF93E5F17F42E0F60 /* AppRouter.swift in Sources */,
