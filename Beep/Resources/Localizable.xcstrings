@@ -1466,6 +1466,16 @@
         }
       }
     },
+    "Deselect Folder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deseleziona cartella"
+          }
+        }
+      }
+    },
     "Disable all shown": {
       "localizations": {
         "it": {
@@ -3045,6 +3055,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Seleziona tutto"
+          }
+        }
+      }
+    },
+    "Select Folder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seleziona cartella"
           }
         }
       }

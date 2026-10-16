@@ -16,6 +16,15 @@ final class FileSelection {
 
     func begin() { isActive = true }
 
+    /// Starts selecting (if needed) with these files selected: "Select" in a file's or a folder's
+    /// context menu, as in Files and Mail.
+    func select(_ files: [FileItem]) {
+        isActive = true
+        keys.formUnion(files.map(\.key))
+    }
+
+    func deselect(_ files: [FileItem]) { keys.subtract(files.map(\.key)) }
+
     func end() {
         isActive = false
         keys.removeAll()

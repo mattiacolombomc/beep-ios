@@ -163,8 +163,14 @@ struct FileContextMenu: View {
     let file: FileItem
     @Environment(FileOpener.self) private var opener
     @Environment(\.openURL) private var openURL
+    @Environment(FileSelection.self) private var selection: FileSelection?
 
     var body: some View {
+        if let selection {
+            // Long press → Select starts multi-select with this file, as in Files and Mail.
+            Button { withAnimation(.snappy) { selection.select([file]) } } label: { Label("Select", systemImage: "checkmark.circle") }
+            Divider()
+        }
         Button { opener.open(file) } label: { Label("Open", systemImage: "eye") }
         Button { opener.share(file) } label: { Label("Open in…", systemImage: "square.and.arrow.up") }
         if file.isDownloaded {

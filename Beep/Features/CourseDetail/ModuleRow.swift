@@ -107,6 +107,11 @@ struct FolderTree: View {
                     } label: {
                         Label(path.trimmingCharacters(in: CharacterSet(charactersIn: "/")), systemImage: "folder")
                     }
+                    .contextMenu {
+                        let inPath = module.files.filter { $0.filepath.hasPrefix(path) }
+                        SelectFolderButton(files: inPath)
+                        Button { sync.downloads.enqueue(inPath) } label: { Label("Download folder", systemImage: "arrow.down.circle") }
+                    }
                 }
             }
         } label: {
@@ -132,6 +137,7 @@ struct FolderTree: View {
         }
         .animation(.spring(duration: 0.32, bounce: 0.18), value: isOpen)
         .contextMenu {
+            SelectFolderButton(files: module.files)
             Button { sync.downloads.enqueue(module.files) } label: { Label("Download folder", systemImage: "arrow.down.circle") }
             #if os(macOS)
             if let dir = opener.directory(of: module) {
@@ -171,5 +177,23 @@ struct HTMLText: View {
 
     var body: some View {
         Text(Self.paragraphs(html))
+    }
+}
+
+/// "Select Folder" in a folder's context menu: selects every file in it (starting multi-select if
+/// needed), or deselects them when they are all selected already.
+private struct SelectFolderButton: View {
+    let files: [FileItem]
+    @Environment(FileSelection.self) private var selection: FileSelection?
+
+    var body: some View {
+        if let selection, !files.isEmpty {
+            if selection.isActive && selection.allSelected(in: files) {
+                Button { withAnimation(.snappy) { selection.deselect(files) } } label: { Label("Deselect Folder", systemImage: "circle") }
+            } else {
+                Button { withAnimation(.snappy) { selection.select(files) } } label: { Label("Select Folder", systemImage: "checkmark.circle") }
+            }
+            Divider()
+        }
     }
 }
