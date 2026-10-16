@@ -335,6 +335,9 @@ private struct CourseToolbar: ViewModifier {
 
     func body(content: Content) -> some View {
         @Bindable var options = options
+        // Read here on purpose: the menu is rebuilt (and shows the right checkmarks) when the
+        // sort or the "only new" filter changes, never while typing.
+        let changed = options.sort != .position || options.onlyNew
         return content.toolbar {
             if isActive {
             ToolbarItem(placement: .trailingBar) {
@@ -349,10 +352,16 @@ private struct CourseToolbar: ViewModifier {
                             ForEach(FileSort.allCases) { Text($0.label).tag($0) }
                         }
                         Toggle("Only new files", systemImage: "sparkles", isOn: $options.onlyNew)
+                        if changed {
+                            Button("Reset view", systemImage: "arrow.uturn.backward") {
+                                options.sort = .position
+                                options.onlyNew = false
+                            }
+                        }
                         Divider()
                         CourseContextMenu(course: course, onRename: { options.renameTarget = course })
                     } label: {
-                        Label("More", systemImage: "ellipsis.circle")
+                        Label("More", systemImage: changed ? "ellipsis.circle.fill" : "ellipsis.circle")
                     }
                 }
             }

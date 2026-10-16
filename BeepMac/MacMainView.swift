@@ -59,6 +59,10 @@ struct MacMainView: View {
                 #if DEBUG || BENCH
                 if SwitchBenchmark.isEnabled { await SwitchBenchmark.run(router: router); return }
                 if let tab = SwitchBenchmark.startTab { router.selectedTab = tab; return }
+                if ProcessInfo.processInfo.arguments.contains("-benchSync"), let client = session.client, let user = session.user {
+                    await TypingBenchmark.runSync { _ = await sync.syncAll(client: client, userID: user.id) }
+                    return
+                }
                 if TypingBenchmark.isEnabled {
                     if let arg = ProcessInfo.processInfo.arguments.first(where: { $0.hasPrefix("-benchCourse=") }) {
                         selection = Int(arg.dropFirst("-benchCourse=".count))
@@ -180,10 +184,12 @@ struct SyncButton: View {
     @Environment(SyncEngine.self) private var sync
 
     var body: some View {
-        if case .indexing(let done, let total, _) = sync.phase {
+        // Reads `isIndexing` (start and end of a sync), never `phase`: a toolbar item whose SwiftUI
+        // content changes makes AppKit re-tile the whole toolbar, which happened once per course.
+        if sync.isIndexing {
             HStack(spacing: 6) {
                 ProgressView().controlSize(.small)
-                Text("\(done)/\(total)").monospacedDigit().foregroundStyle(.secondary)
+                SyncCounter(sync: sync).frame(width: 44, height: 16)
             }
             .help("Updating courses…")
         } else {
@@ -195,6 +201,41 @@ struct SyncButton: View {
             }
             .help("Sync Now")
             .disabled(session.client == nil || DemoData.isEnabled)
+        }
+    }
+}
+
+/// "12/56" during a sync. An AppKit label that observes the engine itself: the number changes
+/// once per course without touching the SwiftUI toolbar item that hosts it.
+private struct SyncCounter: NSViewRepresentable {
+    let sync: SyncEngine
+
+    func makeNSView(context: Context) -> NSTextField {
+        let label = NSTextField(labelWithString: "")
+        label.font = .monospacedDigitSystemFont(ofSize: NSFont.systemFontSize, weight: .regular)
+        label.textColor = .secondaryLabelColor
+        label.lineBreakMode = .byClipping
+        context.coordinator.label = label
+        context.coordinator.track()
+        return label
+    }
+
+    func updateNSView(_ nsView: NSTextField, context: Context) {}
+
+    func makeCoordinator() -> Coordinator { Coordinator(sync: sync) }
+
+    @MainActor final class Coordinator {
+        let sync: SyncEngine
+        weak var label: NSTextField?
+        init(sync: SyncEngine) { self.sync = sync }
+
+        func track() {
+            let text = withObservationTracking {
+                if case .indexing(let done, let total, _) = sync.phase { "\(done)/\(total)" } else { "" }
+            } onChange: { [weak self] in
+                Task { @MainActor in self?.track() }
+            }
+            label?.stringValue = text
         }
     }
 }

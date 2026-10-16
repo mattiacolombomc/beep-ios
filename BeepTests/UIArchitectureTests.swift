@@ -104,6 +104,23 @@ struct UIArchitectureTests {
         #expect(offenders.isEmpty, "Move these toolbars into a reference-input modifier: \(offenders)")
     }
 
+    @Test func indexingNeverRunsOnAModelActor() {
+        let offenders = Self.sources(in: ["Beep", "BeepMac"]).filter { src in
+            src.lines.contains { $0.trimmingCharacters(in: .whitespaces).hasPrefix("@ModelActor") }
+        }.map(\.path)
+        #expect(offenders.isEmpty, """
+            On this SDK a @ModelActor ran every call on the main thread, even when created off it: a             sync blocked the UI for 32 of 34 seconds. Use a plain actor that owns its ModelContext             (see IndexActor). Offenders: \(offenders)
+            """)
+    }
+
+    @Test func toolbarSyncButtonDoesNotFollowEveryCourse() throws {
+        let text = try String(contentsOf: Self.root.appending(path: "BeepMac/MacMainView.swift"), encoding: .utf8)
+        let start = try #require(text.range(of: "struct SyncButton")).lowerBound
+        let button = String(text[start...].prefix(1400))
+        #expect(!button.contains("sync.phase"),
+                "The toolbar Sync button must read `isIndexing` only: reading `phase` re-tiled the toolbar once per course. The counter is the AppKit `SyncCounter`.")
+    }
+
     @Test func macSectionsStayMountedAndAttached() throws {
         let text = try String(contentsOf: Self.root.appending(path: "BeepMac/MacMainView.swift"), encoding: .utf8)
         let layer = try #require(text.range(of: "private struct SectionLayer")).lowerBound

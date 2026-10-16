@@ -7,7 +7,13 @@ struct ActivityView: View {
     @Environment(AppSession.self) private var session
     @Query(filter: #Predicate<FileItem> { $0.stateRaw == 1 || $0.stateRaw == 2 }, sort: \FileItem.filename) private var active: [FileItem]
     @Query(filter: #Predicate<FileItem> { $0.stateRaw == 4 }, sort: \FileItem.filename) private var failed: [FileItem]
-    @Query(filter: #Predicate<FileItem> { $0.stateRaw == 3 }, sort: \FileItem.timemodified, order: .reverse) private var downloaded: [FileItem]
+    /// The 100 shown: fetching every downloaded file (hundreds) re-ran on each sync save.
+    private static var recentDownloads: FetchDescriptor<FileItem> {
+        var d = FetchDescriptor<FileItem>(predicate: #Predicate { $0.stateRaw == 3 }, sortBy: [SortDescriptor(\.timemodified, order: .reverse)])
+        d.fetchLimit = 100
+        return d
+    }
+    @Query(ActivityView.recentDownloads) private var downloaded: [FileItem]
 
     var body: some View {
         NavigationStack {
@@ -60,7 +66,7 @@ struct ActivityView: View {
                         ContentUnavailableView("No downloads yet", systemImage: "arrow.down.circle", description: Text("Files you open or download appear here and in the Files app."))
                             .listRowBackground(Color.clear)
                     } else {
-                        ForEach(downloaded.prefix(100)) { FileRow(file: $0, showsLocation: true) }
+                        ForEach(downloaded) { FileRow(file: $0, showsLocation: true) }
                     }
                 } header: {
                     Text("Downloaded")

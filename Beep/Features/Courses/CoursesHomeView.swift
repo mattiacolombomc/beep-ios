@@ -92,20 +92,33 @@ struct CoursesListView: View {
         }
     }
 
-    private var active: [Course] { visible.filter { !$0.isArchived } }
-    private var archived: [Course] { visible.filter(\.isArchived) }
-    private var favourites: [Course] { active.filter(\.isFavourite) }
-    private var current: [Course] { active.filter { $0.isCurrentYear } }
-    private var general: [Course] { active.filter { !$0.isAcademicYear } }
-    private var pastByYear: [(year: String, courses: [Course])] {
-        let past = active.filter { $0.isAcademicYear && !$0.isCurrentYear }
-        return Dictionary(grouping: past, by: \.categoryName)
-            .sorted { $0.key > $1.key }
-            .map { ($0.key, $0.value) }
+    /// Every list section in one pass over `visible`: the body recomputed the filter once per
+    /// section (six passes), and it runs again on every sync save.
+    private struct Groups {
+        var isEmpty = true
+        var favourites: [Course] = [], current: [Course] = [], general: [Course] = [], archived: [Course] = []
+        var pastByYear: [(year: String, courses: [Course])] = []
+    }
+    private var groups: Groups {
+        var g = Groups()
+        var past: [String: [Course]] = [:]
+        let currentYear = AcademicYear.currentStartYear()
+        for c in visible {
+            g.isEmpty = false
+            if c.isArchived { g.archived.append(c); continue }
+            if c.isFavourite { g.favourites.append(c) }
+            let year = AcademicYear.startYear(c.categoryName)
+            if year == nil { g.general.append(c) }
+            else if year == currentYear { g.current.append(c) }
+            else { past[c.categoryName, default: []].append(c) }
+        }
+        g.pastByYear = past.sorted { $0.key > $1.key }.map { ($0.key, $0.value) }
+        return g
     }
     private var totalNew: Int { courses.reduce(0) { $0 + $1.newFilesCount } }
 
     var body: some View {
+        let g = groups
         List(selection: isSplit ? $selection : nil) {
             if query.isEmpty {
                 Section {
@@ -123,21 +136,21 @@ struct CoursesListView: View {
                     Text("Pull to refresh or tap Sync to load your WeBeep courses.")
                 }
                 .listRowBackground(Color.clear)
-            } else if visible.isEmpty {
+            } else if g.isEmpty {
                 ContentUnavailableView.search(text: query)
                     .listRowBackground(Color.clear)
             }
 
-            if !favourites.isEmpty {
-                Section("Favourites") { rows(favourites) }
+            if !g.favourites.isEmpty {
+                Section("Favourites") { rows(g.favourites) }
             }
-            if !current.isEmpty {
-                Section("Current year") { rows(current) }
+            if !g.current.isEmpty {
+                Section("Current year") { rows(g.current) }
             }
-            if !general.isEmpty {
-                Section("Programme & general") { rows(general) }
+            if !g.general.isEmpty {
+                Section("Programme & general") { rows(g.general) }
             }
-            ForEach(pastByYear, id: \.year) { group in
+            ForEach(g.pastByYear, id: \.year) { group in
                 Section {
                     DisclosureGroup(isExpanded: binding(for: group.year)) {
                         rows(group.courses)
@@ -153,15 +166,15 @@ struct CoursesListView: View {
                     .animation(.spring(duration: 0.32, bounce: 0.18), value: expandedYears)
                 }
             }
-            if !archived.isEmpty {
+            if !g.archived.isEmpty {
                 Section {
                     DisclosureGroup(isExpanded: binding(for: "archived")) {
-                        rows(archived)
+                        rows(g.archived)
                     } label: {
                         HStack {
                             Label("Archived", systemImage: "archivebox").font(.headline)
                             Spacer()
-                            Text("\(archived.count)").font(.subheadline.monospacedDigit()).foregroundStyle(.secondary)
+                            Text("\(g.archived.count)").font(.subheadline.monospacedDigit()).foregroundStyle(.secondary)
                         }
                     }
                 }

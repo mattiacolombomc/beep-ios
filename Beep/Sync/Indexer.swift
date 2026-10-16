@@ -77,7 +77,7 @@ nonisolated struct Indexer {
     // MARK: Contents
 
     @discardableResult
-    func upsertContents(_ sections: [SectionDTO], for course: Course, token: String) throws -> ContentDiff {
+    func upsertContents(_ sections: [SectionDTO], for course: Course, token: String, save: Bool = true) throws -> ContentDiff {
         let stamp = now()
         var diff = ContentDiff()
 
@@ -160,7 +160,7 @@ nonisolated struct Indexer {
             course.lastSeenAt = stamp
         }
         course.recountNewFiles()
-        try context.save()
+        if save { try context.save() }
         return diff
     }
 

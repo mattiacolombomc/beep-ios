@@ -2920,6 +2920,16 @@
         }
       }
     },
+    "Reset view": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristina vista"
+          }
+        }
+      }
+    },
     "Restart onboarding (debug)": {
       "shouldTranslate": false
     },

@@ -27,6 +27,31 @@ enum TypingBenchmark {
         func read() -> (Double, Double) { lock.withLock { (total, worst) } }
     }
 
+    /// `-benchSync`: runs one real sync and prints the main-thread stalls while it runs.
+    @MainActor static func runSync(_ work: () async -> Void) async {
+        let monitor = StallMonitor()
+        monitor.start()
+        try? await Task.sleep(for: .seconds(3))
+        let started = CACurrentMediaTime()
+        let sampler = Task { @MainActor in
+            var windows: [Double] = []
+            while !Task.isCancelled {
+                monitor.reset()
+                try? await Task.sleep(for: .milliseconds(500))
+                windows.append(monitor.read().0 * 1000)
+            }
+            return windows
+        }
+        await work()
+        sampler.cancel()
+        let windows = await sampler.value
+        let busy = windows.filter { $0 > 100 }.count
+        print(String(format: "SYNC took %.1f s, %d half-second windows, %d with >100 ms stalled, worst window %.0f ms, total stalled %.0f ms",
+                     CACurrentMediaTime() - started, windows.count, busy, windows.max() ?? 0, windows.reduce(0, +)))
+        fflush(stdout)
+        exit(0)
+    }
+
     @MainActor static func run(set: @escaping (String) -> Void) async {
         let monitor = StallMonitor()
         monitor.start()
