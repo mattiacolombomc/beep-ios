@@ -116,9 +116,10 @@ struct UIArchitectureTests {
     @Test func toolbarSyncButtonDoesNotFollowEveryCourse() throws {
         let text = try String(contentsOf: Self.root.appending(path: "BeepMac/MacMainView.swift"), encoding: .utf8)
         let start = try #require(text.range(of: "struct SyncButton")).lowerBound
-        let button = String(text[start...].prefix(1400))
+        let rest = text[start...]
+        let button = String(rest[..<(rest.range(of: "\n}\n")?.upperBound ?? rest.endIndex)])
         #expect(!button.contains("sync.phase"),
-                "The toolbar Sync button must read `isIndexing` only: reading `phase` re-tiled the toolbar once per course. The counter is the AppKit `SyncCounter`.")
+                "The toolbar Sync button must read `isIndexing` only: reading `phase` re-tiled the toolbar once per course. The bar and counter are the AppKit `SyncProgressLabel`.")
     }
 
     @Test func macSectionsStayMountedAndAttached() throws {

@@ -178,64 +178,89 @@ private struct SectionLayer<Content: View>: View {
     }
 }
 
-/// Toolbar sync control: a spinner with progress while running.
+/// Toolbar sync control: the glass "Sync Now" button; while syncing the same button becomes a
+/// progress bar with the n/N counter (click it to open Activity), then turns back into the button.
+/// Its SwiftUI content changes only when a sync starts or ends (`isIndexing`): the bar and the
+/// number are AppKit views that follow the engine themselves, so the toolbar is never re-tiled
+/// once per course.
 struct SyncButton: View {
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
+    @Environment(AppRouter.self) private var router
 
     var body: some View {
-        // Reads `isIndexing` (start and end of a sync), never `phase`: a toolbar item whose SwiftUI
-        // content changes makes AppKit re-tile the whole toolbar, which happened once per course.
-        if sync.isIndexing {
-            HStack(spacing: 6) {
-                ProgressView().controlSize(.small)
-                SyncCounter(sync: sync).frame(width: 44, height: 16)
-            }
-            .help("Updating courses…")
-        } else {
-            Button {
-                guard let client = session.client, let user = session.user else { return }
+        Button {
+            if sync.isIndexing {
+                router.selectedTab = .activity
+            } else if let client = session.client, let user = session.user {
                 Task { _ = await sync.syncAll(client: client, userID: user.id) }
-            } label: {
+            }
+        } label: {
+            if sync.isIndexing {
+                SyncProgressLabel(sync: sync)
+                    .frame(width: 128, height: 18)
+            } else {
                 Label("Sync Now", systemImage: "arrow.triangle.2.circlepath")
             }
-            .help("Sync Now")
-            .disabled(session.client == nil || DemoData.isEnabled)
         }
+        .help(sync.isIndexing ? "Updating courses… Click to see the activity." : "Sync Now")
+        .disabled(!sync.isIndexing && (session.client == nil || DemoData.isEnabled))
+        .animation(.smooth, value: sync.isIndexing)
     }
 }
 
-/// "12/56" during a sync. An AppKit label that observes the engine itself: the number changes
-/// once per course without touching the SwiftUI toolbar item that hosts it.
-private struct SyncCounter: NSViewRepresentable {
+/// Progress bar and "12/56" counter of a running sync, drawn by AppKit and updated from the
+/// engine directly: the SwiftUI toolbar item that hosts it does not change once per course.
+private struct SyncProgressLabel: NSViewRepresentable {
     let sync: SyncEngine
 
-    func makeNSView(context: Context) -> NSTextField {
+    func makeNSView(context: Context) -> NSStackView {
+        let bar = NSProgressIndicator()
+        bar.style = .bar
+        bar.isIndeterminate = false
+        bar.controlSize = .small
+        bar.minValue = 0
+        bar.maxValue = 1
         let label = NSTextField(labelWithString: "")
-        label.font = .monospacedDigitSystemFont(ofSize: NSFont.systemFontSize, weight: .regular)
+        label.font = .monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: .medium)
         label.textColor = .secondaryLabelColor
-        label.lineBreakMode = .byClipping
+        label.alignment = .right
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        let stack = NSStackView(views: [bar, label])
+        stack.orientation = .horizontal
+        stack.spacing = 6
+        stack.alignment = .centerY
+        context.coordinator.bar = bar
         context.coordinator.label = label
         context.coordinator.track()
-        return label
+        return stack
     }
 
-    func updateNSView(_ nsView: NSTextField, context: Context) {}
+    func updateNSView(_ nsView: NSStackView, context: Context) {}
 
     func makeCoordinator() -> Coordinator { Coordinator(sync: sync) }
 
     @MainActor final class Coordinator {
         let sync: SyncEngine
+        weak var bar: NSProgressIndicator?
         weak var label: NSTextField?
         init(sync: SyncEngine) { self.sync = sync }
 
         func track() {
-            let text = withObservationTracking {
-                if case .indexing(let done, let total, _) = sync.phase { "\(done)/\(total)" } else { "" }
+            let (done, total) = withObservationTracking {
+                if case .indexing(let done, let total, _) = sync.phase { (done, total) } else { (0, 0) }
             } onChange: { [weak self] in
                 Task { @MainActor in self?.track() }
             }
-            label?.stringValue = text
+            label?.stringValue = total > 0 ? "\(done)/\(total)" : ""
+            if let bar {
+                let target = total > 0 ? Double(done) / Double(total) : 0
+                NSAnimationContext.runAnimationGroup { ctx in
+                    ctx.duration = 0.25
+                    bar.animator().doubleValue = target
+                }
+            }
         }
     }
 }
