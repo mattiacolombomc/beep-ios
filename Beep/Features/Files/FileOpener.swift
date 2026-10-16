@@ -18,6 +18,15 @@ final class FileOpener {
     init(downloads: DownloadManager, local: LocalFiles = LocalFiles()) {
         self.downloads = downloads
         self.local = local
+        #if os(iOS)
+        FileDragSource.opener = self
+        #endif
+    }
+
+    /// The file on disk for a key (drag sessions carry keys, not models).
+    func localURL(forKey key: String) async throws -> URL {
+        guard let file = downloads.file(for: key) else { throw CocoaError(.fileReadNoSuchFile) }
+        return try await localURL(for: file)
     }
 
     func progress(for file: FileItem) -> Double { downloads.fileProgress[file.key] ?? 0 }

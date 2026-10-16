@@ -89,7 +89,12 @@ private struct RowActions: ViewModifier {
                     }
                 }
         } else {
+            #if os(iOS)
+            // Selecting: dragging a row carries the whole selection (iPadOS 27+).
+            content.modifier(SelectionDragItem(key: file.key))
+            #else
             content
+            #endif
         }
     }
 }
