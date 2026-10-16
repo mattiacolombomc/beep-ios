@@ -89,7 +89,12 @@ private struct RowActions: ViewModifier {
                     }
                 }
         } else {
+            #if os(iOS)
+            // Selecting: dragging a row carries the whole selection (iPadOS 27+).
+            content.modifier(SelectionDragItem(key: file.key))
+            #else
             content
+            #endif
         }
     }
 }
@@ -158,12 +163,23 @@ struct FileContextMenu: View {
     let file: FileItem
     @Environment(FileOpener.self) private var opener
     @Environment(\.openURL) private var openURL
+    @Environment(FileSelection.self) private var selection: FileSelection?
 
     var body: some View {
+        if let selection {
+            // Long press → Select starts multi-select with this file, as in Files and Mail.
+            Button { withAnimation(.snappy) { selection.select([file]) } } label: { Label("Select", systemImage: "checkmark.circle") }
+            Divider()
+        }
         Button { opener.open(file) } label: { Label("Open", systemImage: "eye") }
         Button { opener.share(file) } label: { Label("Open in…", systemImage: "square.and.arrow.up") }
         if file.isDownloaded {
+            #if os(macOS)
+            Button { opener.showInFiles(file) } label: { Label("Show in Finder", systemImage: "folder") }
+            Button { opener.copyPath(of: file) } label: { Label("Copy Path", systemImage: "document.on.document") }
+            #else
             Button { opener.showInFiles(file) } label: { Label("Show in Files", systemImage: "folder") }
+            #endif
             Divider()
             Button(role: .destructive) { opener.removeLocal(file) } label: { Label("Remove download", systemImage: "trash") }
         } else {

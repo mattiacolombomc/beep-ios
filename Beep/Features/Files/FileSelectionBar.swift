@@ -78,9 +78,13 @@ private struct SelectionBarHost: ViewModifier {
     let candidates: [FileItem]
 
     func body(content: Content) -> some View {
-        content.safeAreaInset(edge: .bottom, spacing: 0) {
-            if selection.isActive { FileSelectionBar(candidates: candidates) }
-        }
+        content
+            #if os(iOS)
+            .modifier(SelectionDragContainer(selection: selection, candidates: selection.isActive ? candidates : []))
+            #endif
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                if selection.isActive { FileSelectionBar(candidates: candidates) }
+            }
     }
 }
 

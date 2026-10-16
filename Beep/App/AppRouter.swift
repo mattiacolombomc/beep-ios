@@ -14,10 +14,16 @@ final class AppRouter {
 
     var pending: Destination?
     /// Tab to select when a destination arrives.
-    var selectedTab: AppTab = .courses
+    var selectedTab: AppTab = .courses {
+        didSet { if selectedTab != oldValue { Perf.measure(.switchSection) } }
+    }
     /// App-wide sheets, driven by toolbar buttons and keyboard commands alike.
     var showSettings = false
     var showNotifications = false
+    /// The WeBeep catalogue, opened from the Mac toolbar's filter menu.
+    var showCatalog = false
+    /// iPhone and iPad: whether the sync drop is open into its status bar.
+    var syncBarOpen = false
 
     enum AppTab: String { case courses, recent, activity, search }
 

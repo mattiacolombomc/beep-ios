@@ -31,4 +31,17 @@ struct FileSelectionTests {
         let s = FileSelection()
         #expect(!s.allSelected(in: []))
     }
+
+    /// Long press → "Select" / "Select Folder": starts selecting with those files, adds to an
+    /// existing selection, and "Deselect Folder" removes only that folder's files.
+    @Test func selectFromContextMenuStartsAndExtendsSelection() {
+        let folder = [file("a"), file("b")], other = file("c")
+        let s = FileSelection()
+        s.select([other])
+        #expect(s.isActive && s.count == 1)
+        s.select(folder)
+        #expect(s.allSelected(in: folder) && s.count == 3)
+        s.deselect(folder)
+        #expect(s.isActive && s.selected(from: folder + [other]).map(\.key) == ["c"])
+    }
 }

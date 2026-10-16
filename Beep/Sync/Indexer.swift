@@ -66,18 +66,10 @@ nonisolated struct Indexer {
             context.delete(course)
             diff.removed.append(id)
         }
-        // Disambiguate on-disk folder names for courses sharing a title.
+        // Editions of a course share the folder named after it; the year (and professor) keep them apart.
         let all = try context.fetch(FetchDescriptor<Course>())
-        let byTitle = Dictionary(grouping: all, by: \.title)
-        for course in all where course.folderName.isEmpty {
-            if (byTitle[course.title]?.count ?? 0) > 1, let profs = course.professors, !profs.isEmpty {
-                course.folderName = "\(course.title) (\(profs))"
-            } else if (byTitle[course.title]?.count ?? 0) > 1 {
-                course.folderName = "\(course.title) (\(course.id))"
-            } else {
-                course.folderName = course.title
-            }
-        }
+        for course in all where course.folderName.isEmpty { course.folderName = course.title }
+        Course.assignEditionFolders(all)
         try context.save()
         return diff
     }
@@ -85,7 +77,7 @@ nonisolated struct Indexer {
     // MARK: Contents
 
     @discardableResult
-    func upsertContents(_ sections: [SectionDTO], for course: Course, token: String) throws -> ContentDiff {
+    func upsertContents(_ sections: [SectionDTO], for course: Course, token: String, save: Bool = true) throws -> ContentDiff {
         let stamp = now()
         var diff = ContentDiff()
 
@@ -168,7 +160,7 @@ nonisolated struct Indexer {
             course.lastSeenAt = stamp
         }
         course.recountNewFiles()
-        try context.save()
+        if save { try context.save() }
         return diff
     }
 

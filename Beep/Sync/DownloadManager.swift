@@ -30,7 +30,7 @@ final class DownloadManager {
     private(set) var fileProgress: [String: Double] = [:]
 
     private let context: ModelContext
-    private let local: LocalFiles
+    let local: LocalFiles
     private let maxConcurrent = 3
     private var session: URLSession!
     private let delegate: Delegate

@@ -27,7 +27,15 @@ final class SyncEngine {
         var finishedAt = Date.now
     }
 
-    private(set) var phase: Phase = .idle
+    private(set) var phase: Phase = .idle {
+        didSet {
+            let indexing = if case .indexing = phase { true } else { false }
+            if indexing != isIndexing { isIndexing = indexing }
+        }
+    }
+    /// Changes only when indexing starts or ends, unlike `phase` (once per course): views that
+    /// only need "is a sync running" read this and are not re-rendered 56 times per sync.
+    private(set) var isIndexing = false
     private(set) var lastReport: Report?
     private(set) var lastSyncAt: Date? {
         didSet {
@@ -39,14 +47,16 @@ final class SyncEngine {
     let downloads: DownloadManager
     /// WeBeep rejected the token during a sync.
     var onInvalidToken: ((Trigger) -> Void)?
-    /// Main context: download queue and Spotlight read from it.
+    /// Main context: the download queue reads from it.
     private let context: ModelContext
-    private let store: IndexActor
+    /// Created off the main thread: a SwiftData `ModelActor` initialized on the main thread runs
+    /// its work there, which made the whole sync (parsing and upserting every course) block the UI.
+    private let storeTask: Task<IndexActor, Never>
     private var running: Task<Report, Never>?
 
     init(container: ModelContainer, downloads: DownloadManager) {
         self.context = container.mainContext
-        self.store = IndexActor(modelContainer: container)
+        self.storeTask = Task.detached(priority: .userInitiated) { IndexActor(modelContainer: container) }
         self.downloads = downloads
         lastSyncAt = UserDefaults.standard.object(forKey: "lastSyncAt") as? Date
     }
@@ -86,16 +96,22 @@ final class SyncEngine {
         downloads.resetSessionCounters()
         if trigger != .background { downloads.flushDeferred() }
         do {
+            let store = await storeTask.value
             if let userID {
                 async let coursesTask = client.userCourses(userID: userID)
                 async let categoriesTask = client.categories()
                 let (courses, categories) = try await (coursesTask, categoriesTask)
                 try await store.upsertCourses(courses, categories: categories)
+                // Edition folders may have changed (a new section of a course in the same year).
+                _ = downloads.local.migrateLayout(courses: try context.fetch(FetchDescriptor<Course>()))
             }
             let targets = try await store.targets(only: courseID)
             phase = .indexing(done: 0, total: targets.count, current: targets.first?.title)
 
             var done = 0
+            // Each save merges into the main context and every list re-fetches and re-renders:
+            // save at most every couple of seconds instead of once per course.
+            var lastSave = Date.now
             var iterator = targets.makeIterator()
             var inFlight: [Int: Task<[SectionDTO], Error>] = [:]
             func launch(_ c: IndexActor.CourseRef) { inFlight[c.id] = Task { try await client.courseContents(courseID: c.id) } }
@@ -106,7 +122,7 @@ final class SyncEngine {
                 inFlight.removeValue(forKey: id)
                 do {
                     let sections = try await task.value
-                    if let result = try await store.upsertContents(sections, courseID: id, token: client.token) {
+                    if let result = try await store.upsertContents(sections, courseID: id, token: client.token, save: false) {
                         report.coursesIndexed += 1
                         // A course indexed for the first time is a baseline, not news:
                         // its files must never trigger badges or notifications.
@@ -116,6 +132,9 @@ final class SyncEngine {
                             if !result.diff.newFiles.isEmpty || !result.diff.updatedFiles.isEmpty { report.coursesWithNews.append(result.title) }
                         }
                         if !result.wantedKeys.isEmpty {
+                            // The download queue fetches the files on the main context: they must be saved.
+                            try await store.save()
+                            lastSave = .now
                             let wanted = try files(withKeys: result.wantedKeys)
                             downloads.enqueue(wanted, background: trigger == .background)
                             report.queuedDownloads += wanted.count
@@ -127,15 +146,23 @@ final class SyncEngine {
                     report.errors.append("\(byID[id]?.title ?? "\(id)"): \(error)")
                 }
                 done += 1
+                if Date.now.timeIntervalSince(lastSave) > 2 {
+                    try? await store.save()
+                    lastSave = .now
+                }
                 if let c = iterator.next() { launch(c) }
                 phase = .indexing(done: done, total: targets.count, current: inFlight.keys.compactMap { byID[$0]?.title }.first)
             }
+            try? await store.save()
             if let userID, let dto = try? await client.popupNotifications(userID: userID) {
                 report.newAnnouncements = (try? await store.upsertNotifications(dto.notifications)) ?? 0
             }
             lastSyncAt = .now
             phase = .idle
-            if userID != nil { Task { await SpotlightIndexer.reindex(context: context) } }
+            if userID != nil {
+                let container = context.container
+                Task.detached(priority: .utility) { await SpotlightIndexer.reindex(container: container) }
+            }
             WidgetCenter.shared.reloadAllTimelines()
         } catch MoodleError.invalidToken {
             report.errors.append("invalidToken")

@@ -4,8 +4,20 @@ import SwiftData
 /// Background home of the Indexer: parses and upserts course contents on its own
 /// ModelContext so a full sync (tens of courses, thousands of files) never blocks
 /// the main thread. Returns plain values; the main actor re-fetches what it needs.
-@ModelActor
+///
+/// A plain actor, not `@ModelActor`: on this SDK a `@ModelActor` ran every call on the main
+/// thread (even when created off it), so indexing 56 courses blocked the UI for the whole sync.
 actor IndexActor {
+    nonisolated let modelContainer: ModelContainer
+    private let modelContext: ModelContext
+
+    init(modelContainer: ModelContainer) {
+        self.modelContainer = modelContainer
+        let context = ModelContext(modelContainer)
+        context.autosaveEnabled = false
+        self.modelContext = context
+    }
+
     struct CourseRef: Sendable, Equatable {
         let id: Int
         let title: String
@@ -35,13 +47,18 @@ actor IndexActor {
             .map { CourseRef(id: $0.id, title: $0.title) }
     }
 
-    func upsertContents(_ sections: [SectionDTO], courseID: Int, token: String) throws -> ContentResult? {
+    func upsertContents(_ sections: [SectionDTO], courseID: Int, token: String, save: Bool = true) throws -> ContentResult? {
         let descriptor = FetchDescriptor<Course>(predicate: #Predicate { $0.id == courseID })
         guard let course = try modelContext.fetch(descriptor).first else { return nil }
         let isFirstIndex = course.lastIndexedAt == nil
-        let diff = try indexer.upsertContents(sections, for: course, token: token)
+        let diff = try indexer.upsertContents(sections, for: course, token: token, save: save)
         let wanted = course.syncEnabled ? course.files.filter { !$0.isDownloaded || $0.hasUpdate }.map(\.key) : []
         return ContentResult(title: course.title, isFirstIndex: isFirstIndex, diff: diff, wantedKeys: wanted)
+    }
+
+    /// Writes pending changes (the sync batches course saves).
+    func save() throws {
+        if modelContext.hasChanges { try modelContext.save() }
     }
 
     func upsertNotifications(_ dtos: [NotificationDTO]) throws -> Int {

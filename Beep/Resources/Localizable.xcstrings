@@ -1284,6 +1284,16 @@
         }
       }
     },
+    "Copy Path": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copia percorso"
+          }
+        }
+      }
+    },
     "Couldn't download %lld files": {
       "localizations": {
         "en": {
@@ -1336,6 +1346,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Corso"
+          }
+        }
+      }
+    },
+    "Course List": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Course List"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elenco corsi"
           }
         }
       }
@@ -1436,6 +1462,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Deseleziona tutto"
+          }
+        }
+      }
+    },
+    "Deselect Folder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deseleziona cartella"
           }
         }
       }
@@ -1566,6 +1602,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Download"
+          }
+        }
+      }
+    },
+    "Downloads now live in one folder per course, with a sub-folder for each academic year (and professor, when a course has two sections in the same year). Nothing was deleted.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I download ora stanno in una cartella per corso, con una sottocartella per ogni anno accademico (e per professore, quando un corso ha due sezioni nello stesso anno). Non è stato cancellato nulla."
           }
         }
       }
@@ -2900,6 +2946,16 @@
         }
       }
     },
+    "Reset view": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristina vista"
+          }
+        }
+      }
+    },
     "Restart onboarding (debug)": {
       "shouldTranslate": false
     },
@@ -2999,6 +3055,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Seleziona tutto"
+          }
+        }
+      }
+    },
+    "Select Folder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seleziona cartella"
           }
         }
       }
@@ -3119,6 +3185,32 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostra nel Finder"
+          }
+        }
+      }
+    },
+    "Show or hide the course list": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show or hide the course list"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra o nascondi l'elenco dei corsi"
+          }
+        }
+      }
+    },
+    "Shows the sync status": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra lo stato della sincronizzazione"
           }
         }
       }
@@ -3608,6 +3700,22 @@
         }
       }
     },
+    "Updating courses… Click to see the activity.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updating courses… Click to see the activity."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiornamento dei corsi… Fai clic per vedere l'attività."
+          }
+        }
+      }
+    },
     "Use course title": {
       "localizations": {
         "it": {
@@ -3854,6 +3962,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "I tuoi corsi sono pronti"
+          }
+        }
+      }
+    },
+    "Your files were reorganised": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I tuoi file sono stati riorganizzati"
           }
         }
       }

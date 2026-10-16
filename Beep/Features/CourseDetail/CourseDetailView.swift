@@ -60,20 +60,30 @@ private struct CourseContentView: View {
     @Bindable var course: Course
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
+    #if os(macOS)
+    /// Edited by the window's toolbar field (`ToolbarSearchField`): `.searchable` rebuilt the toolbar per keystroke.
+    @State private var search = SearchText()
+    private var query: String { search.text }
+    #else
     @State private var query = ""
+    #endif
     @State private var scope: FileTypeScope = .all
-    @State private var sort: FileSort = .position
-    @State private var onlyNew = false
+    /// Sort, "only new" and the rename dialog live in a reference type shared with the toolbar
+    /// modifier: the toolbar's inputs stay identical while the user types or the list updates.
+    @State private var options = CourseViewOptions()
     @State private var lastSeenAtOpen: Date?
-    @State private var renameTarget: Course?
     @State private var selection = FileSelection()
 
+    private var sort: FileSort { options.sort }
+    private var onlyNew: Bool { options.onlyNew }
     private var isFiltering: Bool { !query.isEmpty || scope != .all || onlyNew || sort != .position }
 
     /// Files the selection bar can act on: the filtered list, or every file of the course.
-    private var selectableFiles: [FileItem] {
-        isFiltering
-            ? FilteredFilesSection.files(of: course, query: query, scope: scope, sort: sort, onlyNew: onlyNew, lastSeen: lastSeenAtOpen)
+    /// Sorting every file reads each one's module and section: only done while selecting.
+    private func selectableFiles(filtered: [FileItem]) -> [FileItem] {
+        guard selection.isActive else { return [] }
+        return isFiltering
+            ? filtered
             : course.files.sorted { a, b in
                 let sa = a.module?.section?.position ?? 0, sb = b.module?.section?.position ?? 0
                 if sa != sb { return sa < sb }
@@ -84,6 +94,10 @@ private struct CourseContentView: View {
     }
 
     var body: some View {
+        // Filtered once per render and shared by the list and the selection bar.
+        let filtered = isFiltering
+            ? FilteredFilesSection.files(of: course, query: query, scope: scope, sort: sort, onlyNew: onlyNew, lastSeen: lastSeenAtOpen)
+            : []
         List {
             if !isFiltering {
                 Section {
@@ -95,7 +109,7 @@ private struct CourseContentView: View {
             }
 
             if isFiltering {
-                FilteredFilesSection(course: course, query: query, scope: scope, sort: sort, onlyNew: onlyNew, lastSeen: lastSeenAtOpen)
+                FilteredFilesSection(files: filtered, query: query, lastSeen: lastSeenAtOpen)
             } else if course.sections.isEmpty {
                 ContentUnavailableView {
                     Label(course.lastIndexedAt == nil ? "Not loaded yet" : "Empty course", systemImage: "tray")
@@ -118,45 +132,76 @@ private struct CourseContentView: View {
             }
         }
         .groupedList()
-                .selectionBar(selection, candidates: selectableFiles)
+        // Typing swaps the rows: no animated diff of hundreds of insertions per keystroke.
+        .animation(nil, value: query)
+        .selectionBar(selection, candidates: selectableFiles(filtered: filtered))
         .animation(.snappy, value: selection.isActive)
         .environment(selection)
-        .navigationTitle(course.title)
+        .sectionTitle(verbatim: course.title)
         .inlineNavigationTitle()
+        #if os(macOS)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if !query.isEmpty {
+                Picker("Type", selection: $scope) {
+                    ForEach(FileTypeScope.allCases) { Text($0.label).tag($0) }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .fixedSize()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, Theme.Spacing.m)
+                .padding(.vertical, Theme.Spacing.s)
+                .background(.bar)
+            }
+        }
+        #else
         .searchable(text: $query, prompt: "Search in this course")
         .searchScopes($scope, activation: .onSearchPresentation) {
             ForEach(FileTypeScope.allCases) { Text($0.label).tag($0) }
         }
+        #endif
         .refreshable { await refresh() }
-        .toolbar {
-            ToolbarItem(placement: .trailingBar) {
-                if selection.isActive {
-                    Button("Done") { selection.end() }
-                } else {
-                    Menu {
-                        Button("Select", systemImage: "checkmark.circle") { selection.begin() }
-                            .disabled(course.files.isEmpty)
-                        Divider()
-                        Picker("Sort", selection: $sort) {
-                            ForEach(FileSort.allCases) { Text($0.label).tag($0) }
-                        }
-                        Toggle("Only new files", systemImage: "sparkles", isOn: $onlyNew)
-                        Divider()
-                        CourseContextMenu(course: course, onRename: { renameTarget = course })
-                    } label: {
-                        Label("More", systemImage: "ellipsis.circle")
-                    }
-                }
-            }
+        #if os(macOS)
+        .windowToolbar(search: search, prompt: "Search in this course", selection: selection,
+                       canSelect: !course.files.isEmpty, course: options)
+        #else
+        .modifier(CourseToolbar(course: course, options: options, selection: selection))
+        #endif
+        #if DEBUG || BENCH
+        .task {
+            guard TypingBenchmark.isEnabled else { return }
+            #if os(macOS)
+            await TypingBenchmark.run { search.text = $0 }
+            #else
+            await TypingBenchmark.run { query = $0 }
+            #endif
         }
-        .renameFolderDialog(course: $renameTarget)
-        .onChange(of: course.id) { _, _ in selection.end() }
+        #endif
+        .renameFolderDialog(course: $options.renameTarget)
+        // The Mac keeps this screen when another course opens (no rebuild of its toolbar): start
+        // each course with a clean search, sort and selection.
+        .onChange(of: course.id) { _, _ in
+            selection.end()
+            #if os(macOS)
+            search.text = ""
+            #else
+            query = ""
+            #endif
+            scope = .all
+            options.sort = .position
+            options.onlyNew = false
+        }
         .onDisappear { selection.end() }
         .task(id: course.id) {
+            options.course = course
             // Remember what "new" meant when the screen opened, then mark everything seen.
             lastSeenAtOpen = course.lastSeenAt
-            course.lastSeenAt = .now
-            course.newFilesCount = 0
+            // Writing the course makes every list re-run its query. With no new files, moving
+            // `lastSeenAt` forward changes nothing (no file lies between the two dates): skip it.
+            if course.lastSeenAt == nil || course.newFilesCount > 0 {
+                course.lastSeenAt = .now
+                course.newFilesCount = 0
+            }
             if course.lastIndexedAt == nil { await refresh() }
         }
     }
@@ -186,16 +231,11 @@ private struct CourseHeader: View {
                         .font(.title2.weight(.bold))
                         .lineLimit(3)
                         .padding(.bottom, 2)
-                    if let code = course.code {
-                        Text(code)
-                            .font(.caption.weight(.semibold))
-                            .tracking(1.2)
-                            .foregroundStyle(.secondary)
+                    // Same year tag, code and professors as the course rows in the sidebar.
+                    CourseMetaLine(course: course)
+                    if !course.isAcademicYear {
+                        Text(course.categoryName).font(.subheadline).foregroundStyle(.tertiary)
                     }
-                    if let profs = course.professors {
-                        Text(profs).font(.subheadline).foregroundStyle(.secondary)
-                    }
-                    Text(course.categoryName).font(.subheadline).foregroundStyle(.tertiary)
                 }
                 Spacer(minLength: 0)
             }
@@ -246,17 +286,10 @@ private struct CourseHeader: View {
 }
 
 /// Flat, filtered view of the course's files with section › folder breadcrumbs.
-private struct FilteredFilesSection: View {
-    let course: Course
+struct FilteredFilesSection: View {
+    let files: [FileItem]
     let query: String
-    let scope: FileTypeScope
-    let sort: FileSort
-    let onlyNew: Bool
     let lastSeen: Date?
-
-    private var files: [FileItem] {
-        Self.files(of: course, query: query, scope: scope, sort: sort, onlyNew: onlyNew, lastSeen: lastSeen)
-    }
 
     static func files(of course: Course, query: String, scope: FileTypeScope, sort: FileSort, onlyNew: Bool, lastSeen: Date?) -> [FileItem] {
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
@@ -299,3 +332,67 @@ private struct FilteredFilesSection: View {
         }
     }
 }
+
+/// View options of one course screen, shared with its toolbar.
+@Observable
+final class CourseViewOptions {
+    var sort: FileSort = .position
+    var onlyNew = false
+    var renameTarget: Course?
+    /// The course on screen, read by the Mac "…" menu when it opens.
+    var course: Course?
+
+    var isCustomized: Bool { sort != .position || onlyNew }
+}
+
+#if os(iOS)
+/// The course screen's "…" menu (the Mac window toolbar has its own, `CourseMenuButton`). Its
+/// inputs are references (options, selection), so typing in the search field or a list update
+/// does not re-emit it.
+private struct CourseToolbar: ViewModifier {
+    let course: Course
+    let options: CourseViewOptions
+    let selection: FileSelection
+    @ActiveSection private var isActive
+
+    @ViewBuilder func body(content: Content) -> some View {
+        toolbar(content)
+    }
+
+    private func toolbar(_ content: Content) -> some View {
+        @Bindable var options = options
+        // Read here on purpose: the menu is rebuilt (and shows the right checkmarks) when the
+        // sort or the "only new" filter changes, never while typing.
+        let changed = options.sort != .position || options.onlyNew
+        return content.toolbar {
+            if isActive {
+            ToolbarItem(placement: .trailingBar) {
+                if selection.isActive {
+                    Button("Done") { selection.end() }
+                } else {
+                    Menu {
+                        Button("Select", systemImage: "checkmark.circle") { selection.begin() }
+                            .disabled(course.files.isEmpty)
+                        Divider()
+                        Picker("Sort", selection: $options.sort) {
+                            ForEach(FileSort.allCases) { Text($0.label).tag($0) }
+                        }
+                        Toggle("Only new files", systemImage: "sparkles", isOn: $options.onlyNew)
+                        if changed {
+                            Button("Reset view", systemImage: "arrow.uturn.backward") {
+                                options.sort = .position
+                                options.onlyNew = false
+                            }
+                        }
+                        Divider()
+                        CourseContextMenu(course: course, onRename: { options.renameTarget = course })
+                    } label: {
+                        Label("More", systemImage: changed ? "ellipsis.circle.fill" : "ellipsis.circle")
+                    }
+                }
+            }
+            }
+        }
+    }
+}
+#endif

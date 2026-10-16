@@ -41,16 +41,19 @@ struct IndexerTests {
         #expect(!ccs.syncEnabled)
     }
 
-    @Test func duplicateTitlesGetDistinctFolders() throws {
+    @Test func editionsOfACourseShareItsFolder() throws {
         let cats = [CategoryDTO(id: 1, name: "2026-27", parent: 0)]
         let a = CourseDTO(id: 1, fullname: "088983 - FOUNDATIONS OF OPERATIONS RESEARCH (MALUCELLI FEDERICO)", displayname: "088983 - FOUNDATIONS OF OPERATIONS RESEARCH (MALUCELLI FEDERICO)", shortname: nil, category: 1, hidden: false, isfavourite: false, lastaccess: nil, timemodified: nil)
         let b = CourseDTO(id: 2, fullname: "088983 - FOUNDATIONS OF OPERATIONS RESEARCH (AMALDI EDOARDO)", displayname: "088983 - FOUNDATIONS OF OPERATIONS RESEARCH (AMALDI EDOARDO)", shortname: nil, category: 1, hidden: false, isfavourite: false, lastaccess: nil, timemodified: nil)
         let c = CourseDTO(id: 3, fullname: "052537 - DATA BASES 2 (CAPPIELLO CINZIA)", displayname: "052537 - DATA BASES 2 (CAPPIELLO CINZIA)", shortname: nil, category: 1, hidden: false, isfavourite: false, lastaccess: nil, timemodified: nil)
         try Indexer(context: context).upsertCourses([a, b, c], categories: cats) { _, _ in true }
         let all = try context.fetch(FetchDescriptor<Course>(sortBy: [SortDescriptor(\.id)]))
-        #expect(all[0].folderName == "Foundations of Operations Research (Malucelli Federico)")
-        #expect(all[1].folderName == "Foundations of Operations Research (Amaldi Edoardo)")
+        #expect(all[0].folderName == "Foundations of Operations Research")
+        #expect(all[1].folderName == "Foundations of Operations Research")
         #expect(all[2].folderName == "Data Bases 2")
+        #expect(all[0].folderDirectory == ["Foundations of Operations Research", "2026-27 (Malucelli Federico)"])
+        #expect(all[1].folderDirectory == ["Foundations of Operations Research", "2026-27 (Amaldi Edoardo)"])
+        #expect(all[2].folderDirectory == ["Data Bases 2", "2026-27"])
     }
 
     @Test func reindexKeepsLocalFlagsAndRemovesUnenrolled() throws {

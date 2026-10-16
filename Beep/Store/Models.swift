@@ -18,8 +18,12 @@ final class Course {
     var syncEnabled: Bool
     /// Hidden locally by the user (independent from Moodle's `hidden`).
     var isArchived: Bool = false
-    /// On-disk folder name; equals `title` unless another course shares it (then "Title (Professors)").
+    /// On-disk folder of the course (user-renamable); defaults to `title`. Editions of the same
+    /// course share it and are kept apart by `editionFolder`.
     var folderName: String = ""
+    /// Sub-folder of this edition inside `folderName`: the academic year, plus the professors when
+    /// another course has the same title in the same year. Assigned by `assignEditionFolders`.
+    var editionFolder: String = ""
     var lastIndexedAt: Date?
     /// Last time the user opened the course; files first seen after this are "new".
     var lastSeenAt: Date?
@@ -46,8 +50,45 @@ final class Course {
         self.syncEnabled = syncEnabled
     }
 
+    /// Search rule shared by every course search: title, code or professors contain the text,
+    /// ignoring case and accents. An empty or blank query matches everything.
+    func matches(_ query: String) -> Bool {
+        let q = query.trimmingCharacters(in: .whitespaces)
+        guard !q.isEmpty else { return true }
+        return title.localizedStandardContains(q)
+            || (code?.localizedStandardContains(q) ?? false)
+            || (professors?.localizedStandardContains(q) ?? false)
+    }
+
     var isAcademicYear: Bool { AcademicYear.isAcademicYear(categoryName) }
     var isCurrentYear: Bool { AcademicYear.isCurrent(categoryName) }
+
+    /// Where this course's downloads live, relative to the download root: the course folder plus
+    /// one sub-folder per academic year ("Data Bases 2/2026-27"), so two editions never mix.
+    var folderDirectory: [String] {
+        var parts = [folderName.isEmpty ? title : folderName]
+        if !editionFolder.isEmpty { parts.append(editionFolder) } else if isAcademicYear { parts.append(categoryName) }
+        return parts
+    }
+
+    /// Gives every course its `editionFolder`. Deterministic over the whole set, so it can run on
+    /// every sync: "2026-27", or "2026-27 (Comai Sara)" when two courses share title and year.
+    /// Courses outside an academic year get a sub-folder only when their title is shared.
+    nonisolated static func assignEditionFolders(_ courses: [Course]) {
+        let groups = Dictionary(grouping: courses) { "\($0.title)\u{1}\($0.categoryName)" }
+        for course in courses {
+            let shared = (groups["\(course.title)\u{1}\(course.categoryName)"]?.count ?? 0) > 1
+            let who = course.professors.flatMap { $0.isEmpty ? nil : $0 } ?? String(course.id)
+            let year = course.isAcademicYear ? course.categoryName : ""
+            let folder = switch (year.isEmpty, shared) {
+            case (false, false): year
+            case (false, true): "\(year) (\(who))"
+            case (true, true): who
+            case (true, false): ""
+            }
+            if course.editionFolder != folder { course.editionFolder = folder }
+        }
+    }
 
     func recountNewFiles() {
         newFilesCount = files.reduce(0) { $0 + ($1.isNew(relativeTo: lastSeenAt) ? 1 : 0) }

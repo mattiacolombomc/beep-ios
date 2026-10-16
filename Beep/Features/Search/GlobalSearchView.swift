@@ -4,19 +4,25 @@ import SwiftUI
 /// Search files across every course, plus courses by name.
 struct GlobalSearchView: View {
     @Query(sort: \Course.title) private var courses: [Course]
+    @Environment(\.modelContext) private var context
+    #if os(macOS)
+    /// Edited by the window's toolbar field (`ToolbarSearchField`): `.searchable` rebuilt the toolbar per keystroke.
+    @State private var search = SearchText()
+    private var query: String { search.text }
+    #else
     @State private var query = ""
+    #endif
     @State private var scope: FileTypeScope = .all
     @State private var results: [FileItem] = []
     @State private var selection = FileSelection()
+    @FocusState private var searchFocused: Bool
+    @Environment(AppRouter.self) private var router
 
     var body: some View {
         NavigationStack {
             List {
-                if query.isEmpty {
-                    ContentUnavailableView("Search everything", systemImage: "magnifyingglass", description: Text("File names, folders and courses across all your material."))
-                        .listRowBackground(Color.clear)
-                } else {
-                    let matchedCourses = courses.filter { $0.title.localizedCaseInsensitiveContains(query) || ($0.code?.contains(query) ?? false) }
+                if !query.isEmpty {
+                    let matchedCourses = courses.filter { $0.matches(query) }
                     if !matchedCourses.isEmpty {
                         Section("Courses") {
                             ForEach(matchedCourses) { course in
@@ -31,7 +37,9 @@ struct GlobalSearchView: View {
                     }
                     Section(results.isEmpty ? "Files" : "\(results.count) files") {
                         if results.isEmpty && matchedCourses.isEmpty {
-                            ContentUnavailableView.search(text: query).listRowBackground(Color.clear)
+                            ContentUnavailableView.search(text: query)
+                                .frame(maxWidth: .infinity)
+                                .listRowBackground(Color.clear)
                         }
                         ForEach(results) { file in
                             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
@@ -45,37 +53,110 @@ struct GlobalSearchView: View {
                 }
             }
             .groupedList()
+            // Empty states sit over the list, centred: as list rows they hug the top-left corner on the Mac.
+            .overlay {
+                if query.isEmpty {
+                    ContentUnavailableView("Search everything", systemImage: "magnifyingglass", description: Text("File names, folders and courses across all your material."))
+                }
+            }
                         .selectionBar(selection, candidates: results)
             .animation(.snappy, value: selection.isActive)
             .environment(selection)
-            .toolbar {
-                ToolbarItem(placement: .trailingBar) {
-                    if selection.isActive {
-                        Button("Done") { selection.end() }
-                    } else if !results.isEmpty {
-                        Button("Select") { selection.begin() }
-                    }
-                }
-            }
+            #if os(macOS)
+            .windowToolbar(search: search, prompt: "Files in every course", selection: selection, canSelect: !results.isEmpty)
+            #else
+            .modifier(SelectionToolbar(selection: selection, canSelect: !results.isEmpty, hidesWhenEmpty: true))
+            #endif
             .onChange(of: results.map(\.key)) { _, _ in if results.isEmpty { selection.end() } }
-            .navigationTitle("Search")
+            .sectionTitle("Search")
             .navigationDestination(for: Int.self) { CourseDetailView(courseID: $0) }
             .navigationDestination(for: CatalogRoute.self) { CatalogSearchView(initialQuery: $0.query) }
             .courseRoutes()
+            #if os(macOS)
+            .safeAreaInset(edge: .top, spacing: 0) {
+                if !query.isEmpty {
+                    Picker("Type", selection: $scope) {
+                        ForEach(FileTypeScope.allCases) { Text($0.label).tag($0) }
+                    }
+                    .pickerStyle(.segmented)
+                    .labelsHidden()
+                    .fixedSize()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, Theme.Spacing.m)
+                    .padding(.vertical, Theme.Spacing.s)
+                    .background(.bar)
+                }
+            }
+            // Opening the Search section puts the cursor in the field.
+            .modifier(FocusWhenShown(search: search))
+            #else
             .searchable(text: $query, prompt: "Files in every course")
+            .searchFocused($searchFocused)
+            // Opening the Search tab puts the cursor in the field (keyboard up on iPhone and iPad).
+            .task(id: router.selectedTab) {
+                guard router.selectedTab == .search else { return }
+                try? await Task.sleep(for: .milliseconds(150))
+                searchFocused = true
+            }
             .searchScopes($scope, activation: .onSearchPresentation) {
                 ForEach(FileTypeScope.allCases) { Text($0.label).tag($0) }
             }
+            #endif
+            #if DEBUG || BENCH
+            .task {
+                guard TypingBenchmark.isEnabled else { return }
+                #if os(macOS)
+                await TypingBenchmark.run { search.text = $0 }
+                #else
+                await TypingBenchmark.run { query = $0 }
+                #endif
+            }
+            #endif
             .task(id: "\(query)|\(scope.rawValue)") {
                 guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { results = []; return }
                 try? await Task.sleep(for: .milliseconds(200))
                 guard !Task.isCancelled else { return }
-                let q = query.lowercased()
-                results = courses.flatMap(\.files)
-                    .filter { scope.matches($0.fileExtension) && ($0.filename.lowercased().contains(q) || $0.filepath.lowercased().contains(q) || ($0.module?.name.lowercased().contains(q) ?? false)) }
-                    .sorted { $0.timemodified > $1.timemodified }
-                    .prefix(200).map { $0 }
+                let found = Self.files(matching: query.trimmingCharacters(in: .whitespaces), scope: scope, in: context)
+                // New results replace the old ones without row animations: animating hundreds of
+                // inserted and removed rows dominated each keystroke.
+                var t = Transaction()
+                t.disablesAnimations = true
+                withTransaction(t) { results = found }
             }
         }
     }
+
+    /// Files whose name, folder path or module name contains `q`, newest first. SQLite does the
+    /// matching: walking every course's files on the main thread (and faulting each module)
+    /// stalled typing for tens of milliseconds per keystroke.
+    static func files(matching q: String, scope: FileTypeScope, in context: ModelContext) -> [FileItem] {
+        let limit = 200
+        var d = FetchDescriptor<FileItem>(
+            predicate: #Predicate { file in
+                file.filename.localizedStandardContains(q)
+                    || file.filepath.localizedStandardContains(q)
+                    || (file.module.flatMap { $0.name.localizedStandardContains(q) } ?? false)
+            },
+            sortBy: [SortDescriptor(\.timemodified, order: .reverse)])
+        // The type scope is an extension check: fetch a margin, filter, keep the first `limit`.
+        d.fetchLimit = scope == .all ? limit : limit * 4
+        let found = (try? context.fetch(d)) ?? []
+        return Array(found.lazy.filter { scope.matches($0.fileExtension) }.prefix(limit))
+    }
 }
+
+#if os(macOS)
+/// Moves the cursor into the search field whenever the section becomes visible. Reads only
+/// `@ActiveSection`, so switching sections does not re-render the search screen.
+private struct FocusWhenShown: ViewModifier {
+    let search: SearchText
+    @ActiveSection private var isActive
+    func body(content: Content) -> some View {
+        content.task(id: isActive) {
+            guard isActive else { return }
+            try? await Task.sleep(for: .milliseconds(150))
+            search.focusRequest += 1
+        }
+    }
+}
+#endif

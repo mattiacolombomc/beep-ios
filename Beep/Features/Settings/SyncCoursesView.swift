@@ -5,20 +5,22 @@ import SwiftUI
 /// searchable, with bulk actions so 60 courses are manageable.
 struct SyncCoursesView: View {
     @Query(sort: \Course.title) private var courses: [Course]
-    @State private var query = ""
+    /// Shared with the toolbar modifier as a reference: typing does not re-emit the toolbar.
+    @State private var search = SearchText()
     @AppStorage("syncCourses.yearFilter") private var yearFilter: YearFilter = .current
 
-    private var visible: [Course] {
-        let q = query.trimmingCharacters(in: .whitespaces).lowercased()
-        return courses.filter { c in
+    private var query: String { search.text }
+    private var visible: [Course] { Self.visible(courses, query: query, years: yearFilter) }
+
+    static func visible(_ courses: [Course], query: String, years: YearFilter) -> [Course] {
+        courses.filter { c in
             if c.isHidden || c.isArchived { return false }
-            switch yearFilter {
+            switch years {
             case .all: break
             case .current: if c.isAcademicYear && !c.isCurrentYear { return false }
             case .past: if !c.isAcademicYear || c.isCurrentYear { return false }
             }
-            guard !q.isEmpty else { return true }
-            return c.title.lowercased().contains(q) || (c.code?.contains(q) ?? false) || (c.professors?.lowercased().contains(q) ?? false)
+            return c.matches(query)
         }
     }
 
@@ -67,12 +69,33 @@ struct SyncCoursesView: View {
         .groupedList()
         .navigationTitle("Auto-download")
         .inlineNavigationTitle()
-        .searchable(text: $query, prompt: "Course, code or professor")
-        .toolbar {
+        #if os(macOS)
+        // Not `.searchable`: on the Mac it is a toolbar item and each keystroke rebuilt the toolbar.
+        .safeAreaInset(edge: .top, spacing: 0) {
+            SidebarSearchField(text: $search.text, prompt: String(localized: "Course, code or professor"))
+                .padding(.horizontal, Theme.Spacing.m)
+                .padding(.vertical, Theme.Spacing.s)
+        }
+        #else
+        .searchable(text: $search.text, prompt: "Course, code or professor")
+        #endif
+        .modifier(SyncCoursesToolbar(search: search))
+    }
+}
+
+/// Bulk actions. Reads the courses and the search text only when an action runs, so neither
+/// typing nor toggling a row re-emits the toolbar.
+private struct SyncCoursesToolbar: ViewModifier {
+    let search: SearchText
+    @Query(sort: \Course.title) private var courses: [Course]
+    @AppStorage("syncCourses.yearFilter") private var yearFilter: YearFilter = .current
+
+    func body(content: Content) -> some View {
+        content.toolbar {
             ToolbarItem(placement: .trailingBar) {
                 Menu {
-                    Button("Enable all shown", systemImage: "checkmark.circle") { set(true, visible) }
-                    Button("Disable all shown", systemImage: "circle") { set(false, visible) }
+                    Button("Enable all shown", systemImage: "checkmark.circle") { set(true, shown()) }
+                    Button("Disable all shown", systemImage: "circle") { set(false, shown()) }
                     Divider()
                     Button("Only current year", systemImage: "calendar") {
                         for c in courses { c.syncEnabled = c.isCurrentYear && !c.isArchived && !c.isHidden }
@@ -84,6 +107,8 @@ struct SyncCoursesView: View {
             }
         }
     }
+
+    private func shown() -> [Course] { SyncCoursesView.visible(courses, query: search.text, years: yearFilter) }
 
     private func set(_ value: Bool, _ list: [Course]) {
         for c in list { c.syncEnabled = value }

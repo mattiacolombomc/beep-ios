@@ -109,6 +109,16 @@ enum Platform {
         #endif
     }
 
+    /// Puts plain text on the system clipboard.
+    @MainActor static func copyToClipboard(_ text: String) {
+        #if os(iOS)
+        UIPasteboard.general.string = text
+        #else
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        #endif
+    }
+
     /// Opens a folder in Files (iOS) or Finder (macOS).
     @MainActor static func openFolder(_ folder: URL) {
         #if os(iOS)
@@ -147,4 +157,97 @@ extension Color {
         Color.primary.opacity(0.07)
         #endif
     }
+}
+
+#if os(macOS)
+import AppKit
+
+/// Native search field for a sidebar column. On macOS `.searchable` is part of the window
+/// toolbar: typing re-emitted the toolbar of the view owning the text (the bar flashed, open
+/// menus closed; 219 ms per keystroke). A plain NSSearchField filters without touching it.
+struct SidebarSearchField: NSViewRepresentable {
+    @Binding var text: String
+    let prompt: String
+
+    func makeNSView(context: Context) -> NSSearchField {
+        let field = NSSearchField()
+        field.placeholderString = prompt
+        field.sendsSearchStringImmediately = true
+        field.delegate = context.coordinator
+        return field
+    }
+
+    func updateNSView(_ field: NSSearchField, context: Context) {
+        if field.stringValue != text { field.stringValue = text }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(text: $text) }
+
+    final class Coordinator: NSObject, NSSearchFieldDelegate {
+        let text: Binding<String>
+        init(text: Binding<String>) { self.text = text }
+        func controlTextDidChange(_ note: Notification) {
+            if let field = note.object as? NSSearchField { text.wrappedValue = field.stringValue }
+        }
+    }
+}
+
+/// Native NSSearchField for the window toolbar, used instead of `.searchable` on the Mac: with
+/// `.searchable`, typing re-emitted the toolbar of the view owning the text and AppKit re-tiled it.
+/// It edits the search of the screen on top of the visible section, and is disabled when that
+/// screen has nothing to search (the field never leaves the toolbar).
+struct ToolbarSearchField: NSViewRepresentable {
+    let search: SearchText?
+    let prompt: String
+
+    func makeNSView(context: Context) -> NSSearchField {
+        let field = NSSearchField()
+        field.sendsSearchStringImmediately = true
+        field.delegate = context.coordinator
+        field.widthAnchor.constraint(greaterThanOrEqualToConstant: 180).isActive = true
+        field.widthAnchor.constraint(lessThanOrEqualToConstant: 280).isActive = true
+        return field
+    }
+
+    func updateNSView(_ field: NSSearchField, context: Context) {
+        let coordinator = context.coordinator
+        if coordinator.search !== search, field.currentEditor() != nil {
+            // The typing moved elsewhere: do not carry the cursor into another screen's search.
+            field.window?.makeFirstResponder(nil)
+        }
+        coordinator.search = search
+        field.isEnabled = search != nil
+        // A disabled NSSearchField keeps a bright placeholder in the toolbar: dim it ourselves.
+        let placeholder = NSAttributedString(string: prompt, attributes: [
+            .foregroundColor: search == nil ? NSColor.tertiaryLabelColor : NSColor.placeholderTextColor,
+            .font: field.font ?? .systemFont(ofSize: NSFont.systemFontSize),
+        ])
+        if field.placeholderAttributedString != placeholder { field.placeholderAttributedString = placeholder }
+        let text = search?.text ?? ""
+        if field.stringValue != text { field.stringValue = text }
+        if let search, coordinator.handledFocus[ObjectIdentifier(search), default: 0] != search.focusRequest {
+            coordinator.handledFocus[ObjectIdentifier(search)] = search.focusRequest
+            DispatchQueue.main.async { field.window?.makeFirstResponder(field) }
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+
+    final class Coordinator: NSObject, NSSearchFieldDelegate {
+        var search: SearchText?
+        var handledFocus: [ObjectIdentifier: Int] = [:]
+        func controlTextDidChange(_ note: Notification) {
+            if let field = note.object as? NSSearchField { search?.text = field.stringValue }
+        }
+    }
+}
+#endif
+
+/// Text of a search field. A reference type on purpose: views and toolbar modifiers hold the
+/// same object across renders, so typing never changes their inputs (see `ToolbarSearch`).
+@Observable
+final class SearchText {
+    var text = ""
+    /// Bumped to move the cursor into the field (Mac toolbar field).
+    var focusRequest = 0
 }
