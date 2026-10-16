@@ -57,23 +57,30 @@ private extension View {
     }
 }
 
-/// The sync control: a Liquid Glass drop in the bottom trailing corner. A tap opens it into the
-/// status bar, whose tap syncs; it closes again when the sync and its downloads end, or on a tap
-/// outside it. A full-width bar under the lists started syncs from taps meant to scroll.
+/// The sync control: a Liquid Glass drop in the bottom trailing corner. A tap on the drop opens
+/// the status bar out of it, a tap on the bar syncs; the bar goes back into the drop when the sync
+/// and its downloads end, or on a tap outside it. A full-width bar under the lists started syncs
+/// from taps meant to scroll.
 ///
-/// One glass capsule whose width animates, with the bar laid out at its open width and revealed:
-/// swapping two glass views by `glassEffectID` cut from one to the other in a single frame here.
+/// The drop never leaves; the bar is inserted next to it in one `GlassEffectContainer`, so the
+/// system morphs it out of and back into the drop. Measured on the iPad simulator: swapping the
+/// drop and the bar under one `glassEffectID` cut between them in a single frame, and animating
+/// one capsule's width undershot it into a squeezed pill at the end of the bouncy spring.
 struct SyncDrop: View {
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
     @Environment(AppRouter.self) private var router
+    @Namespace private var glass
     @State private var available: CGFloat = 0
 
     private static let dropSize: CGFloat = 52
+    private static let gap: CGFloat = 8
     private var busy: Bool { sync.isRunning || sync.downloads.progress.isBusy }
     /// Shared by the tabs' drops: switching tab keeps it open.
     private var isOpen: Bool { router.syncBarOpen }
-    private var openWidth: CGFloat { max(Self.dropSize, min(380, available - 2 * Theme.Spacing.m)) }
+    private var barWidth: CGFloat {
+        max(160, min(340, available - 2 * Theme.Spacing.m - Self.dropSize - Self.gap))
+    }
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -88,38 +95,42 @@ struct SyncDrop: View {
                     .onTapGesture { setOpen(false) }
                     .ignoresSafeArea()
             }
-            Button {
-                if isOpen { syncNow() } else { setOpen(true) }
-            } label: {
-                ZStack(alignment: .trailing) {
-                    bar
-                        .frame(width: openWidth, height: Self.dropSize)
-                        .opacity(isOpen ? 1 : 0)
-                    drop
-                        .opacity(isOpen ? 0 : 1)
+            GlassEffectContainer(spacing: 20) {
+                HStack(spacing: Self.gap) {
+                    if isOpen {
+                        Button(action: syncNow) { bar.frame(width: barWidth, height: Self.dropSize).contentShape(.capsule) }
+                            .buttonStyle(.plain)
+                            .glassEffect(.regular.interactive(), in: .capsule)
+                            .glassEffectID("bar", in: glass)
+                            .accessibilityLabel(Text(title))
+                            .accessibilityValue(Text(subtitle))
+                            .accessibilityHint("Syncs your courses now")
+                    }
+                    Button { setOpen(!isOpen) } label: { drop }
+                        .buttonStyle(.plain)
+                        .glassEffect(.regular.interactive(), in: .circle)
+                        .glassEffectID("drop", in: glass)
+                        .accessibilityLabel(Text(title))
+                        .accessibilityValue(Text(subtitle))
+                        .accessibilityHint("Shows the sync status")
                 }
-                .frame(width: isOpen ? openWidth : Self.dropSize, height: Self.dropSize, alignment: .trailing)
-                .clipShape(.capsule)
-                .contentShape(.capsule)
-                // The faded-out half stays in the tree; the button's own label describes it.
-                .accessibilityHidden(true)
             }
-            .buttonStyle(.plain)
-            .glassEffect(.regular.interactive(), in: .capsule)
-            .accessibilityLabel(Text(title))
-            .accessibilityValue(Text(subtitle))
-            .accessibilityHint(isOpen ? "Syncs your courses now" : "Shows the sync status")
             .padding(.horizontal, Theme.Spacing.m)
             .padding(.bottom, Theme.Spacing.s)
         }
         .ignoresSafeArea(.keyboard)
         .onChange(of: busy) { was, now in
-            if was && !now { setOpen(false) }
+            guard was && !now else { return }
+            // Done: the bar shows "Last sync now" for a moment, then goes back into the drop.
+            Task {
+                try? await Task.sleep(for: .seconds(1.2))
+                if !busy { setOpen(false) }
+            }
         }
     }
 
     private func setOpen(_ open: Bool) {
-        withAnimation(.bouncy(duration: 0.4)) { router.syncBarOpen = open }
+        withAnimation(.bouncy) { router.syncBarOpen = open }
     }
 
     /// Closed: the sync symbol, turning while busy, inside a ring that fills with the progress.
@@ -154,24 +165,8 @@ struct SyncDrop: View {
 
     private var bar: some View {
         let dl = sync.downloads.progress
+        // No symbol: the drop next to the bar shows it, turning and with the progress ring.
         return HStack(spacing: Theme.Spacing.m - 4) {
-            ZStack {
-                switch sync.phase {
-                case .indexing(let done, let total, _):
-                    ProgressView(value: total > 0 ? Double(done) / Double(total) : 0)
-                        .progressViewStyle(.circular)
-                        .controlSize(.small)
-                case .failed:
-                    Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
-                case .idle:
-                    if dl.isBusy {
-                        ProgressView(value: dl.fraction).progressViewStyle(.circular).controlSize(.small)
-                    } else {
-                        Image(systemName: "arrow.triangle.2.circlepath").font(.body.weight(.semibold))
-                    }
-                }
-            }
-            .frame(width: 24, height: 24)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.subheadline.weight(.semibold)).lineLimit(1)
                 Text(subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(1).monospacedDigit()
@@ -226,3 +221,4 @@ struct SyncDrop: View {
         Task { _ = await sync.syncAll(client: client, userID: user.id) }
     }
 }
+
