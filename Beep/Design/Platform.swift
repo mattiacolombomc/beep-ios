@@ -163,8 +163,8 @@ extension Color {
 import AppKit
 
 /// Native search field for a sidebar column. On macOS `.searchable` is part of the window
-/// toolbar: every keystroke changes a toolbar preference and SwiftUI rebuilds every toolbar
-/// item (the bar flashes, open menus close). A plain NSSearchField filters without touching it.
+/// toolbar: typing re-emitted the toolbar of the view owning the text (the bar flashed, open
+/// menus closed; 219 ms per keystroke). A plain NSSearchField filters without touching it.
 struct SidebarSearchField: NSViewRepresentable {
     @Binding var text: String
     let prompt: String
@@ -192,8 +192,8 @@ struct SidebarSearchField: NSViewRepresentable {
     }
 }
 
-/// Native NSSearchField for the window toolbar, used instead of `.searchable` on the Mac: the
-/// latter turns every keystroke into a toolbar change and SwiftUI rebuilds every toolbar item.
+/// Native NSSearchField for the window toolbar, used instead of `.searchable` on the Mac: with
+/// `.searchable`, typing re-emitted the toolbar of the view owning the text and AppKit re-tiled it.
 struct ToolbarSearchField: NSViewRepresentable {
     let search: SearchText
     let prompt: String

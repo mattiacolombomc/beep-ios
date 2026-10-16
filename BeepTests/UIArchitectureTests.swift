@@ -74,10 +74,10 @@ struct UIArchitectureTests {
             }
         }
         #expect(offenders.isEmpty, """
-            On macOS `.searchable` is a toolbar item: every keystroke changes a toolbar preference and \
-            SwiftUI recreates every toolbar item (the section bar flashes, open menus close, 200+ ms per \
-            keystroke). Use `ToolbarSearch` / `SidebarSearchField` on the Mac and keep `.searchable` in an \
-            `#if os(iOS)` branch. Offenders: \(offenders)
+            On macOS `.searchable` lives in the window toolbar: in this app typing re-emitted the toolbar \
+            of the view that owns the text (the section bar flashed, open menus closed; measured 219 ms per \
+            keystroke in the course list, 28 ms with an NSSearchField). Use `ToolbarSearch` / \
+            `SidebarSearchField` on the Mac and keep `.searchable` in an `#if os(iOS)` branch. Offenders: \(offenders)
             """)
     }
 
