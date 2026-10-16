@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02262892C13A094E32F595B2 /* InteractionBudgetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7964DB268E50B950DA2D01BF /* InteractionBudgetTests.swift */; };
 		0324217EB40547F297B7E66E /* AppSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED2785533331D773CF0D25D5 /* AppSession.swift */; };
 		03B6363204FCCC5E7E957A43 /* BeepWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = FCB37E15497DFA26FCC7A2E2 /* BeepWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		047B89C25FD887996594B75D /* BeepCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D3F9CFBDB92949C4ADD498 /* BeepCommands.swift */; };
@@ -199,6 +200,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		19E356298CE37C5ACF94B892 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B20E5A0EC915A61F761D5E2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E2E7FD1D0F619D0AD78D4C40;
+			remoteInfo = BeepMac;
+		};
 		31E087548F1C1C3F8A15AFF6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7B20E5A0EC915A61F761D5E2 /* Project object */;
@@ -235,6 +243,7 @@
 		0478DD28AE32D428A6FF72E7 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		058D5135C8218E91EC87E438 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		0F82AC7B06A8EC25DD639158 /* BeepMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepMacApp.swift; sourceTree = "<group>"; };
+		101593D0A00EBADCA25450DD /* BeepMacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BeepMacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		135FEEAF58474DF5713A782B /* LoginFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFlow.swift; sourceTree = "<group>"; };
 		147EFBC5C99DFD38FE03F45D /* CourseMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseMenuButton.swift; sourceTree = "<group>"; };
 		152BE74F23E3DD600A31C753 /* ForumViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumViews.swift; sourceTree = "<group>"; };
@@ -282,6 +291,7 @@
 		71E4840D462EF098CE10FD83 /* CourseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDetailView.swift; sourceTree = "<group>"; };
 		7244B2A38FD30B29696052BF /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		77EC9966A7EADC3B41F7D0F2 /* RecentFilesWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentFilesWidget.swift; sourceTree = "<group>"; };
+		7964DB268E50B950DA2D01BF /* InteractionBudgetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractionBudgetTests.swift; sourceTree = "<group>"; };
 		79808CD1C374D0352A1F0E37 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		7A2A5A24A4239BD7AB55BDAA /* AcademicYear.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcademicYear.swift; sourceTree = "<group>"; };
 		7ABB233466543DB88FF5E076 /* Beep.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Beep.entitlements; sourceTree = "<group>"; };
@@ -358,6 +368,7 @@
 				28FC5D2010DAB3286DF95F13 /* NOTICE */,
 				472B5880A06FF2BEA9572AD7 /* Beep */,
 				B835D91FCEE25E4ACF7F13E1 /* BeepMac */,
+				5F44042D7FB70D068CAE3DF4 /* BeepMacTests */,
 				607AB977D8416D1B654F76C8 /* BeepTests */,
 				988C28B590FEE5096EE60C28 /* BeepWidget */,
 				C39E92F63115DC7D2D3EB758 /* Products */,
@@ -493,6 +504,14 @@
 				9B0FCDC6C27FDB36BBF67A34 /* NotificationsView.swift */,
 			);
 			path = Notifications;
+			sourceTree = "<group>";
+		};
+		5F44042D7FB70D068CAE3DF4 /* BeepMacTests */ = {
+			isa = PBXGroup;
+			children = (
+				7964DB268E50B950DA2D01BF /* InteractionBudgetTests.swift */,
+			);
+			path = BeepMacTests;
 			sourceTree = "<group>";
 		};
 		607AB977D8416D1B654F76C8 /* BeepTests */ = {
@@ -672,6 +691,7 @@
 			children = (
 				D5DDC33A2E7014A4565C4823 /* Beep.app */,
 				1DBC50D833C0B4E7AAACF5B1 /* BeepMac.app */,
+				101593D0A00EBADCA25450DD /* BeepMacTests.xctest */,
 				87CAC2B1DEDF862FD7B242D6 /* BeepTests.xctest */,
 				FCB37E15497DFA26FCC7A2E2 /* BeepWidget.appex */,
 			);
@@ -741,6 +761,24 @@
 			productReference = 87CAC2B1DEDF862FD7B242D6 /* BeepTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		1EABD8639D2528FB26D7A86E /* BeepMacTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F0E1D5D50923D1565A274860 /* Build configuration list for PBXNativeTarget "BeepMacTests" */;
+			buildPhases = (
+				E3C0A3F1A9A91E6BE2469C2B /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F24E108B3E9FF58C4EEAFF0B /* PBXTargetDependency */,
+			);
+			name = BeepMacTests;
+			packageProductDependencies = (
+			);
+			productName = BeepMacTests;
+			productReference = 101593D0A00EBADCA25450DD /* BeepMacTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		4E1E84473F88659B8C224DAF /* Beep */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A88B49A62424E5BF115E8955 /* Build configuration list for PBXNativeTarget "Beep" */;
@@ -795,6 +833,10 @@
 						DevelopmentTeam = M9YL94W837;
 						ProvisioningStyle = Automatic;
 					};
+					1EABD8639D2528FB26D7A86E = {
+						DevelopmentTeam = M9YL94W837;
+						ProvisioningStyle = Automatic;
+					};
 					4E1E84473F88659B8C224DAF = {
 						DevelopmentTeam = M9YL94W837;
 					};
@@ -820,6 +862,7 @@
 			targets = (
 				4E1E84473F88659B8C224DAF /* Beep */,
 				E2E7FD1D0F619D0AD78D4C40 /* BeepMac */,
+				1EABD8639D2528FB26D7A86E /* BeepMacTests */,
 				1C80CB137BB90C9067C8E9C3 /* BeepTests */,
 				0C4702DD8271935D3B07776A /* BeepWidget */,
 			);
@@ -1074,6 +1117,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E3C0A3F1A9A91E6BE2469C2B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				02262892C13A094E32F595B2 /* InteractionBudgetTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1087,9 +1138,31 @@
 			target = 4E1E84473F88659B8C224DAF /* Beep */;
 			targetProxy = 5931C1881E8D691EE26C0B77 /* PBXContainerItemProxy */;
 		};
+		F24E108B3E9FF58C4EEAFF0B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E2E7FD1D0F619D0AD78D4C40 /* BeepMac */;
+			targetProxy = 19E356298CE37C5ACF94B892 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		462EF411022DABEDAF03BFEB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mattiacolombo.BeepMacTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Beep.app/Contents/MacOS/Beep";
+			};
+			name = Debug;
+		};
 		76C8900B1ADD3E97296D72DC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1258,6 +1331,23 @@
 				PRODUCT_NAME = Beep;
 				PROVISIONING_PROFILE_SPECIFIER = "Beep Mac AppStore";
 				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BA675301B8DD30BEFC8EFC00 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mattiacolombo.BeepMacTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Beep.app/Contents/MacOS/Beep";
 			};
 			name = Release;
 		};
@@ -1435,6 +1525,15 @@
 			buildConfigurations = (
 				7DCAB3AAA22901BE8A9C3CFC /* Debug */,
 				7E7D569D135653D659DB0991 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F0E1D5D50923D1565A274860 /* Build configuration list for PBXNativeTarget "BeepMacTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				462EF411022DABEDAF03BFEB /* Debug */,
+				BA675301B8DD30BEFC8EFC00 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

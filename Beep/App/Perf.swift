@@ -21,7 +21,15 @@ enum Perf {
         MainActor.assumeIsolated { begin(interaction) }
     }
 
+    #if DEBUG
+    /// Durations (ms) of finished intervals, for the performance tests.
+    @MainActor static var recorded: [(interaction: Interaction, ms: Double)] = []
+    #endif
+
     @MainActor private static func begin(_ interaction: Interaction) {
+        #if DEBUG
+        let started = ContinuousClock.now
+        #endif
         let state: OSSignpostIntervalState = switch interaction {
         case .openCourse: signposter.beginInterval("Open course", id: signposter.makeSignpostID())
         case .switchSection: signposter.beginInterval("Switch section", id: signposter.makeSignpostID())
@@ -31,6 +39,10 @@ enum Perf {
             case .openCourse: signposter.endInterval("Open course", state)
             case .switchSection: signposter.endInterval("Switch section", state)
             }
+            #if DEBUG
+            let d = ContinuousClock.now - started
+            recorded.append((interaction, Double(d.components.seconds) * 1000 + Double(d.components.attoseconds) / 1e15))
+            #endif
         }
     }
 

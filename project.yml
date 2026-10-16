@@ -162,7 +162,23 @@ targets:
         # Xcode sign Debug builds with a profile too, so a local build reads the same token as TestFlight.
         keychain-access-groups:
           - $(AppIdentifierPrefix)com.mattiacolombo.Beep
-    scheme: {}
+    scheme:
+      testTargets:
+        - BeepMacTests
+  BeepMacTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: BeepMacTests
+    dependencies:
+      - target: BeepMac
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mattiacolombo.BeepMacTests
+        GENERATE_INFOPLIST_FILE: YES
+        # The Mac app's product is "Beep.app", not "BeepMac.app".
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Beep.app/Contents/MacOS/Beep
+        BUNDLE_LOADER: $(TEST_HOST)
   BeepTests:
     type: bundle.unit-test
     platform: iOS

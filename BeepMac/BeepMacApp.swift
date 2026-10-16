@@ -41,6 +41,7 @@ struct BeepMacApp: App {
         AppServices.session = session
         AppServices.sync = sync
         AppServices.router = router
+        AppServices.container = container
         sync.onInvalidToken = { [session] trigger in
             session.markExpired()
             if trigger == .background || !NSApplication.shared.isActive {
