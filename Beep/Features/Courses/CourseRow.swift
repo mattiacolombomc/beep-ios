@@ -3,14 +3,6 @@ import SwiftUI
 struct CourseRow: View {
     let course: Course
 
-    /// Year first: two editions of a course must be telling apart at a glance.
-    private var subtitle: String {
-        var parts: [String] = []
-        if course.isAcademicYear { parts.append(course.categoryName) }
-        parts += [course.code, course.professors].compactMap { $0 }
-        return parts.joined(separator: " · ")
-    }
-
     var body: some View {
         HStack(spacing: Theme.Spacing.m - 4) {
             CourseTile(monogram: course.monogram, color: course.color)
@@ -19,12 +11,7 @@ struct CourseRow: View {
                     .font(.headline)
                     .lineLimit(2)
                     .truncationMode(.middle)
-                if !subtitle.isEmpty {
-                    Text(subtitle)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
+                CourseMetaLine(course: course)
             }
             Spacer(minLength: Theme.Spacing.s)
             HStack(spacing: Theme.Spacing.s) {
@@ -48,5 +35,37 @@ struct CourseRow: View {
         }
         .padding(.vertical, Theme.Spacing.xs)
         .contentShape(Rectangle())
+    }
+}
+
+/// Year, code and professors, each with its own weight: the year as a small tag in the course
+/// colour (it tells two editions apart), the code in fixed-width digits, the professors as text.
+struct CourseMetaLine: View {
+    let course: Course
+
+    var body: some View {
+        HStack(spacing: Theme.Spacing.s - 2) {
+            if course.isAcademicYear {
+                Text(course.categoryName)
+                    .font(.caption2.weight(.semibold).monospacedDigit())
+                    .foregroundStyle(course.color)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(course.color.opacity(0.14), in: .capsule)
+            }
+            if let code = course.code {
+                Text(code)
+                    .font(.caption.monospaced())
+                    .foregroundStyle(.tertiary)
+            }
+            if let profs = course.professors {
+                Text(profs)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .truncationMode(.tail)
+            }
+        }
+        .lineLimit(1)
+        .accessibilityElement(children: .combine)
     }
 }
