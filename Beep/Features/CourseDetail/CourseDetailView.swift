@@ -162,7 +162,11 @@ private struct CourseContentView: View {
         }
         #endif
         .refreshable { await refresh() }
+        #if os(macOS)
+        .modifier(CourseToolbar(options: options, selection: selection))
+        #else
         .modifier(CourseToolbar(course: course, options: options, selection: selection))
+        #endif
         #if DEBUG || BENCH
         .task {
             guard TypingBenchmark.isEnabled else { return }
@@ -189,6 +193,7 @@ private struct CourseContentView: View {
         }
         .onDisappear { selection.end() }
         .task(id: course.id) {
+            options.course = course
             // Remember what "new" meant when the screen opened, then mark everything seen.
             lastSeenAtOpen = course.lastSeenAt
             // Writing the course makes every list re-run its query. With no new files, moving
@@ -334,17 +339,47 @@ final class CourseViewOptions {
     var sort: FileSort = .position
     var onlyNew = false
     var renameTarget: Course?
+    /// The course on screen, read by the Mac "…" menu when it opens.
+    var course: Course?
+
+    var isCustomized: Bool { sort != .position || onlyNew }
 }
 
 /// The course screen's "…" menu. Its inputs are references (course, options, selection), so
 /// typing in the search field or a list update does not re-emit it and AppKit keeps the toolbar.
 private struct CourseToolbar: ViewModifier {
+    #if !os(macOS)
+    // Not an input on the Mac: a new course would re-emit the toolbar (the menu reads
+    // `options.course` when it opens).
     let course: Course
+    #endif
     let options: CourseViewOptions
     let selection: FileSelection
     @Environment(\.isActiveSection) private var isActive
 
-    func body(content: Content) -> some View {
+    @ViewBuilder func body(content: Content) -> some View {
+        toolbar(content)
+    }
+
+    #if os(macOS)
+    @Environment(FileOpener.self) private var opener
+    private func toolbar(_ content: Content) -> some View {
+        content.toolbar {
+            if isActive {
+                ToolbarItem(placement: .trailingBar) {
+                    if selection.isActive {
+                        Button("Done") { selection.end() }
+                    } else {
+                        CourseMenuButton(options: options, selection: selection, opener: opener)
+                            .frame(width: 28, height: 22)
+                            .help("More")
+                    }
+                }
+            }
+        }
+    }
+    #else
+    private func toolbar(_ content: Content) -> some View {
         @Bindable var options = options
         // Read here on purpose: the menu is rebuilt (and shows the right checkmarks) when the
         // sort or the "only new" filter changes, never while typing.
@@ -379,4 +414,5 @@ private struct CourseToolbar: ViewModifier {
             }
         }
     }
+    #endif
 }

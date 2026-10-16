@@ -87,6 +87,7 @@ targets:
       - path: Beep/MoodleKit/AcademicYear.swift
       - path: Beep/Design/Theme.swift
       - path: Beep/App/AppRouter.swift
+      - path: Beep/App/Perf.swift
       - path: Beep/Resources/Assets.xcassets
     entitlements:
       path: BeepWidget/BeepWidget.entitlements

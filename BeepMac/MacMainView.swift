@@ -121,7 +121,9 @@ private struct SidebarToggleWhenActive: ViewModifier {
 /// The open course in the Mac window.
 @Observable
 final class CourseSelection {
-    var id: Int?
+    var id: Int? {
+        didSet { if id != oldValue, id != nil { Perf.measure(.openCourse) } }
+    }
 }
 
 /// Courses list in the sidebar, the open course (or Recent) on the right.

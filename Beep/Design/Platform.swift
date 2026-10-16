@@ -235,7 +235,11 @@ struct ToolbarSearch: ViewModifier {
     let prompt: LocalizedStringResource
     @Environment(\.isActiveSection) private var isActive
 
-    func body(content: Content) -> some View {
+    @ViewBuilder func body(content: Content) -> some View {
+        toolbar(content)
+    }
+
+    private func toolbar(_ content: Content) -> some View {
         content.toolbar {
             if isActive {
                 ToolbarItem(placement: .primaryAction) {
