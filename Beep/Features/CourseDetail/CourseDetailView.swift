@@ -61,7 +61,7 @@ private struct CourseContentView: View {
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
     #if os(macOS)
-    /// Native toolbar field (see `ToolbarSearch`): `.searchable` rebuilt the toolbar per keystroke.
+    /// Edited by the window's toolbar field (`ToolbarSearchField`): `.searchable` rebuilt the toolbar per keystroke.
     @State private var search = SearchText()
     private var query: String { search.text }
     #else
@@ -140,7 +140,6 @@ private struct CourseContentView: View {
         .sectionTitle(verbatim: course.title)
         .inlineNavigationTitle()
         #if os(macOS)
-        .modifier(ToolbarSearch(search: search, prompt: "Search in this course"))
         .safeAreaInset(edge: .top, spacing: 0) {
             if !query.isEmpty {
                 Picker("Type", selection: $scope) {
@@ -163,7 +162,8 @@ private struct CourseContentView: View {
         #endif
         .refreshable { await refresh() }
         #if os(macOS)
-        .modifier(CourseToolbar(options: options, selection: selection))
+        .windowToolbar(search: search, prompt: "Search in this course", selection: selection,
+                       canSelect: !course.files.isEmpty, course: options)
         #else
         .modifier(CourseToolbar(course: course, options: options, selection: selection))
         #endif
@@ -345,14 +345,12 @@ final class CourseViewOptions {
     var isCustomized: Bool { sort != .position || onlyNew }
 }
 
-/// The course screen's "…" menu. Its inputs are references (course, options, selection), so
-/// typing in the search field or a list update does not re-emit it and AppKit keeps the toolbar.
+#if os(iOS)
+/// The course screen's "…" menu (the Mac window toolbar has its own, `CourseMenuButton`). Its
+/// inputs are references (options, selection), so typing in the search field or a list update
+/// does not re-emit it.
 private struct CourseToolbar: ViewModifier {
-    #if !os(macOS)
-    // Not an input on the Mac: a new course would re-emit the toolbar (the menu reads
-    // `options.course` when it opens).
     let course: Course
-    #endif
     let options: CourseViewOptions
     let selection: FileSelection
     @ActiveSection private var isActive
@@ -361,24 +359,6 @@ private struct CourseToolbar: ViewModifier {
         toolbar(content)
     }
 
-    #if os(macOS)
-    @Environment(FileOpener.self) private var opener
-    private func toolbar(_ content: Content) -> some View {
-        content.toolbar {
-            if isActive {
-                ToolbarItem(placement: .trailingBar) {
-                    if selection.isActive {
-                        Button("Done") { selection.end() }
-                    } else {
-                        CourseMenuButton(options: options, selection: selection, opener: opener)
-                            .frame(width: 28, height: 22)
-                            .help("More")
-                    }
-                }
-            }
-        }
-    }
-    #else
     private func toolbar(_ content: Content) -> some View {
         @Bindable var options = options
         // Read here on purpose: the menu is rebuilt (and shows the right checkmarks) when the
@@ -414,5 +394,5 @@ private struct CourseToolbar: ViewModifier {
             }
         }
     }
-    #endif
 }
+#endif

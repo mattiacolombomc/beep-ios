@@ -506,40 +506,60 @@ extension View {
     func renameFolderDialog(course: Binding<Course?>) -> some View { modifier(RenameFolderDialog(course: course)) }
 }
 
-/// Filters, notifications and settings of the course list. It reads its own state (the same
-/// `@AppStorage` keys as the list, the unread count) so the list's frequent re-renders never reach it.
-private struct CoursesListToolbar: ViewModifier {
-    @Environment(AppRouter.self) private var router
-    @Query(filter: #Predicate<WebeepNotification> { !$0.read }) private var unread: [WebeepNotification]
+/// The course list's filters. A view of its own, reading the same `@AppStorage` keys as the list,
+/// so it sits in the iOS navigation bar and in the Mac window toolbar alike.
+struct CoursesFilterMenu: View {
+    let findOtherCourses: () -> Void
     @AppStorage("home.yearFilter") private var yearFilter: YearFilter = .all
     @AppStorage("home.showHidden") private var showHidden = false
     @AppStorage("home.showArchived") private var showArchived = false
     @AppStorage("home.onlyNew") private var onlyNew = false
     @AppStorage("home.onlyAutoDownload") private var onlyAutoDownload = false
-    @State private var showCatalog = false
-    @ActiveSection private var isActive
 
     private var isFilterActive: Bool { yearFilter != .all || showHidden || showArchived || onlyNew || onlyAutoDownload }
+
+    var body: some View {
+        Menu {
+            Picker("Years", selection: $yearFilter) {
+                ForEach(YearFilter.allCases) { Text($0.label).tag($0) }
+            }
+            Toggle("Only with new files", systemImage: "sparkles", isOn: $onlyNew)
+            Toggle("Only auto-download", systemImage: "arrow.down.circle", isOn: $onlyAutoDownload)
+            Divider()
+            Toggle("Show archived", systemImage: "archivebox", isOn: $showArchived)
+            Toggle("Show hidden on WeBeep", systemImage: "eye.slash", isOn: $showHidden)
+            Divider()
+            Button(action: findOtherCourses) { Label("Find other courses…", systemImage: "books.vertical") }
+        } label: {
+            Label("Filter", systemImage: isFilterActive ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease")
+        }
+    }
+}
+
+#if os(macOS)
+/// The Mac window toolbar holds the filters, notifications and settings (`MainToolbar`); the list
+/// keeps the catalogue destination its "Find other courses…" item opens.
+private struct CoursesListToolbar: ViewModifier {
+    @Environment(AppRouter.self) private var router
+
+    func body(content: Content) -> some View {
+        @Bindable var router = router
+        content.navigationDestination(isPresented: $router.showCatalog) { CatalogSearchView(initialQuery: "") }
+    }
+}
+#else
+/// Filters, notifications and settings of the course list. It reads its own state (the unread
+/// count, the filters in `CoursesFilterMenu`) so the list's frequent re-renders never reach it.
+private struct CoursesListToolbar: ViewModifier {
+    @Environment(AppRouter.self) private var router
+    @Query(filter: #Predicate<WebeepNotification> { !$0.read }) private var unread: [WebeepNotification]
+    @State private var showCatalog = false
 
     func body(content: Content) -> some View {
         content
             .toolbar {
-                if isActive {
                 ToolbarItem(placement: .trailingBar) {
-                    Menu {
-                        Picker("Years", selection: $yearFilter) {
-                            ForEach(YearFilter.allCases) { Text($0.label).tag($0) }
-                        }
-                        Toggle("Only with new files", systemImage: "sparkles", isOn: $onlyNew)
-                        Toggle("Only auto-download", systemImage: "arrow.down.circle", isOn: $onlyAutoDownload)
-                        Divider()
-                        Toggle("Show archived", systemImage: "archivebox", isOn: $showArchived)
-                        Toggle("Show hidden on WeBeep", systemImage: "eye.slash", isOn: $showHidden)
-                        Divider()
-                        Button { showCatalog = true } label: { Label("Find other courses…", systemImage: "books.vertical") }
-                    } label: {
-                        Label("Filter", systemImage: isFilterActive ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease")
-                    }
+                    CoursesFilterMenu { showCatalog = true }
                 }
                 ToolbarSpacer(.fixed)
                 ToolbarItem(placement: .trailingBar) {
@@ -549,8 +569,8 @@ private struct CoursesListToolbar: ViewModifier {
                 ToolbarItem(placement: .trailingBar) {
                     Button("Settings", systemImage: "gearshape") { router.showSettings = true }
                 }
-                }
             }
             .navigationDestination(isPresented: $showCatalog) { CatalogSearchView(initialQuery: "") }
     }
 }
+#endif

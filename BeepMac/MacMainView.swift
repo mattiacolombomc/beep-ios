@@ -18,6 +18,8 @@ struct MacMainView: View {
     /// The open course. A reference type read only by the Courses split view and the title: as
     /// `@State` here, opening a course re-rendered the whole window and re-ran every section's query.
     @State private var courseSelection = CourseSelection()
+    /// What the toolbar's search, Select and "…" act on, offered by the screens.
+    @State private var toolbarModel = WindowToolbarModel()
 
     var body: some View {
         @Bindable var router = router
@@ -27,12 +29,8 @@ struct MacMainView: View {
             content
             SyncFolderBar()
         }
-            .toolbar {
-                ToolbarItem(placement: .principal) { SectionPicker() }
-                ToolbarItem(placement: .primaryAction) {
-                    SyncButton()
-                }
-            }
+            .toolbar { MainToolbar(courses: courseSelection) }
+            .environment(toolbarModel)
             .filePresenters()
             .sheet(isPresented: $router.showNotifications) {
                 NotificationsView().frame(minWidth: 480, minHeight: 560)
@@ -110,20 +108,13 @@ struct MacMainView: View {
     }
 }
 
-/// The hidden Courses split view would keep its sidebar button in the toolbar.
-private struct SidebarToggleWhenActive: ViewModifier {
-    @ActiveSection private var isActive
-    func body(content: Content) -> some View {
-        content.toolbar(removing: isActive ? nil : .sidebarToggle)
-    }
-}
-
-/// The open course in the Mac window.
+/// The open course in the Mac window, and whether the course list is shown.
 @Observable
 final class CourseSelection {
     var id: Int? {
         didSet { if id != oldValue, id != nil { Perf.measure(.openCourse) } }
     }
+    var columns: NavigationSplitViewVisibility = .all
 }
 
 /// Courses list in the sidebar, the open course (or Recent) on the right.
@@ -132,10 +123,11 @@ private struct CoursesSplit: View {
 
     var body: some View {
         @Bindable var selection = selection
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $selection.columns) {
             CoursesListView(selection: $selection.id, isSplit: true)
                 .navigationSplitViewColumnWidth(min: 300, ideal: 340, max: 460)
-                .modifier(SidebarToggleWhenActive())
+                // The window toolbar has its own course-list button, in every section.
+                .toolbar(removing: .sidebarToggle)
         } detail: {
             if let id = selection.id {
                 // No `.id(id)`: recreating the stack per course removed and re-added its toolbar
@@ -159,22 +151,6 @@ private struct WindowTitle: ViewModifier {
         content
             .navigationTitle("Beep")
             .toolbar(removing: .title)
-    }
-}
-
-/// Only the picker and the layers read `selectedTab`: a switch re-renders them, not the window.
-private struct SectionPicker: View {
-    @Environment(AppRouter.self) private var router
-    var body: some View {
-        @Bindable var router = router
-        Picker("Section", selection: $router.selectedTab) {
-            Label("Courses", systemImage: "graduationcap").tag(AppRouter.AppTab.courses)
-            Label("Recent", systemImage: "clock").tag(AppRouter.AppTab.recent)
-            Label("Activity", systemImage: "arrow.down.circle").tag(AppRouter.AppTab.activity)
-            Label("Search", systemImage: "magnifyingglass").tag(AppRouter.AppTab.search)
-        }
-        .pickerStyle(.segmented)
-        .labelStyle(.titleAndIcon)
     }
 }
 
@@ -242,7 +218,8 @@ private struct SyncProgressLabel: NSViewRepresentable {
         bar.maxValue = 1
         let label = NSTextField(labelWithString: "")
         label.font = .monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: .medium)
-        label.textColor = .secondaryLabelColor
+        // Not secondary: in dark mode it faded into the glass button.
+        label.textColor = .labelColor
         label.alignment = .right
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)

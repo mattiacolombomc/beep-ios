@@ -1350,6 +1350,22 @@
         }
       }
     },
+    "Course List": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Course List"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elenco corsi"
+          }
+        }
+      }
+    },
     "Course name or code": {
       "localizations": {
         "it": {
@@ -3149,6 +3165,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostra nel Finder"
+          }
+        }
+      }
+    },
+    "Show or hide the course list": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show or hide the course list"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra o nascondi l'elenco dei corsi"
           }
         }
       }

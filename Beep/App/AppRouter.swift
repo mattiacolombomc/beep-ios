@@ -20,6 +20,8 @@ final class AppRouter {
     /// App-wide sheets, driven by toolbar buttons and keyboard commands alike.
     var showSettings = false
     var showNotifications = false
+    /// The WeBeep catalogue, opened from the Mac toolbar's filter menu.
+    var showCatalog = false
 
     enum AppTab: String { case courses, recent, activity, search }
 

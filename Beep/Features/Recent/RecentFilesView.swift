@@ -43,7 +43,11 @@ struct RecentFilesView: View {
             .animation(.snappy, value: selection.isActive)
             .environment(selection)
             .sectionTitle("Recent")
+            #if os(macOS)
+            .windowToolbar(selection: selection, canSelect: !files.isEmpty)
+            #else
             .modifier(SelectionToolbar(selection: selection, canSelect: !files.isEmpty))
+            #endif
             .onDisappear { selection.end() }
         }
     }

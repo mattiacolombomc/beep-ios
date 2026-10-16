@@ -6,8 +6,8 @@ import SwiftUI
 /// depends on the open course, so opening another course does not rebuild the toolbar (a
 /// SwiftUI Menu re-emitted its whole content on every course, ~70 ms).
 struct CourseMenuButton: NSViewRepresentable {
-    let options: CourseViewOptions
-    let selection: FileSelection
+    let options: CourseViewOptions?
+    let selection: FileSelection?
     let opener: FileOpener
 
     func makeNSView(context: Context) -> NSButton {
@@ -22,7 +22,9 @@ struct CourseMenuButton: NSViewRepresentable {
 
     func updateNSView(_ button: NSButton, context: Context) {
         context.coordinator.update(options: options, selection: selection, opener: opener)
-        button.image = NSImage(systemSymbolName: options.isCustomized ? "ellipsis.circle.fill" : "ellipsis.circle",
+        // A borderless symbol button does not dim itself when disabled (no course on screen).
+        button.contentTintColor = context.environment.isEnabled ? nil : .tertiaryLabelColor
+        button.image = NSImage(systemSymbolName: options?.isCustomized == true ? "ellipsis.circle.fill" : "ellipsis.circle",
                                accessibilityDescription: String(localized: "More"))
     }
 
@@ -34,7 +36,7 @@ struct CourseMenuButton: NSViewRepresentable {
         private var opener: FileOpener?
         private var actions: [() -> Void] = []
 
-        func update(options: CourseViewOptions, selection: FileSelection, opener: FileOpener) {
+        func update(options: CourseViewOptions?, selection: FileSelection?, opener: FileOpener) {
             self.options = options
             self.selection = selection
             self.opener = opener

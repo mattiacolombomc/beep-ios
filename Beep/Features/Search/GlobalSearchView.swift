@@ -6,7 +6,7 @@ struct GlobalSearchView: View {
     @Query(sort: \Course.title) private var courses: [Course]
     @Environment(\.modelContext) private var context
     #if os(macOS)
-    /// Native toolbar field (see `ToolbarSearch`): `.searchable` rebuilt the toolbar per keystroke.
+    /// Edited by the window's toolbar field (`ToolbarSearchField`): `.searchable` rebuilt the toolbar per keystroke.
     @State private var search = SearchText()
     private var query: String { search.text }
     #else
@@ -62,14 +62,17 @@ struct GlobalSearchView: View {
                         .selectionBar(selection, candidates: results)
             .animation(.snappy, value: selection.isActive)
             .environment(selection)
+            #if os(macOS)
+            .windowToolbar(search: search, prompt: "Files in every course", selection: selection, canSelect: !results.isEmpty)
+            #else
             .modifier(SelectionToolbar(selection: selection, canSelect: !results.isEmpty, hidesWhenEmpty: true))
+            #endif
             .onChange(of: results.map(\.key)) { _, _ in if results.isEmpty { selection.end() } }
             .sectionTitle("Search")
             .navigationDestination(for: Int.self) { CourseDetailView(courseID: $0) }
             .navigationDestination(for: CatalogRoute.self) { CatalogSearchView(initialQuery: $0.query) }
             .courseRoutes()
             #if os(macOS)
-            .modifier(ToolbarSearch(search: search, prompt: "Files in every course"))
             .safeAreaInset(edge: .top, spacing: 0) {
                 if !query.isEmpty {
                     Picker("Type", selection: $scope) {

@@ -122,6 +122,15 @@ struct UIArchitectureTests {
                 "The toolbar Sync button must read `isIndexing` only: reading `phase` re-tiled the toolbar once per course. The bar and counter are the AppKit `SyncProgressLabel`.")
     }
 
+    @Test func macWindowToolbarItemsNeverComeAndGo() throws {
+        let text = try String(contentsOf: Self.root.appending(path: "BeepMac/MainToolbar.swift"), encoding: .utf8)
+        let start = try #require(text.range(of: "struct MainToolbar")).lowerBound
+        let rest = text[start...]
+        let body = String(rest[..<(rest.range(of: "\n}\n")?.upperBound ?? rest.endIndex)])
+        #expect(!body.contains("if ") && !body.contains("switch ") && !body.contains(".hidden("),
+                "The Mac toolbar keeps the same items in every section and disables what does not apply: items added or removed per section made AppKit re-tile it on every switch (~60 ms).")
+    }
+
     @Test func macSectionsStayMountedAndAttached() throws {
         let text = try String(contentsOf: Self.root.appending(path: "BeepMac/MacMainView.swift"), encoding: .utf8)
         let layer = try #require(text.range(of: "private struct SectionLayer")).lowerBound

@@ -48,6 +48,7 @@
 		21E5BFDB220B7863B2DC91FC /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 864BC64E7643ABBFBF2CCFD3 /* Localizable.xcstrings */; };
 		23F34B7603B14582FB2BEF8F /* StoreContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19452E311E45FA947869B393 /* StoreContainer.swift */; };
 		2626377E36F6BED6DD271F6A /* NotificationHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA49ED7BCABAB45AB8683EB2 /* NotificationHTML.swift */; };
+		26D1659E516EDC37A01B2602 /* WindowToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079EA3256FFDB9D0BFF88398 /* WindowToolbar.swift */; };
 		28731E8EE11B072B787AA833 /* CatalogSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A9F48A8D454DFCDEA10154 /* CatalogSearchView.swift */; };
 		295A13C2648B5C5D008B5AEE /* ForumDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3894DE45915C01852E61D255 /* ForumDTO.swift */; };
 		29EEC2580CF13F0C30F66688 /* GlobalSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 627F23C0ADBE033E203C10F3 /* GlobalSearchView.swift */; };
@@ -178,6 +179,7 @@
 		E04E49833CDD0D4EA098781D /* BackgroundRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C6EA2C67FF7D0DF0604A9C /* BackgroundRefresh.swift */; };
 		E1017A3721D41B553FE4977E /* site_info.json in Resources */ = {isa = PBXBuildFile; fileRef = E87CF57754DAA246400A385A /* site_info.json */; };
 		E2E83C2B436478E835455C9E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DC03A9A41FBAA63B81F471 /* SettingsView.swift */; };
+		E4A3CFA25AF1A17E45E0601F /* WindowToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079EA3256FFDB9D0BFF88398 /* WindowToolbar.swift */; };
 		E6B366A3AC0BA7A882DD78E3 /* NotificationDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE09B0D0E5769EBAB31D00DD /* NotificationDTO.swift */; };
 		E7C9800AF33A0A668EADE19C /* DownloadFolderStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1556E6D390ED343E2B97D21 /* DownloadFolderStep.swift */; };
 		E88CD27C477A23D6D8D88EC3 /* DownloadLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CB5C03288C4631C89F3255 /* DownloadLocation.swift */; };
@@ -192,6 +194,7 @@
 		F28890687C63A36F5619EAB9 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C956A75A7DA5D53C8767CFAA /* Theme.swift */; };
 		F32BB5DC458206774BF0C107 /* FilePresenters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF0B94F1558DB6DA49A610F /* FilePresenters.swift */; };
 		F36095FF2D18E3B90ADE52C7 /* BeepWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC5102FB94F5091EBB3B0D2 /* BeepWidgetBundle.swift */; };
+		F5AB8C7F2F0B22C95852D4FB /* MainToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CEE417BF1D73D17DF3E300F /* MainToolbar.swift */; };
 		F5FB05BC9C5D8F9C6F017105 /* SearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7ECA4B213C32A75D01B15E0 /* SearchTests.swift */; };
 		F79A8F7EC2051591EB2FFF82 /* FileSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1785ECB33E2120F74210ACAE /* FileSelectionTests.swift */; };
 		F8228C12F6DCDD1BD3E58ED9 /* MultilangTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */; };
@@ -242,6 +245,7 @@
 		03582BA59A9B5D1BEC9FF227 /* SmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmokeTests.swift; sourceTree = "<group>"; };
 		0478DD28AE32D428A6FF72E7 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		058D5135C8218E91EC87E438 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		079EA3256FFDB9D0BFF88398 /* WindowToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowToolbar.swift; sourceTree = "<group>"; };
 		0F82AC7B06A8EC25DD639158 /* BeepMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeepMacApp.swift; sourceTree = "<group>"; };
 		101593D0A00EBADCA25450DD /* BeepMacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BeepMacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		135FEEAF58474DF5713A782B /* LoginFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFlow.swift; sourceTree = "<group>"; };
@@ -277,6 +281,7 @@
 		57DE24B0F8748037EA115797 /* LoginWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWebView.swift; sourceTree = "<group>"; };
 		591204CDA9D4449A5DF917D4 /* NotificationHTMLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHTMLTests.swift; sourceTree = "<group>"; };
 		59CB49C7FF286A482562622F /* BeepMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BeepMac.entitlements; sourceTree = "<group>"; };
+		5CEE417BF1D73D17DF3E300F /* MainToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainToolbar.swift; sourceTree = "<group>"; };
 		5EC0BE5246B5005FBF7AF7A2 /* IndexerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexerTests.swift; sourceTree = "<group>"; };
 		627F23C0ADBE033E203C10F3 /* GlobalSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalSearchView.swift; sourceTree = "<group>"; };
 		62A39A90F532A5B7C094EB94 /* MacMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMainView.swift; sourceTree = "<group>"; };
@@ -630,6 +635,7 @@
 				42ECB2251E1F23DF902EB827 /* ActiveSection.swift */,
 				BF6B066E9E6BA18F6A3E1B38 /* Platform.swift */,
 				C956A75A7DA5D53C8767CFAA /* Theme.swift */,
+				079EA3256FFDB9D0BFF88398 /* WindowToolbar.swift */,
 				BB35BCC420CA1AB0276F3928 /* Components */,
 			);
 			path = Design;
@@ -647,6 +653,7 @@
 				00CAA1F04047A2BE48B86A81 /* LaunchAtLogin.swift */,
 				62A39A90F532A5B7C094EB94 /* MacMainView.swift */,
 				482F95F0759BFE87A14120AC /* MacSyncScheduler.swift */,
+				5CEE417BF1D73D17DF3E300F /* MainToolbar.swift */,
 				FD97A9140370D1F545AF1CC8 /* MenuBar.swift */,
 				C1381077E90889ED860A5B5A /* SwitchBenchmark.swift */,
 				E8E35EF16BA8B7C2DEAA32F0 /* SyncFolderBar.swift */,
@@ -966,6 +973,7 @@
 				6582E6A7A97DE717817C7706 /* LoginWebView.swift in Sources */,
 				BE7B33F40AE6CD6F14FE064A /* MacMainView.swift in Sources */,
 				A64F7987EA068EEC617D7B62 /* MacSyncScheduler.swift in Sources */,
+				F5AB8C7F2F0B22C95852D4FB /* MainToolbar.swift in Sources */,
 				72699C3DE1C8CF986B87F69B /* MenuBar.swift in Sources */,
 				BF038CD2388D43A3015CD751 /* Models.swift in Sources */,
 				43B4936AD39CD5C136AB2CA6 /* ModuleRow.swift in Sources */,
@@ -999,6 +1007,7 @@
 				CD10697942DBBD36CD8B6530 /* TypingBenchmark.swift in Sources */,
 				7DEDA6E7E82CDD0B2F167EF5 /* WebSession.swift in Sources */,
 				C2C8FC6771553777B9E5D9BA /* WelcomeView.swift in Sources */,
+				E4A3CFA25AF1A17E45E0601F /* WindowToolbar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1114,6 +1123,7 @@
 				AAAD62A9B045808C4723C2B6 /* TypingBenchmark.swift in Sources */,
 				0CF9676D80128A69E4A005FA /* WebSession.swift in Sources */,
 				DAA031E7642FE2F986BBB0A4 /* WelcomeView.swift in Sources */,
+				26D1659E516EDC37A01B2602 /* WindowToolbar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
