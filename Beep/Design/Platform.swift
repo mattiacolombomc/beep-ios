@@ -233,7 +233,7 @@ struct ToolbarSearchField: NSViewRepresentable {
 struct ToolbarSearch: ViewModifier {
     let search: SearchText
     let prompt: LocalizedStringResource
-    @Environment(\.isActiveSection) private var isActive
+    @ActiveSection private var isActive
 
     @ViewBuilder func body(content: Content) -> some View {
         toolbar(content)

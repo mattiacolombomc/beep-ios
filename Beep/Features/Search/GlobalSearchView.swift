@@ -144,10 +144,10 @@ struct GlobalSearchView: View {
 
 #if os(macOS)
 /// Moves the cursor into the search field whenever the section becomes visible. Reads only
-/// `isActiveSection`, so switching sections does not re-render the search screen.
+/// `@ActiveSection`, so switching sections does not re-render the search screen.
 private struct FocusWhenShown: ViewModifier {
     let search: SearchText
-    @Environment(\.isActiveSection) private var isActive
+    @ActiveSection private var isActive
     func body(content: Content) -> some View {
         content.task(id: isActive) {
             guard isActive else { return }

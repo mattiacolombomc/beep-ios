@@ -1,10 +1,26 @@
 import SwiftUI
 
 extension EnvironmentValues {
-    /// False for a Mac section that stays mounted behind the visible one (see `MacMainView`).
-    /// Only toolbar and title modifiers read it, so a switch never re-renders a section's content.
-    /// Always true on iOS, where TabView shows one tab's toolbar by itself.
-    @Entry var isActiveSection: Bool = true
+    /// The Mac section a view belongs to (constant for its whole life; nil on iOS). A changing
+    /// "is active" environment value made every List of every section update on each switch: the
+    /// Lists are AppKit views that refresh on any environment change.
+    @Entry var sectionTab: AppRouter.AppTab? = nil
+}
+
+/// Whether the view's Mac section is the visible one. Reads the router directly, so only the
+/// small toolbar and focus modifiers that use it update when the section changes. Always true on
+/// iOS, where TabView shows one tab's toolbar by itself.
+@propertyWrapper
+struct ActiveSection: DynamicProperty {
+    @Environment(\.sectionTab) private var tab
+    @Environment(AppRouter.self) private var router: AppRouter?
+
+    init() {}
+
+    var wrappedValue: Bool {
+        guard let tab, let router else { return true }
+        return router.selectedTab == tab
+    }
 }
 
 /// "Select" / "Done" for screens with multi-select. Inputs are the selection object and one
@@ -15,7 +31,7 @@ struct SelectionToolbar: ViewModifier {
     let canSelect: Bool
     /// Hide "Select" instead of disabling it when there is nothing to select.
     var hidesWhenEmpty = false
-    @Environment(\.isActiveSection) private var isActive
+    @ActiveSection private var isActive
 
     func body(content: Content) -> some View {
         content.toolbar {

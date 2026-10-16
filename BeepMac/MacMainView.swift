@@ -6,7 +6,7 @@ import SwiftUI
 ///
 /// Every section stays mounted (`SectionLayer`) and only the visible one shows: rebuilding a
 /// section on each switch recreated its split view and lists and re-attached them to the window.
-/// Section toolbars and titles follow `isActiveSection`, read only by their small modifiers.
+/// Section toolbars follow `@ActiveSection`, read only by their small modifiers.
 struct MacMainView: View {
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
@@ -112,7 +112,7 @@ struct MacMainView: View {
 
 /// The hidden Courses split view would keep its sidebar button in the toolbar.
 private struct SidebarToggleWhenActive: ViewModifier {
-    @Environment(\.isActiveSection) private var isActive
+    @ActiveSection private var isActive
     func body(content: Content) -> some View {
         content.toolbar(removing: isActive ? nil : .sidebarToggle)
     }
@@ -191,7 +191,7 @@ private struct SectionLayer<Content: View>: View {
     var body: some View {
         let active = router.selectedTab == tab
         content
-            .environment(\.isActiveSection, active)
+            .environment(\.sectionTab, tab)
             .opacity(active ? 1 : 0.001)
             .zIndex(active ? 1 : 0)
     }

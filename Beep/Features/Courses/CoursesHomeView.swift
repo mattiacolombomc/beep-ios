@@ -517,7 +517,7 @@ private struct CoursesListToolbar: ViewModifier {
     @AppStorage("home.onlyNew") private var onlyNew = false
     @AppStorage("home.onlyAutoDownload") private var onlyAutoDownload = false
     @State private var showCatalog = false
-    @Environment(\.isActiveSection) private var isActive
+    @ActiveSection private var isActive
 
     private var isFilterActive: Bool { yearFilter != .all || showHidden || showArchived || onlyNew || onlyAutoDownload }
 

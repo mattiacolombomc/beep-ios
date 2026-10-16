@@ -355,7 +355,7 @@ private struct CourseToolbar: ViewModifier {
     #endif
     let options: CourseViewOptions
     let selection: FileSelection
-    @Environment(\.isActiveSection) private var isActive
+    @ActiveSection private var isActive
 
     @ViewBuilder func body(content: Content) -> some View {
         toolbar(content)
