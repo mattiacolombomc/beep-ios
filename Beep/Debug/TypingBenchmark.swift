@@ -31,7 +31,7 @@ enum TypingBenchmark {
         let monitor = StallMonitor()
         monitor.start()
         try? await Task.sleep(for: .seconds(5))
-        let text = "data bases"
+        let text = ProcessInfo.processInfo.arguments.first { $0.hasPrefix("-text=") }.map { String($0.dropFirst(6)) } ?? "data bases"
         var typed = ""
         let variant = ProcessInfo.processInfo.arguments.first { $0.hasPrefix("-variant=") } ?? "-variant=base"
         var all: [Double] = []

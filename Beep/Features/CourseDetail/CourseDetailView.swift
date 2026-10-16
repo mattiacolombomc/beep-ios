@@ -68,18 +68,22 @@ private struct CourseContentView: View {
     @State private var query = ""
     #endif
     @State private var scope: FileTypeScope = .all
-    @State private var sort: FileSort = .position
-    @State private var onlyNew = false
+    /// Sort, "only new" and the rename dialog live in a reference type shared with the toolbar
+    /// modifier: the toolbar's inputs stay identical while the user types or the list updates.
+    @State private var options = CourseViewOptions()
     @State private var lastSeenAtOpen: Date?
-    @State private var renameTarget: Course?
     @State private var selection = FileSelection()
 
+    private var sort: FileSort { options.sort }
+    private var onlyNew: Bool { options.onlyNew }
     private var isFiltering: Bool { !query.isEmpty || scope != .all || onlyNew || sort != .position }
 
     /// Files the selection bar can act on: the filtered list, or every file of the course.
-    private var selectableFiles: [FileItem] {
-        isFiltering
-            ? FilteredFilesSection.files(of: course, query: query, scope: scope, sort: sort, onlyNew: onlyNew, lastSeen: lastSeenAtOpen)
+    /// Sorting every file reads each one's module and section: only done while selecting.
+    private func selectableFiles(filtered: [FileItem]) -> [FileItem] {
+        guard selection.isActive else { return [] }
+        return isFiltering
+            ? filtered
             : course.files.sorted { a, b in
                 let sa = a.module?.section?.position ?? 0, sb = b.module?.section?.position ?? 0
                 if sa != sb { return sa < sb }
@@ -90,6 +94,10 @@ private struct CourseContentView: View {
     }
 
     var body: some View {
+        // Filtered once per render and shared by the list and the selection bar.
+        let filtered = isFiltering
+            ? FilteredFilesSection.files(of: course, query: query, scope: scope, sort: sort, onlyNew: onlyNew, lastSeen: lastSeenAtOpen)
+            : []
         List {
             if !isFiltering {
                 Section {
@@ -101,7 +109,7 @@ private struct CourseContentView: View {
             }
 
             if isFiltering {
-                FilteredFilesSection(course: course, query: query, scope: scope, sort: sort, onlyNew: onlyNew, lastSeen: lastSeenAtOpen)
+                FilteredFilesSection(files: filtered, query: query, lastSeen: lastSeenAtOpen)
             } else if course.sections.isEmpty {
                 ContentUnavailableView {
                     Label(course.lastIndexedAt == nil ? "Not loaded yet" : "Empty course", systemImage: "tray")
@@ -124,7 +132,9 @@ private struct CourseContentView: View {
             }
         }
         .groupedList()
-                .selectionBar(selection, candidates: selectableFiles)
+        // Typing swaps the rows: no animated diff of hundreds of insertions per keystroke.
+        .animation(nil, value: query)
+        .selectionBar(selection, candidates: selectableFiles(filtered: filtered))
         .animation(.snappy, value: selection.isActive)
         .environment(selection)
         .navigationTitle(course.title)
@@ -152,28 +162,18 @@ private struct CourseContentView: View {
         }
         #endif
         .refreshable { await refresh() }
-        .toolbar {
-            ToolbarItem(placement: .trailingBar) {
-                if selection.isActive {
-                    Button("Done") { selection.end() }
-                } else {
-                    Menu {
-                        Button("Select", systemImage: "checkmark.circle") { selection.begin() }
-                            .disabled(course.files.isEmpty)
-                        Divider()
-                        Picker("Sort", selection: $sort) {
-                            ForEach(FileSort.allCases) { Text($0.label).tag($0) }
-                        }
-                        Toggle("Only new files", systemImage: "sparkles", isOn: $onlyNew)
-                        Divider()
-                        CourseContextMenu(course: course, onRename: { renameTarget = course })
-                    } label: {
-                        Label("More", systemImage: "ellipsis.circle")
-                    }
-                }
-            }
+        .modifier(CourseToolbar(course: course, options: options, selection: selection))
+        #if DEBUG || BENCH
+        .task {
+            guard TypingBenchmark.isEnabled else { return }
+            #if os(macOS)
+            await TypingBenchmark.run { search.text = $0 }
+            #else
+            await TypingBenchmark.run { query = $0 }
+            #endif
         }
-        .renameFolderDialog(course: $renameTarget)
+        #endif
+        .renameFolderDialog(course: $options.renameTarget)
         .onChange(of: course.id) { _, _ in selection.end() }
         .onDisappear { selection.end() }
         .task(id: course.id) {
@@ -271,16 +271,9 @@ private struct CourseHeader: View {
 
 /// Flat, filtered view of the course's files with section › folder breadcrumbs.
 private struct FilteredFilesSection: View {
-    let course: Course
+    let files: [FileItem]
     let query: String
-    let scope: FileTypeScope
-    let sort: FileSort
-    let onlyNew: Bool
     let lastSeen: Date?
-
-    private var files: [FileItem] {
-        Self.files(of: course, query: query, scope: scope, sort: sort, onlyNew: onlyNew, lastSeen: lastSeen)
-    }
 
     static func files(of course: Course, query: String, scope: FileTypeScope, sort: FileSort, onlyNew: Bool, lastSeen: Date?) -> [FileItem] {
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
@@ -319,6 +312,47 @@ private struct FilteredFilesSection: View {
                 }
             } header: {
                 Text("\(result.count) files")
+            }
+        }
+    }
+}
+
+/// View options of one course screen, shared with its toolbar.
+@Observable
+final class CourseViewOptions {
+    var sort: FileSort = .position
+    var onlyNew = false
+    var renameTarget: Course?
+}
+
+/// The course screen's "…" menu. Its inputs are references (course, options, selection), so
+/// typing in the search field or a list update does not re-emit it and AppKit keeps the toolbar.
+private struct CourseToolbar: ViewModifier {
+    let course: Course
+    let options: CourseViewOptions
+    let selection: FileSelection
+
+    func body(content: Content) -> some View {
+        @Bindable var options = options
+        return content.toolbar {
+            ToolbarItem(placement: .trailingBar) {
+                if selection.isActive {
+                    Button("Done") { selection.end() }
+                } else {
+                    Menu {
+                        Button("Select", systemImage: "checkmark.circle") { selection.begin() }
+                            .disabled(course.files.isEmpty)
+                        Divider()
+                        Picker("Sort", selection: $options.sort) {
+                            ForEach(FileSort.allCases) { Text($0.label).tag($0) }
+                        }
+                        Toggle("Only new files", systemImage: "sparkles", isOn: $options.onlyNew)
+                        Divider()
+                        CourseContextMenu(course: course, onRename: { options.renameTarget = course })
+                    } label: {
+                        Label("More", systemImage: "ellipsis.circle")
+                    }
+                }
             }
         }
     }
