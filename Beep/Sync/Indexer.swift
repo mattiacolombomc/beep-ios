@@ -66,10 +66,10 @@ nonisolated struct Indexer {
             context.delete(course)
             diff.removed.append(id)
         }
-        // Editions of a course share the folder named after it; the academic year keeps them apart.
-        for course in try context.fetch(FetchDescriptor<Course>()) where course.folderName.isEmpty {
-            course.folderName = course.title
-        }
+        // Editions of a course share the folder named after it; the year (and professor) keep them apart.
+        let all = try context.fetch(FetchDescriptor<Course>())
+        for course in all where course.folderName.isEmpty { course.folderName = course.title }
+        Course.assignEditionFolders(all)
         try context.save()
         return diff
     }

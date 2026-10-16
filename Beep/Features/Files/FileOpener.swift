@@ -254,11 +254,13 @@ struct LocalFiles: Sendable {
     }
 
     /// Moves downloads from the flat layout of earlier versions ("Title (Professor)/file", or
-    /// "Title/file") into "Title/2026-27/file". Idempotent: files already in place are left alone,
-    /// files missing on disk are not touched.
+    /// "Title/file") into "Title/2026-27/file", and keeps files where `folderDirectory` says when
+    /// an edition folder changes (a second section of a course shows up in the same year).
+    /// Idempotent: files already in place are left alone, files missing on disk are not touched.
     func migrateLayout(courses: [Course]) {
         let fm = FileManager.default
         var emptied: Set<URL> = []
+        Course.assignEditionFolders(courses)
         for course in courses {
             // Drop the suffixes the old indexer added to tell editions apart; user renames stay.
             let autoNames = [course.professors.map { "\(course.title) (\($0))" }, "\(course.title) (\(course.id))"].compactMap { $0 }

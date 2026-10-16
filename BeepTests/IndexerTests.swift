@@ -51,7 +51,9 @@ struct IndexerTests {
         #expect(all[0].folderName == "Foundations of Operations Research")
         #expect(all[1].folderName == "Foundations of Operations Research")
         #expect(all[2].folderName == "Data Bases 2")
-        #expect(all[0].folderDirectory == ["Foundations of Operations Research", "2026-27"])
+        #expect(all[0].folderDirectory == ["Foundations of Operations Research", "2026-27 (Malucelli Federico)"])
+        #expect(all[1].folderDirectory == ["Foundations of Operations Research", "2026-27 (Amaldi Edoardo)"])
+        #expect(all[2].folderDirectory == ["Data Bases 2", "2026-27"])
     }
 
     @Test func reindexKeepsLocalFlagsAndRemovesUnenrolled() throws {

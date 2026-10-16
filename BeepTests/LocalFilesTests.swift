@@ -105,6 +105,8 @@ struct LocalFilesTests {
         let comai = course(1, title: "Data Bases 2", year: "2025-26", professors: "Comai Sara", folder: "Data Bases 2 (Comai Sara)")
         let fraternali = course(2, title: "Data Bases 2", year: "2026-27", professors: "Fraternali Piero")
         let renamed = course(3, title: "Distributed Systems", year: "2025-26", professors: "Cugola Gianpaolo", folder: "DS")
+        // Two sections in the same year: they get the professor in the edition folder.
+        let comai27 = course(4, title: "Data Bases 2", year: "2026-27", professors: "Comai Sara")
         func seed(_ course: Course, key: String, oldRel: String) throws -> FileItem {
             let f = FileItem(key: key, filename: URL(filePath: oldRel).lastPathComponent, filepath: "/", filesize: 1, timemodified: .now, mimetype: nil, remoteURL: "https://x/\(key)", firstSeenAt: .now)
             f.course = course
@@ -120,20 +122,23 @@ struct LocalFilesTests {
         let c = try seed(renamed, key: "c", oldRel: "DS/c.pdf")
         let missing = try seed(fraternali, key: "m", oldRel: "Data Bases 2/missing.pdf")
         try FileManager.default.removeItem(at: root.appending(path: "Data Bases 2/missing.pdf"))
+        let d = try seed(comai27, key: "d", oldRel: "Data Bases 2 (Comai Sara)/d.pdf")
 
-        local.migrateLayout(courses: [comai, fraternali, renamed])
+        local.migrateLayout(courses: [comai, fraternali, renamed, comai27])
 
         #expect(comai.folderName == "Data Bases 2")
         #expect(a.localRelativePath == "Data Bases 2/2025-26/a.pdf")
-        #expect(b.localRelativePath == "Data Bases 2/2026-27/b.pdf")
+        #expect(b.localRelativePath == "Data Bases 2/2026-27 (Fraternali Piero)/b.pdf")
+        #expect(d.localRelativePath == "Data Bases 2/2026-27 (Comai Sara)/d.pdf")
         #expect(renamed.folderName == "DS")
         #expect(c.localRelativePath == "DS/2025-26/c.pdf")
         #expect(missing.localRelativePath == "Data Bases 2/missing.pdf")
-        for f in [a, b, c] { #expect(local.url(for: f) != nil) }
+        for f in [a, b, c, d] { #expect(local.url(for: f) != nil) }
         #expect(!FileManager.default.fileExists(atPath: root.appending(path: "Data Bases 2 (Comai Sara)").path(percentEncoded: false)))
         #expect(FileManager.default.fileExists(atPath: root.path(percentEncoded: false)))
         // Running again changes nothing.
-        local.migrateLayout(courses: [comai, fraternali, renamed])
+        local.migrateLayout(courses: [comai, fraternali, renamed, comai27])
         #expect(a.localRelativePath == "Data Bases 2/2025-26/a.pdf")
+        #expect(b.localRelativePath == "Data Bases 2/2026-27 (Fraternali Piero)/b.pdf")
     }
 }

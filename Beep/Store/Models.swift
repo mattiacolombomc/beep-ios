@@ -19,8 +19,11 @@ final class Course {
     /// Hidden locally by the user (independent from Moodle's `hidden`).
     var isArchived: Bool = false
     /// On-disk folder of the course (user-renamable); defaults to `title`. Editions of the same
-    /// course share it and are kept apart by `folderDirectory`.
+    /// course share it and are kept apart by `editionFolder`.
     var folderName: String = ""
+    /// Sub-folder of this edition inside `folderName`: the academic year, plus the professors when
+    /// another course has the same title in the same year. Assigned by `assignEditionFolders`.
+    var editionFolder: String = ""
     var lastIndexedAt: Date?
     /// Last time the user opened the course; files first seen after this are "new".
     var lastSeenAt: Date?
@@ -54,8 +57,27 @@ final class Course {
     /// one sub-folder per academic year ("Data Bases 2/2026-27"), so two editions never mix.
     var folderDirectory: [String] {
         var parts = [folderName.isEmpty ? title : folderName]
-        if isAcademicYear { parts.append(categoryName) }
+        if !editionFolder.isEmpty { parts.append(editionFolder) } else if isAcademicYear { parts.append(categoryName) }
         return parts
+    }
+
+    /// Gives every course its `editionFolder`. Deterministic over the whole set, so it can run on
+    /// every sync: "2026-27", or "2026-27 (Comai Sara)" when two courses share title and year.
+    /// Courses outside an academic year get a sub-folder only when their title is shared.
+    nonisolated static func assignEditionFolders(_ courses: [Course]) {
+        let groups = Dictionary(grouping: courses) { "\($0.title)\u{1}\($0.categoryName)" }
+        for course in courses {
+            let shared = (groups["\(course.title)\u{1}\(course.categoryName)"]?.count ?? 0) > 1
+            let who = course.professors.flatMap { $0.isEmpty ? nil : $0 } ?? String(course.id)
+            let year = course.isAcademicYear ? course.categoryName : ""
+            let folder = switch (year.isEmpty, shared) {
+            case (false, false): year
+            case (false, true): "\(year) (\(who))"
+            case (true, true): who
+            case (true, false): ""
+            }
+            if course.editionFolder != folder { course.editionFolder = folder }
+        }
     }
 
     func recountNewFiles() {
