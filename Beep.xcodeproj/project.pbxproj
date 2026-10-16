@@ -126,6 +126,7 @@
 		A4EB36B701429DEE58492A2B /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 0478DD28AE32D428A6FF72E7 /* AppIcon.icon */; };
 		A64F7987EA068EEC617D7B62 /* MacSyncScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 482F95F0759BFE87A14120AC /* MacSyncScheduler.swift */; };
 		A853F8004BE198CCB38C66C6 /* MainTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDBE80ED4DAF175F43E0A6E /* MainTabs.swift */; };
+		AAAD62A9B045808C4723C2B6 /* TypingBenchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6799D44DC2B3140EF58D70D5 /* TypingBenchmark.swift */; };
 		AADE8FBF9ECEDF46090BC31A /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C956A75A7DA5D53C8767CFAA /* Theme.swift */; };
 		AAF9C2CAABB3031520B22763 /* FileSelectionBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5E022AA3486A1F0BDE0752 /* FileSelectionBar.swift */; };
 		ACD6B2DBB3ACF96620808FC5 /* SyncCoursesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310DD6AAE1D1B781EFA5601C /* SyncCoursesView.swift */; };
@@ -144,6 +145,7 @@
 		C70D230868A8C31F0BAF7FA4 /* RecentFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83797407F81A91DEB24BEF98 /* RecentFilesView.swift */; };
 		C8A5129D8CC4D63CB7E92852 /* Notifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D988C29D5162025A8E0C42E /* Notifier.swift */; };
 		CC00A700E301109EB1F4C635 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7244B2A38FD30B29696052BF /* DemoData.swift */; };
+		CD10697942DBBD36CD8B6530 /* TypingBenchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6799D44DC2B3140EF58D70D5 /* TypingBenchmark.swift */; };
 		CD1BE22D20260AC93207FD82 /* FileSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23EB2BA565A33302EEF5AB3 /* FileSelection.swift */; };
 		CE5F33BDE5114B749AC8D43A /* ModuleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39EF8D5542906BF58E29A37C /* ModuleRow.swift */; };
 		D02206F4A1CEA2CBEAD3B18B /* LaunchAtLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CAA1F04047A2BE48B86A81 /* LaunchAtLogin.swift */; };
@@ -184,6 +186,7 @@
 		F36095FF2D18E3B90ADE52C7 /* BeepWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFC5102FB94F5091EBB3B0D2 /* BeepWidgetBundle.swift */; };
 		F79A8F7EC2051591EB2FFF82 /* FileSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1785ECB33E2120F74210ACAE /* FileSelectionTests.swift */; };
 		F8228C12F6DCDD1BD3E58ED9 /* MultilangTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */; };
+		F88C63FF58702E351E7DD4D9 /* SwitchBenchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1381077E90889ED860A5B5A /* SwitchBenchmark.swift */; };
 		FC429FB068848E99C5D4AAD8 /* TokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D27EFC0A024C85307150D7 /* TokenStore.swift */; };
 /* End PBXBuildFile section */
 
@@ -260,6 +263,7 @@
 		62A39A90F532A5B7C094EB94 /* MacMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMainView.swift; sourceTree = "<group>"; };
 		632F9C4E22DDA97925F567A1 /* CourseContentsDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseContentsDTO.swift; sourceTree = "<group>"; };
 		66C13C4FB7A36CFB78061D0E /* BeepWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BeepWidget.entitlements; sourceTree = "<group>"; };
+		6799D44DC2B3140EF58D70D5 /* TypingBenchmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypingBenchmark.swift; sourceTree = "<group>"; };
 		684A3781B2025117449208B9 /* TokenRenewerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRenewerTests.swift; sourceTree = "<group>"; };
 		6CDBE80ED4DAF175F43E0A6E /* MainTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabs.swift; sourceTree = "<group>"; };
 		6F85901F69D7F210C5CCF9D3 /* AcademicYearTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcademicYearTests.swift; sourceTree = "<group>"; };
@@ -298,6 +302,7 @@
 		BCB403E03ED555E80094485A /* CourseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDTO.swift; sourceTree = "<group>"; };
 		BE799A9BBADFC00A51DC1EA4 /* CatalogDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogDTO.swift; sourceTree = "<group>"; };
 		BF6B066E9E6BA18F6A3E1B38 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
+		C1381077E90889ED860A5B5A /* SwitchBenchmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchBenchmark.swift; sourceTree = "<group>"; };
 		C18D872AD99A30965F745633 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C956A75A7DA5D53C8767CFAA /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		CAA184C5F47F6D595DF12167 /* TokenRenewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRenewer.swift; sourceTree = "<group>"; };
@@ -396,6 +401,7 @@
 				7ABB233466543DB88FF5E076 /* Beep.entitlements */,
 				66469142E1B42729162D0146 /* App */,
 				E4DEB3E5D446769ED30A074A /* Auth */,
+				7EC68356CD91B698859324F1 /* Debug */,
 				B078BF5C42F27229DED2E9E3 /* Design */,
 				13CAC8BA15C0A57A3DC3AA28 /* Features */,
 				929C75EC07FEA69A968014B8 /* Intents */,
@@ -546,6 +552,14 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		7EC68356CD91B698859324F1 /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				6799D44DC2B3140EF58D70D5 /* TypingBenchmark.swift */,
+			);
+			path = Debug;
+			sourceTree = "<group>";
+		};
 		879F349BE7A565450440B45E /* Store */ = {
 			isa = PBXGroup;
 			children = (
@@ -597,6 +611,7 @@
 				62A39A90F532A5B7C094EB94 /* MacMainView.swift */,
 				482F95F0759BFE87A14120AC /* MacSyncScheduler.swift */,
 				FD97A9140370D1F545AF1CC8 /* MenuBar.swift */,
+				C1381077E90889ED860A5B5A /* SwitchBenchmark.swift */,
 				E8E35EF16BA8B7C2DEAA32F0 /* SyncFolderBar.swift */,
 			);
 			path = BeepMac;
@@ -910,12 +925,14 @@
 				A0114C51E08AE5E466CCCE2F /* StatusTile.swift in Sources */,
 				5CC2D2F41800DD1A651B0F04 /* StorageView.swift in Sources */,
 				944899B3F36B3B224260543B /* StoreContainer.swift in Sources */,
+				F88C63FF58702E351E7DD4D9 /* SwitchBenchmark.swift in Sources */,
 				62867A97EF75CA0307482E7F /* SyncCoursesView.swift in Sources */,
 				C08016AD8CEF0F88AC958154 /* SyncEngine.swift in Sources */,
 				964453E29A8A9CDAA8E44B3B /* SyncFolderBar.swift in Sources */,
 				F28890687C63A36F5619EAB9 /* Theme.swift in Sources */,
 				919C7277B153CC18EAC6F099 /* TokenRenewer.swift in Sources */,
 				FC429FB068848E99C5D4AAD8 /* TokenStore.swift in Sources */,
+				CD10697942DBBD36CD8B6530 /* TypingBenchmark.swift in Sources */,
 				7DEDA6E7E82CDD0B2F167EF5 /* WebSession.swift in Sources */,
 				C2C8FC6771553777B9E5D9BA /* WelcomeView.swift in Sources */,
 			);
@@ -1025,6 +1042,7 @@
 				1B6FDB6FF3E0BB4693BB3D08 /* Theme.swift in Sources */,
 				4141E0AE22FD7B8AFB1B9418 /* TokenRenewer.swift in Sources */,
 				17573A8A9558E9750026F483 /* TokenStore.swift in Sources */,
+				AAAD62A9B045808C4723C2B6 /* TypingBenchmark.swift in Sources */,
 				0CF9676D80128A69E4A005FA /* WebSession.swift in Sources */,
 				DAA031E7642FE2F986BBB0A4 /* WelcomeView.swift in Sources */,
 			);

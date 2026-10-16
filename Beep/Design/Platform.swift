@@ -158,3 +158,37 @@ extension Color {
         #endif
     }
 }
+
+#if os(macOS)
+import AppKit
+
+/// Native search field for a sidebar column. On macOS `.searchable` is part of the window
+/// toolbar: every keystroke changes a toolbar preference and SwiftUI rebuilds every toolbar
+/// item (the bar flashes, open menus close). A plain NSSearchField filters without touching it.
+struct SidebarSearchField: NSViewRepresentable {
+    @Binding var text: String
+    let prompt: String
+
+    func makeNSView(context: Context) -> NSSearchField {
+        let field = NSSearchField()
+        field.placeholderString = prompt
+        field.sendsSearchStringImmediately = true
+        field.delegate = context.coordinator
+        return field
+    }
+
+    func updateNSView(_ field: NSSearchField, context: Context) {
+        if field.stringValue != text { field.stringValue = text }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(text: $text) }
+
+    final class Coordinator: NSObject, NSSearchFieldDelegate {
+        let text: Binding<String>
+        init(text: Binding<String>) { self.text = text }
+        func controlTextDidChange(_ note: Notification) {
+            if let field = note.object as? NSSearchField { text.wrappedValue = field.stringValue }
+        }
+    }
+}
+#endif

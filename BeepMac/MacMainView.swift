@@ -61,6 +61,10 @@ struct MacMainView: View {
                 router.pending = nil
             }
             .task {
+                #if DEBUG || BENCH
+                if SwitchBenchmark.isEnabled { await SwitchBenchmark.run(router: router); return }
+                if TypingBenchmark.isEnabled { if !ProcessInfo.processInfo.arguments.contains("-sidebar") { router.selectedTab = .search }; return }
+                #endif
                 // Refresh the index on launch if it's stale (> 15 min) or empty.
                 if !DemoData.isEnabled, let client = session.client, let user = session.user, user.id != 0 {
                     if sync.lastSyncAt.map({ Date.now.timeIntervalSince($0) > 15 * 60 }) ?? true {

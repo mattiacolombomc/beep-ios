@@ -80,6 +80,9 @@ struct GlobalSearchView: View {
             .searchScopes($scope, activation: .onSearchPresentation) {
                 ForEach(FileTypeScope.allCases) { Text($0.label).tag($0) }
             }
+            #if DEBUG || BENCH
+            .task { if TypingBenchmark.isEnabled { await TypingBenchmark.run { query = $0 } } }
+            #endif
             .task(id: "\(query)|\(scope.rawValue)") {
                 guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { results = []; return }
                 try? await Task.sleep(for: .milliseconds(200))
