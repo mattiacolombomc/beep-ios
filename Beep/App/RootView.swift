@@ -7,13 +7,25 @@ struct RootView: View {
     @AppStorage("onboarding.done") private var onboardingDone = false
     @Environment(FileOpener.self) private var opener
     @Environment(\.modelContext) private var context
+    /// Set when the layout migration moved files; cleared once the user has read the notice.
+    @AppStorage("files.layout2.notice") private var layoutNoticePending = false
 
     var body: some View {
         content
             .preferredColorScheme(Self.forcedScheme)
             .task {
                 guard !DemoData.isEnabled else { return }
-                opener.migrateLayout(context: context)
+                if opener.migrateLayout(context: context) > 0 { layoutNoticePending = true }
+            }
+            .alert("Your files were reorganised", isPresented: $layoutNoticePending) {
+                #if os(macOS)
+                Button("Show in Finder") { opener.openDownloadRoot() }
+                #else
+                Button("Show in Files app") { opener.openDownloadRoot() }
+                #endif
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("Downloads now live in one folder per course, with a sub-folder for each academic year (and professor, when a course has two sections in the same year). Nothing was deleted.")
             }
     }
 

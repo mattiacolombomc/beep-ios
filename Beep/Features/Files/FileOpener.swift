@@ -124,15 +124,20 @@ final class FileOpener {
     func reveal(_ folder: URL) { Platform.reveal(folder) }
 
     /// Runs `LocalFiles.migrateLayout` once per download root (the Mac folder can change).
-    func migrateLayout(context: ModelContext) {
+    /// Returns how many files were moved, so the UI can tell the user once.
+    func migrateLayout(context: ModelContext) -> Int {
         let key = "files.layout2." + local.root.standardizedFileURL.path(percentEncoded: false)
         guard !UserDefaults.standard.bool(forKey: key),
-              FileManager.default.fileExists(atPath: local.root.path(percentEncoded: false)) else { return }
+              FileManager.default.fileExists(atPath: local.root.path(percentEncoded: false)) else { return 0 }
         let courses = (try? context.fetch(FetchDescriptor<Course>())) ?? []
-        local.migrateLayout(courses: courses)
+        let moved = local.migrateLayout(courses: courses)
         try? context.save()
         UserDefaults.standard.set(true, forKey: key)
+        return moved
     }
+
+    /// Opens the download root in Finder (Mac) or the Files app (iOS).
+    func openDownloadRoot() { Platform.openFolder(local.root) }
 
     /// Copies the full on-disk path of a downloaded file to the clipboard.
     func copyPath(of file: FileItem) {
@@ -257,9 +262,12 @@ struct LocalFiles: Sendable {
     /// "Title/file") into "Title/2026-27/file", and keeps files where `folderDirectory` says when
     /// an edition folder changes (a second section of a course shows up in the same year).
     /// Idempotent: files already in place are left alone, files missing on disk are not touched.
-    func migrateLayout(courses: [Course]) {
+    /// Returns how many files were moved.
+    @discardableResult
+    func migrateLayout(courses: [Course]) -> Int {
         let fm = FileManager.default
         var emptied: Set<URL> = []
+        var moved = 0
         Course.assignEditionFolders(courses)
         for course in courses {
             // Drop the suffixes the old indexer added to tell editions apart; user renames stay.
@@ -277,10 +285,12 @@ struct LocalFiles: Sendable {
                     try fm.moveItem(at: src, to: dst)
                     file.localRelativePath = target
                     emptied.insert(src.deletingLastPathComponent())
+                    moved += 1
                 } catch { continue }
             }
         }
         for dir in emptied { removeEmptyDirectories(from: dir) }
+        return moved
     }
 
     /// Removes `dir` and then its parents while they are empty, never the root itself.

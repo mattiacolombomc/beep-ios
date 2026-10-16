@@ -92,7 +92,7 @@ final class SyncEngine {
                 let (courses, categories) = try await (coursesTask, categoriesTask)
                 try await store.upsertCourses(courses, categories: categories)
                 // Edition folders may have changed (a new section of a course in the same year).
-                downloads.local.migrateLayout(courses: try context.fetch(FetchDescriptor<Course>()))
+                _ = downloads.local.migrateLayout(courses: try context.fetch(FetchDescriptor<Course>()))
             }
             let targets = try await store.targets(only: courseID)
             phase = .indexing(done: 0, total: targets.count, current: targets.first?.title)

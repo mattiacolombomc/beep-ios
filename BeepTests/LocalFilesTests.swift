@@ -124,7 +124,8 @@ struct LocalFilesTests {
         try FileManager.default.removeItem(at: root.appending(path: "Data Bases 2/missing.pdf"))
         let d = try seed(comai27, key: "d", oldRel: "Data Bases 2 (Comai Sara)/d.pdf")
 
-        local.migrateLayout(courses: [comai, fraternali, renamed, comai27])
+        let moved = local.migrateLayout(courses: [comai, fraternali, renamed, comai27])
+        #expect(moved == 4)
 
         #expect(comai.folderName == "Data Bases 2")
         #expect(a.localRelativePath == "Data Bases 2/2025-26/a.pdf")
@@ -137,7 +138,7 @@ struct LocalFilesTests {
         #expect(!FileManager.default.fileExists(atPath: root.appending(path: "Data Bases 2 (Comai Sara)").path(percentEncoded: false)))
         #expect(FileManager.default.fileExists(atPath: root.path(percentEncoded: false)))
         // Running again changes nothing.
-        local.migrateLayout(courses: [comai, fraternali, renamed, comai27])
+        #expect(local.migrateLayout(courses: [comai, fraternali, renamed, comai27]) == 0)
         #expect(a.localRelativePath == "Data Bases 2/2025-26/a.pdf")
         #expect(b.localRelativePath == "Data Bases 2/2026-27 (Fraternali Piero)/b.pdf")
     }

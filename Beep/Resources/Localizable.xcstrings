@@ -1580,6 +1580,16 @@
         }
       }
     },
+    "Downloads now live in one folder per course, with a sub-folder for each academic year (and professor, when a course has two sections in the same year). Nothing was deleted.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I download ora stanno in una cartella per corso, con una sottocartella per ogni anno accademico (e per professore, quando un corso ha due sezioni nello stesso anno). Non è stato cancellato nulla."
+          }
+        }
+      }
+    },
     "Empty course": {
       "localizations": {
         "it": {
@@ -3864,6 +3874,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "I tuoi corsi sono pronti"
+          }
+        }
+      }
+    },
+    "Your files were reorganised": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I tuoi file sono stati riorganizzati"
           }
         }
       }
