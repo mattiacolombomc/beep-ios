@@ -174,13 +174,29 @@ private struct CourseContentView: View {
         }
         #endif
         .renameFolderDialog(course: $options.renameTarget)
-        .onChange(of: course.id) { _, _ in selection.end() }
+        // The Mac keeps this screen when another course opens (no rebuild of its toolbar): start
+        // each course with a clean search, sort and selection.
+        .onChange(of: course.id) { _, _ in
+            selection.end()
+            #if os(macOS)
+            search.text = ""
+            #else
+            query = ""
+            #endif
+            scope = .all
+            options.sort = .position
+            options.onlyNew = false
+        }
         .onDisappear { selection.end() }
         .task(id: course.id) {
             // Remember what "new" meant when the screen opened, then mark everything seen.
             lastSeenAtOpen = course.lastSeenAt
-            course.lastSeenAt = .now
-            course.newFilesCount = 0
+            // Writing the course makes every list re-run its query. With no new files, moving
+            // `lastSeenAt` forward changes nothing (no file lies between the two dates): skip it.
+            if course.lastSeenAt == nil || course.newFilesCount > 0 {
+                course.lastSeenAt = .now
+                course.newFilesCount = 0
+            }
             if course.lastIndexedAt == nil { await refresh() }
         }
     }

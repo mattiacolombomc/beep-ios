@@ -27,6 +27,26 @@ enum TypingBenchmark {
         func read() -> (Double, Double) { lock.withLock { (total, worst) } }
     }
 
+    /// Runs named steps 1.2 s apart and prints the main-thread stall after each one.
+    @MainActor static func runSteps(_ label: String, _ steps: [(String, () -> Void)]) async {
+        let monitor = StallMonitor()
+        monitor.start()
+        try? await Task.sleep(for: .seconds(5))
+        var all: [Double] = []
+        for (name, step) in steps {
+            monitor.reset()
+            step()
+            try? await Task.sleep(for: .milliseconds(1200))
+            let (t, w) = monitor.read()
+            all.append(t * 1000)
+            print(String(format: "STEP %@ %-40@ stall %5.0f ms worst %5.0f ms", label, name, t * 1000, w * 1000))
+        }
+        let sorted = all.sorted()
+        print(String(format: "STEP %@ MEDIAN %.0f ms MAX %.0f ms", label, sorted[sorted.count / 2], sorted.last ?? 0))
+        fflush(stdout)
+        exit(0)
+    }
+
     /// `-benchSync`: runs one real sync and prints the main-thread stalls while it runs.
     @MainActor static func runSync(_ work: () async -> Void) async {
         let monitor = StallMonitor()

@@ -88,24 +88,25 @@ struct FolderTree: View {
     @State private var isOpen = false
 
     private var files: [FileItem] { module.files.sorted { $0.filename.localizedStandardCompare($1.filename) == .orderedAscending } }
-    private var rootFiles: [FileItem] { files.filter { $0.filepath == "/" || $0.filepath.isEmpty } }
-    private var subPaths: [String] {
-        Array(Set(files.map(\.filepath).filter { $0 != "/" && !$0.isEmpty })).sorted()
-    }
     private var newCount: Int { module.files.reduce(0) { $0 + ($1.isNew(relativeTo: lastSeen) ? 1 : 0) } }
 
     var body: some View {
         DisclosureGroup(isExpanded: $isOpen) {
-            ForEach(rootFiles) { file in
-                FileRow(file: file, isNew: file.isNew(relativeTo: lastSeen))
-            }
-            ForEach(subPaths, id: \.self) { path in
-                DisclosureGroup(isExpanded: binding(path)) {
-                    ForEach(files.filter { $0.filepath == path }) { file in
-                        FileRow(file: file, isNew: file.isNew(relativeTo: lastSeen))
+            // Built only when open: every folder of a course sorted its files on each render.
+            if isOpen {
+                let sorted = files
+                let subPaths = Array(Set(sorted.map(\.filepath).filter { $0 != "/" && !$0.isEmpty })).sorted()
+                ForEach(sorted.filter { $0.filepath == "/" || $0.filepath.isEmpty }) { file in
+                    FileRow(file: file, isNew: file.isNew(relativeTo: lastSeen))
+                }
+                ForEach(subPaths, id: \.self) { path in
+                    DisclosureGroup(isExpanded: binding(path)) {
+                        ForEach(sorted.filter { $0.filepath == path }) { file in
+                            FileRow(file: file, isNew: file.isNew(relativeTo: lastSeen))
+                        }
+                    } label: {
+                        Label(path.trimmingCharacters(in: CharacterSet(charactersIn: "/")), systemImage: "folder")
                     }
-                } label: {
-                    Label(path.trimmingCharacters(in: CharacterSet(charactersIn: "/")), systemImage: "folder")
                 }
             }
         } label: {

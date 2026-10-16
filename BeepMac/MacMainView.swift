@@ -15,7 +15,9 @@ struct MacMainView: View {
     @Environment(FileOpener.self) private var opener
     @Environment(\.modelContext) private var context
     @Environment(\.openSettings) private var openSettings
-    @State private var selection: Int?
+    /// The open course. A reference type read only by the Courses split view and the title: as
+    /// `@State` here, opening a course re-rendered the whole window and re-ran every section's query.
+    @State private var courseSelection = CourseSelection()
 
     var body: some View {
         @Bindable var router = router
@@ -45,7 +47,7 @@ struct MacMainView: View {
                 guard let dest else { return }
                 switch dest {
                 case .course(let id):
-                    selection = id
+                    courseSelection.id = id
                 case .file(let key):
                     var d = FetchDescriptor<FileItem>(predicate: #Predicate { $0.key == key })
                     d.fetchLimit = 1
@@ -59,13 +61,28 @@ struct MacMainView: View {
                 #if DEBUG || BENCH
                 if SwitchBenchmark.isEnabled { await SwitchBenchmark.run(router: router); return }
                 if let tab = SwitchBenchmark.startTab { router.selectedTab = tab; return }
+                if ProcessInfo.processInfo.arguments.contains("-benchOpenCourses") {
+                    var d = FetchDescriptor<Course>(sortBy: [SortDescriptor(\.title)])
+                    d.fetchLimit = 12
+                    let ids = ((try? context.fetch(d)) ?? []).filter { !$0.isHidden }.map { ($0.id, $0.title) }
+                    let steps: [(String, () -> Void)] = ids.prefix(10).map { item in (item.1, { courseSelection.id = item.0 }) }
+                    await TypingBenchmark.runSteps("open", steps)
+                    return
+                }
+                if ProcessInfo.processInfo.arguments.contains("-benchSearchCourses") {
+                    let steps: [(String, () -> Void)] = (0..<10).map { i in
+                        i % 2 == 0 ? ("courses->search", { router.selectedTab = .search }) : ("search->courses", { router.selectedTab = .courses })
+                    }
+                    await TypingBenchmark.runSteps("tabs", steps)
+                    return
+                }
                 if ProcessInfo.processInfo.arguments.contains("-benchSync"), let client = session.client, let user = session.user {
                     await TypingBenchmark.runSync { _ = await sync.syncAll(client: client, userID: user.id) }
                     return
                 }
                 if TypingBenchmark.isEnabled {
                     if let arg = ProcessInfo.processInfo.arguments.first(where: { $0.hasPrefix("-benchCourse=") }) {
-                        selection = Int(arg.dropFirst("-benchCourse=".count))
+                        courseSelection.id = Int(arg.dropFirst("-benchCourse=".count))
                     } else if !ProcessInfo.processInfo.arguments.contains("-sidebar") {
                         router.selectedTab = .search
                     }
@@ -84,28 +101,12 @@ struct MacMainView: View {
 
     private var content: some View {
         ZStack {
-            SectionLayer(tab: .courses) {
-                NavigationSplitView {
-                    CoursesListView(selection: $selection, isSplit: true)
-                        .navigationSplitViewColumnWidth(min: 300, ideal: 340, max: 460)
-                        .modifier(SidebarToggleWhenActive())
-                } detail: {
-                    if let selection {
-                        NavigationStack {
-                            CourseDetailView(courseID: selection)
-                                .courseRoutes()
-                        }
-                        .id(selection)
-                    } else {
-                        RecentFilesView()
-                    }
-                }
-            }
+            SectionLayer(tab: .courses) { CoursesSplit(selection: courseSelection) }
             SectionLayer(tab: .recent) { RecentFilesView() }
             SectionLayer(tab: .activity) { ActivityView() }
             SectionLayer(tab: .search) { GlobalSearchView() }
         }
-        .modifier(WindowTitle(courseID: selection))
+        .modifier(WindowTitle(selection: courseSelection))
     }
 }
 
@@ -117,24 +118,53 @@ private struct SidebarToggleWhenActive: ViewModifier {
     }
 }
 
+/// The open course in the Mac window.
+@Observable
+final class CourseSelection {
+    var id: Int?
+}
+
+/// Courses list in the sidebar, the open course (or Recent) on the right.
+private struct CoursesSplit: View {
+    let selection: CourseSelection
+
+    var body: some View {
+        @Bindable var selection = selection
+        NavigationSplitView {
+            CoursesListView(selection: $selection.id, isSplit: true)
+                .navigationSplitViewColumnWidth(min: 300, ideal: 340, max: 460)
+                .modifier(SidebarToggleWhenActive())
+        } detail: {
+            if let id = selection.id {
+                // No `.id(id)`: recreating the stack per course removed and re-added its toolbar
+                // items (menu, search field) on every open. The screen resets itself on course change.
+                NavigationStack {
+                    CourseDetailView(courseID: id)
+                        .courseRoutes()
+                }
+            } else {
+                RecentFilesView()
+            }
+        }
+    }
+}
+
 /// The window title: the open course, or the visible section's name.
 private struct WindowTitle: ViewModifier {
-    let courseID: Int?
+    let selection: CourseSelection
     @Environment(AppRouter.self) private var router
-    @Query private var course: [Course]
-
-    init(courseID: Int?) {
-        self.courseID = courseID
-        let id = courseID ?? -1
-        _course = Query(filter: #Predicate<Course> { $0.id == id })
-    }
+    @Environment(\.modelContext) private var context
 
     private var title: String {
         switch router.selectedTab {
-        case .courses: course.first?.title ?? String(localized: "Recent")
-        case .recent: String(localized: "Recent")
-        case .activity: String(localized: "Activity")
-        case .search: String(localized: "Search")
+        case .courses:
+            guard let id = selection.id else { return String(localized: "Recent") }
+            var d = FetchDescriptor<Course>(predicate: #Predicate { $0.id == id })
+            d.fetchLimit = 1
+            return (try? context.fetch(d).first?.title) ?? String(localized: "Recent")
+        case .recent: return String(localized: "Recent")
+        case .activity: return String(localized: "Activity")
+        case .search: return String(localized: "Search")
         }
     }
 
