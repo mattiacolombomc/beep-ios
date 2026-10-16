@@ -3670,6 +3670,22 @@
         }
       }
     },
+    "Updating courses… Click to see the activity.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updating courses… Click to see the activity."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiornamento dei corsi… Fai clic per vedere l'attività."
+          }
+        }
+      }
+    },
     "Use course title": {
       "localizations": {
         "it": {

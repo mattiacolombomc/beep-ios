@@ -29,7 +29,7 @@ struct MacMainView: View {
             content
             SyncFolderBar()
         }
-            .toolbar { MainToolbar(courses: courseSelection) }
+            .toolbar { MainToolbar() }
             .environment(toolbarModel)
             .filePresenters()
             .sheet(isPresented: $router.showNotifications) {
@@ -126,8 +126,9 @@ private struct CoursesSplit: View {
         NavigationSplitView(columnVisibility: $selection.columns) {
             CoursesListView(selection: $selection.id, isSplit: true)
                 .navigationSplitViewColumnWidth(min: 300, ideal: 340, max: 460)
-                // The window toolbar has its own course-list button, in every section.
+                // Its own course-list button, present in every section (`SidebarToolbar`).
                 .toolbar(removing: .sidebarToggle)
+                .toolbar { SidebarToolbar(courses: selection) }
         } detail: {
             if let id = selection.id {
                 // No `.id(id)`: recreating the stack per course removed and re-added its toolbar
@@ -173,11 +174,11 @@ private struct SectionLayer<Content: View>: View {
     }
 }
 
-/// Toolbar sync control: the glass "Sync Now" button; while syncing the same button becomes a
-/// progress bar with the n/N counter (click it to open Activity), then turns back into the button.
-/// Its SwiftUI content changes only when a sync starts or ends (`isIndexing`): the bar and the
-/// number are AppKit views that follow the engine themselves, so the toolbar is never re-tiled
-/// once per course.
+/// Toolbar sync control: the glass "Sync Now" button; while syncing the same button widens into
+/// a progress bar with the n/N counter (click it to open Activity), then shrinks back.
+/// The label is one AppKit view that never changes in SwiftUI: it follows the engine itself and
+/// animates its width constraint, which the toolbar and its glass follow frame by frame. A
+/// SwiftUI label swapped by `if` resized the item in a single frame.
 struct SyncButton: View {
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
@@ -191,25 +192,25 @@ struct SyncButton: View {
                 Task { _ = await sync.syncAll(client: client, userID: user.id) }
             }
         } label: {
-            if sync.isIndexing {
-                SyncProgressLabel(sync: sync)
-                    .frame(width: 128, height: 18)
-            } else {
-                Label("Sync Now", systemImage: "arrow.triangle.2.circlepath")
-            }
+            SyncButtonLabel(sync: sync)
         }
+        .accessibilityLabel(sync.isIndexing ? "Updating courses…" : "Sync Now")
         .help(sync.isIndexing ? "Updating courses… Click to see the activity." : "Sync Now")
         .disabled(!sync.isIndexing && (session.client == nil || DemoData.isEnabled))
-        .animation(.smooth, value: sync.isIndexing)
     }
 }
 
-/// Progress bar and "12/56" counter of a running sync, drawn by AppKit and updated from the
-/// engine directly: the SwiftUI toolbar item that hosts it does not change once per course.
-private struct SyncProgressLabel: NSViewRepresentable {
+/// The sync icon, and the progress bar with its "12/56" counter, in one AppKit view whose width
+/// is animated between the two (see `SyncButton`).
+private struct SyncButtonLabel: NSViewRepresentable {
     let sync: SyncEngine
 
-    func makeNSView(context: Context) -> NSStackView {
+    func makeNSView(context: Context) -> NSView {
+        let container = NSView()
+        let icon = NSImageView(image: NSImage(systemSymbolName: "arrow.triangle.2.circlepath",
+                                              accessibilityDescription: String(localized: "Sync Now"))!)
+        icon.symbolConfiguration = .init(pointSize: 15, weight: .regular)
+        icon.contentTintColor = .controlTextColor
         let bar = NSProgressIndicator()
         bar.style = .bar
         bar.isIndeterminate = false
@@ -218,34 +219,59 @@ private struct SyncProgressLabel: NSViewRepresentable {
         bar.maxValue = 1
         let label = NSTextField(labelWithString: "")
         label.font = .monospacedDigitSystemFont(ofSize: NSFont.smallSystemFontSize, weight: .medium)
-        // Not secondary: in dark mode it faded into the glass button.
-        label.textColor = .labelColor
+        // Control text, like the toolbar's icons: label and secondary label colours fade almost
+        // to invisible inside a glass toolbar button.
+        label.textColor = .controlTextColor
         label.alignment = .right
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
-        let stack = NSStackView(views: [bar, label])
-        stack.orientation = .horizontal
-        stack.spacing = 6
-        stack.alignment = .centerY
-        context.coordinator.bar = bar
-        context.coordinator.label = label
-        context.coordinator.track()
-        return stack
+        let progress = NSStackView(views: [bar, label])
+        progress.orientation = .horizontal
+        progress.spacing = 6
+        progress.alignment = .centerY
+        for v in [icon, progress] as [NSView] {
+            v.translatesAutoresizingMaskIntoConstraints = false
+            container.addSubview(v)
+        }
+        let width = container.widthAnchor.constraint(equalToConstant: Coordinator.iconWidth)
+        NSLayoutConstraint.activate([
+            width,
+            container.heightAnchor.constraint(equalToConstant: 18),
+            icon.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            icon.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            progress.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            progress.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            progress.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+        ])
+        let c = context.coordinator
+        c.width = width
+        c.icon = icon
+        c.progress = progress
+        c.bar = bar
+        c.label = label
+        c.track(animated: false)
+        return container
     }
 
-    func updateNSView(_ nsView: NSStackView, context: Context) {}
+    func updateNSView(_ nsView: NSView, context: Context) {}
 
     func makeCoordinator() -> Coordinator { Coordinator(sync: sync) }
 
     @MainActor final class Coordinator {
+        static let iconWidth: CGFloat = 20
+        static let progressWidth: CGFloat = 128
         let sync: SyncEngine
+        weak var width: NSLayoutConstraint?
+        weak var icon: NSImageView?
+        weak var progress: NSView?
         weak var bar: NSProgressIndicator?
         weak var label: NSTextField?
+        private var showsProgress: Bool?
         init(sync: SyncEngine) { self.sync = sync }
 
-        func track() {
-            let (done, total) = withObservationTracking {
-                if case .indexing(let done, let total, _) = sync.phase { (done, total) } else { (0, 0) }
+        func track(animated: Bool = true) {
+            let (indexing, done, total) = withObservationTracking {
+                if case .indexing(let done, let total, _) = sync.phase { (sync.isIndexing, done, total) } else { (sync.isIndexing, 0, 0) }
             } onChange: { [weak self] in
                 Task { @MainActor in self?.track() }
             }
@@ -256,6 +282,27 @@ private struct SyncProgressLabel: NSViewRepresentable {
                     ctx.duration = 0.25
                     bar.animator().doubleValue = target
                 }
+            }
+            guard indexing != showsProgress else { return }
+            showsProgress = indexing
+            if !indexing { bar?.doubleValue = 0 }
+            let apply = { [self] in
+                width?.animator().constant = indexing ? Self.progressWidth : Self.iconWidth
+                icon?.animator().alphaValue = indexing ? 0 : 1
+                progress?.animator().alphaValue = indexing ? 1 : 0
+                icon?.window?.layoutIfNeeded()
+            }
+            guard animated else {
+                width?.constant = indexing ? Self.progressWidth : Self.iconWidth
+                icon?.alphaValue = indexing ? 0 : 1
+                progress?.alphaValue = indexing ? 1 : 0
+                return
+            }
+            NSAnimationContext.runAnimationGroup { ctx in
+                ctx.duration = 0.4
+                ctx.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+                ctx.allowsImplicitAnimation = true
+                apply()
             }
         }
     }

@@ -63,8 +63,14 @@ enum TypingBenchmark {
             return windows
         }
         await work()
+        let finished = CACurrentMediaTime() - started
+        print("SYNCDONE"); fflush(stdout)
+        // Keep sampling after the sync: the end of a sync (Spotlight, widgets, the toolbar) is
+        // where the UI stalled.
+        try? await Task.sleep(for: .seconds(5))
         sampler.cancel()
         let windows = await sampler.value
+        print("SYNC finished at \(String(format: "%.1f", finished)) s; stalled ms per half second: \(windows.map { Int($0) })")
         let busy = windows.filter { $0 > 100 }.count
         print(String(format: "SYNC took %.1f s, %d half-second windows, %d with >100 ms stalled, worst window %.0f ms, total stalled %.0f ms",
                      CACurrentMediaTime() - started, windows.count, busy, windows.max() ?? 0, windows.reduce(0, +)))

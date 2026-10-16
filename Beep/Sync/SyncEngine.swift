@@ -47,7 +47,7 @@ final class SyncEngine {
     let downloads: DownloadManager
     /// WeBeep rejected the token during a sync.
     var onInvalidToken: ((Trigger) -> Void)?
-    /// Main context: download queue and Spotlight read from it.
+    /// Main context: the download queue reads from it.
     private let context: ModelContext
     /// Created off the main thread: a SwiftData `ModelActor` initialized on the main thread runs
     /// its work there, which made the whole sync (parsing and upserting every course) block the UI.
@@ -159,7 +159,10 @@ final class SyncEngine {
             }
             lastSyncAt = .now
             phase = .idle
-            if userID != nil { Task { await SpotlightIndexer.reindex(context: context) } }
+            if userID != nil {
+                let container = context.container
+                Task.detached(priority: .utility) { await SpotlightIndexer.reindex(container: container) }
+            }
             WidgetCenter.shared.reloadAllTimelines()
         } catch MoodleError.invalidToken {
             report.errors.append("invalidToken")

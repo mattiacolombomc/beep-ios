@@ -7,11 +7,7 @@ import SwiftUI
 /// views instead of making AppKit re-tile the toolbar. Search, Select and "…" act on the screen
 /// on top of the visible section (`WindowToolbarModel`).
 struct MainToolbar: ToolbarContent {
-    let courses: CourseSelection
-
     var body: some ToolbarContent {
-        ToolbarItem(placement: .navigation) { SidebarButton(courses: courses) }
-        ToolbarItem(placement: .navigation) { FilterSlot() }
         ToolbarItem(placement: .principal) { SectionPicker() }
         ToolbarItem(placement: .primaryAction) { SearchSlot() }
         ToolbarSpacer(.fixed, placement: .primaryAction)
@@ -22,6 +18,17 @@ struct MainToolbar: ToolbarContent {
         ToolbarItem(placement: .primaryAction) { SettingsButton() }
         ToolbarSpacer(.fixed, placement: .primaryAction)
         ToolbarItem(placement: .primaryAction) { SyncButton() }
+    }
+}
+
+/// The part of the toolbar above the course list: declared by the sidebar column so it sits over
+/// the sidebar, and always present (disabled outside Courses) like the rest of the toolbar.
+struct SidebarToolbar: ToolbarContent {
+    let courses: CourseSelection
+
+    var body: some ToolbarContent {
+        ToolbarItem(placement: .primaryAction) { FilterSlot() }
+        ToolbarItem(placement: .primaryAction) { SidebarButton(courses: courses) }
     }
 }
 
@@ -86,9 +93,12 @@ private struct SelectSlot: View {
     var body: some View {
         let selection = target?.selection
         let active = selection?.isActive ?? false
-        Button(active ? "Done" : "Select") {
+        // An icon, as on iOS: the same width whether selecting or not.
+        Button(active ? "Done" : "Select", systemImage: active ? "checkmark.circle.fill" : "checkmark.circle") {
             if active { selection?.end() } else { selection?.begin() }
         }
+        .labelStyle(.iconOnly)
+        .help(active ? "Done" : "Select")
         .disabled(selection == nil || !(active || target?.canSelect == true))
     }
 }

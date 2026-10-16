@@ -5,12 +5,17 @@ import UniformTypeIdentifiers
 
 /// Makes courses and files findable from iOS Spotlight. Identifiers: "course:<id>", "file:<key>".
 enum SpotlightIndexer {
-    static let courseDomain = "com.mattiacolombo.Beep.course"
-    static let fileDomain = "com.mattiacolombo.Beep.file"
+    nonisolated static let courseDomain = "com.mattiacolombo.Beep.course"
+    nonisolated static let fileDomain = "com.mattiacolombo.Beep.file"
 
-    @MainActor
-    static func reindex(context: ModelContext) async {
+    /// Rebuilds the index off the main thread, with its own context: building ~3400 items on the
+    /// main context blocked the UI for ~320 ms right as a sync finished.
+    nonisolated static func reindex(container: ModelContainer) async {
         guard CSSearchableIndex.isIndexingAvailable() else { return }
+        let context = ModelContext(container)
+        #if DEBUG || BENCH
+        let started = ContinuousClock.now
+        #endif
         let courses = (try? context.fetch(FetchDescriptor<Course>())) ?? []
         var items: [CSSearchableItem] = []
         for c in courses where !c.isArchived {
@@ -29,6 +34,9 @@ enum SpotlightIndexer {
                 items.append(CSSearchableItem(uniqueIdentifier: "file:\(f.key)", domainIdentifier: fileDomain, attributeSet: fa))
             }
         }
+        #if DEBUG || BENCH
+        print("SPOTLIGHT main-thread build of \(items.count) items: \(ContinuousClock.now - started)")
+        #endif
         let index = CSSearchableIndex.default()
         try? await index.deleteSearchableItems(withDomainIdentifiers: [courseDomain, fileDomain])
         // Batches keep memory flat for thousands of files.
