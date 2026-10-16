@@ -66,6 +66,10 @@ private extension View {
 /// system morphs it out of and back into the drop. Measured on the iPad simulator: swapping the
 /// drop and the bar under one `glassEffectID` cut between them in a single frame, and animating
 /// one capsule's width undershot it into a squeezed pill at the end of the bouncy spring.
+///
+/// `.regular` glass, not `.clear`: on iOS 27 only `.regular` follows the system Liquid Glass
+/// slider (Settings > Appearance > Liquid Glass, from Glass to Tinted); `.clear` stays see-through
+/// at any setting, which made the bar hard to read over the course list on iPhone.
 struct SyncDrop: View {
     @Environment(AppSession.self) private var session
     @Environment(SyncEngine.self) private var sync
