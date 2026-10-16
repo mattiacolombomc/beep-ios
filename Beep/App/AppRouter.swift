@@ -22,6 +22,8 @@ final class AppRouter {
     var showNotifications = false
     /// The WeBeep catalogue, opened from the Mac toolbar's filter menu.
     var showCatalog = false
+    /// iPhone and iPad: whether the sync drop is open into its status bar.
+    var syncBarOpen = false
 
     enum AppTab: String { case courses, recent, activity, search }
 
