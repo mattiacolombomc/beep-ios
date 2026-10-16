@@ -8,14 +8,13 @@ struct GlobalSearchView: View {
     @State private var scope: FileTypeScope = .all
     @State private var results: [FileItem] = []
     @State private var selection = FileSelection()
+    @FocusState private var searchFocused: Bool
+    @Environment(AppRouter.self) private var router
 
     var body: some View {
         NavigationStack {
             List {
-                if query.isEmpty {
-                    ContentUnavailableView("Search everything", systemImage: "magnifyingglass", description: Text("File names, folders and courses across all your material."))
-                        .listRowBackground(Color.clear)
-                } else {
+                if !query.isEmpty {
                     let matchedCourses = courses.filter { $0.title.localizedCaseInsensitiveContains(query) || ($0.code?.contains(query) ?? false) || ($0.professors?.localizedCaseInsensitiveContains(query) ?? false) }
                     if !matchedCourses.isEmpty {
                         Section("Courses") {
@@ -31,7 +30,9 @@ struct GlobalSearchView: View {
                     }
                     Section(results.isEmpty ? "Files" : "\(results.count) files") {
                         if results.isEmpty && matchedCourses.isEmpty {
-                            ContentUnavailableView.search(text: query).listRowBackground(Color.clear)
+                            ContentUnavailableView.search(text: query)
+                                .frame(maxWidth: .infinity)
+                                .listRowBackground(Color.clear)
                         }
                         ForEach(results) { file in
                             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
@@ -45,6 +46,12 @@ struct GlobalSearchView: View {
                 }
             }
             .groupedList()
+            // Empty states sit over the list, centred: as list rows they hug the top-left corner on the Mac.
+            .overlay {
+                if query.isEmpty {
+                    ContentUnavailableView("Search everything", systemImage: "magnifyingglass", description: Text("File names, folders and courses across all your material."))
+                }
+            }
                         .selectionBar(selection, candidates: results)
             .animation(.snappy, value: selection.isActive)
             .environment(selection)
@@ -63,6 +70,13 @@ struct GlobalSearchView: View {
             .navigationDestination(for: CatalogRoute.self) { CatalogSearchView(initialQuery: $0.query) }
             .courseRoutes()
             .searchable(text: $query, prompt: "Files in every course")
+            .searchFocused($searchFocused)
+            // Opening the Search tab puts the cursor in the field (keyboard up on iPhone and iPad).
+            .task(id: router.selectedTab) {
+                guard router.selectedTab == .search else { return }
+                try? await Task.sleep(for: .milliseconds(150))
+                searchFocused = true
+            }
             .searchScopes($scope, activation: .onSearchPresentation) {
                 ForEach(FileTypeScope.allCases) { Text($0.label).tag($0) }
             }
