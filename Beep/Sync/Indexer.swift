@@ -176,14 +176,17 @@ nonisolated struct Indexer {
         var inserted = 0
         for dto in dtos {
             let created = Date(timeIntervalSince1970: TimeInterval(dto.timecreated))
+            let html = dto.fullmessagehtml ?? dto.fullmessage
+            let courseID = html.flatMap(NotificationHTML.courseID)
             if let n = byID[dto.id] {
                 n.read = dto.read ?? n.read
                 n.subject = dto.subject
-                n.htmlBody = dto.fullmessagehtml ?? dto.fullmessage
+                n.htmlBody = html
+                n.courseID = courseID
             } else {
-                context.insert(WebeepNotification(id: dto.id, subject: dto.subject, htmlBody: dto.fullmessagehtml ?? dto.fullmessage,
+                context.insert(WebeepNotification(id: dto.id, subject: dto.subject, htmlBody: html,
                                                   contextURL: dto.contexturl, contextName: dto.contexturlname,
-                                                  timecreated: created, read: dto.read ?? false))
+                                                  timecreated: created, read: dto.read ?? false, courseID: courseID))
                 if !(dto.read ?? false) { inserted += 1 }
             }
         }

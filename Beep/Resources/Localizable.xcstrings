@@ -2450,6 +2450,16 @@
         }
       }
     },
+    "Notification": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifica"
+          }
+        }
+      }
+    },
     "Notifications": {
       "localizations": {
         "it": {
@@ -3644,6 +3654,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rimuovi dai preferiti"
+          }
+        }
+      }
+    },
+    "Unread": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non letta"
           }
         }
       }

@@ -204,8 +204,11 @@ final class WebeepNotification {
     var contextName: String?
     var timecreated: Date
     var read: Bool
+    /// WeBeep course the notification comes from, read from the course link in its HTML
+    /// (`NotificationHTML.courseID`); nil for site-wide messages. The list shows that course's title.
+    var courseID: Int?
 
-    init(id: Int, subject: String, htmlBody: String?, contextURL: String?, contextName: String?, timecreated: Date, read: Bool) {
+    init(id: Int, subject: String, htmlBody: String?, contextURL: String?, contextName: String?, timecreated: Date, read: Bool, courseID: Int? = nil) {
         self.id = id
         self.subject = subject
         self.htmlBody = htmlBody
@@ -213,5 +216,6 @@ final class WebeepNotification {
         self.contextName = contextName
         self.timecreated = timecreated
         self.read = read
+        self.courseID = courseID
     }
 }
