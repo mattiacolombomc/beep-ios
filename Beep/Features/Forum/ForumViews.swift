@@ -1,4 +1,5 @@
 import SwiftUI
+import WebKit
 
 /// Read-only forum: discussions of a module, then the posts of one discussion.
 struct ForumDiscussionsView: View {
@@ -78,25 +79,15 @@ extension DiscussionDTO: Hashable {
 struct DiscussionView: View {
     let route: DiscussionRoute
     @Environment(AppSession.self) private var session
-    @State private var posts: [PostDTO]?
+    @State private var page: WebPage?
 
     private var language: String { Locale.current.language.languageCode?.identifier ?? "en" }
 
     var body: some View {
         Group {
-            if let posts {
-                HTMLDocumentView(
-                    title: Multilang.resolve(route.discussion.subject, language: language),
-                    meta: meta(author: route.discussion.userfullname, date: route.discussion.created ?? route.discussion.modified),
-                    bodyHTML: Multilang.resolve(route.discussion.message, language: language),
-                    extraSections: posts
-                        .filter { ($0.parentid ?? 0) != 0 }
-                        .sorted { ($0.timecreated ?? 0) < ($1.timecreated ?? 0) }
-                        .map { (heading: Multilang.resolve($0.subject, language: language),
-                                meta: meta(author: $0.author?.fullname, date: $0.timecreated ?? $0.timemodified),
-                                html: Multilang.resolve($0.message, language: language)) }
-                )
-                .ignoresSafeArea(edges: .bottom)
+            if let page {
+                HTMLDocumentView(page: page)
+                    .ignoresSafeArea(edges: .bottom)
             } else {
                 ProgressView()
             }
@@ -104,8 +95,20 @@ struct DiscussionView: View {
         .navigationTitle(route.forumName)
         .inlineNavigationTitle()
         .task {
-            guard let client = session.client, !DemoData.isEnabled else { posts = []; return }
-            posts = (try? await client.discussionPosts(discussionID: route.discussion.discussion).posts) ?? []
+            var posts: [PostDTO] = []
+            if let client = session.client, !DemoData.isEnabled {
+                posts = (try? await client.discussionPosts(discussionID: route.discussion.discussion).posts) ?? []
+            }
+            page = HTMLDocument.page(
+                title: Multilang.resolve(route.discussion.subject, language: language),
+                meta: meta(author: route.discussion.userfullname, date: route.discussion.created ?? route.discussion.modified),
+                bodyHTML: Multilang.resolve(route.discussion.message, language: language),
+                extraSections: posts
+                    .filter { ($0.parentid ?? 0) != 0 }
+                    .sorted { ($0.timecreated ?? 0) < ($1.timecreated ?? 0) }
+                    .map { (heading: Multilang.resolve($0.subject, language: language),
+                            meta: meta(author: $0.author?.fullname, date: $0.timecreated ?? $0.timemodified),
+                            html: Multilang.resolve($0.message, language: language)) })
         }
     }
 

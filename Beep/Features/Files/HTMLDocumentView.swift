@@ -1,43 +1,26 @@
 import SwiftUI
 import WebKit
 
-/// Renders Moodle HTML (notifications, forum posts, labels) in a WKWebView with
-/// system typography and automatic dark mode. Links open in the browser.
-struct HTMLDocumentView: PlatformViewRepresentable {
-    let title: String?
-    let meta: String?
-    let bodyHTML: String
-    var extraSections: [(heading: String, meta: String, html: String)] = []
+/// Moodle HTML (notifications, forum posts) with system typography and automatic dark mode,
+/// rendered by WebKit. The `WebPage` is a model object independent of any view: build it as
+/// soon as the content is known and the detail shows rendered text the moment it is pushed,
+/// instead of a blank web view that fills in a second later.
+@MainActor
+enum HTMLDocument {
+    typealias Section = (heading: String, meta: String, html: String)
 
-    func makeCoordinator() -> Coordinator { Coordinator() }
-
-    #if os(iOS)
-    func makeUIView(context: Context) -> WKWebView {
-        let config = WKWebViewConfiguration()
+    /// A page already loading the styled document; taps on links leave the app.
+    static func page(title: String?, meta: String?, bodyHTML: String, extraSections: [Section] = []) -> WebPage {
+        var config = WebPage.Configuration()
+        #if os(iOS)
         config.dataDetectorTypes = [.link, .phoneNumber]
-        let view = WKWebView(frame: .zero, configuration: config)
-        view.isOpaque = false
-        view.backgroundColor = .clear
-        view.scrollView.backgroundColor = .clear
-        view.navigationDelegate = context.coordinator
-        view.loadHTMLString(document, baseURL: WeBeep.host)
-        return view
+        #endif
+        let page = WebPage(configuration: config, navigationDecider: LinkOpener())
+        _ = page.load(html: html(title: title, meta: meta, bodyHTML: bodyHTML, extraSections: extraSections), baseURL: WeBeep.host)
+        return page
     }
 
-    func updateUIView(_ uiView: WKWebView, context: Context) {}
-    #else
-    func makeNSView(context: Context) -> WKWebView {
-        let view = WKWebView(frame: .zero, configuration: WKWebViewConfiguration())
-        view.setValue(false, forKey: "drawsBackground")   // let the window background show through
-        view.navigationDelegate = context.coordinator
-        view.loadHTMLString(document, baseURL: WeBeep.host)
-        return view
-    }
-
-    func updateNSView(_ nsView: WKWebView, context: Context) {}
-    #endif
-
-    private var document: String {
+    static func html(title: String?, meta: String?, bodyHTML: String, extraSections: [Section] = []) -> String {
         var parts: [String] = []
         if let title { parts.append("<h1>\(title)</h1>") }
         if let meta { parts.append("<p class=meta>\(meta)</p>") }
@@ -65,13 +48,24 @@ struct HTMLDocumentView: PlatformViewRepresentable {
         """
     }
 
-    final class Coordinator: NSObject, WKNavigationDelegate {
-        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
-            if navigationAction.navigationType == .linkActivated, let url = navigationAction.request.url {
+    /// Links open in the browser; the document's own load (and detected links' previews) go through.
+    private struct LinkOpener: WebPage.NavigationDeciding {
+        func decidePolicy(for action: WebPage.NavigationAction, preferences: inout WebPage.NavigationPreferences) async -> WKNavigationActionPolicy {
+            if action.navigationType == .linkActivated, let url = action.request.url {
                 Platform.open(url)
                 return .cancel
             }
             return .allow
         }
+    }
+}
+
+/// A prepared `HTMLDocument` page over the system background.
+struct HTMLDocumentView: View {
+    let page: WebPage
+
+    var body: some View {
+        WebView(page)
+            .webViewContentBackground(.hidden)
     }
 }

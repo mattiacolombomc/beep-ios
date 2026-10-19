@@ -60,7 +60,7 @@ enum DemoData {
         // Sample announcements for the notifications screen.
         context.insert(WebeepNotification(
             id: 900_001, subject: "Software Engineering 2: Lab groups and first deadline",
-            htmlBody: "<p>Dear students,</p><p>lab groups of <b>three people</b> must be registered by Friday. The first deliverable is due on October 12.</p><p>See the course page for the template.</p>",
+            htmlBody: "<p>Dear students,</p><p>lab groups of <b>three people</b> must be registered by Friday. The first deliverable is due on October 12.</p><p>See the <a href=\"https://webeep.polimi.it/course/view.php?id=41213\">course page</a> for the template.</p>",
             contextURL: "https://webeep.polimi.it/course/view.php?id=41213", contextName: "Lab groups and first deadline",
             timecreated: Date.now.addingTimeInterval(-3600 * 5), read: false, courseID: 41213))
         context.insert(WebeepNotification(

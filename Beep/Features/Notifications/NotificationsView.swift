@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import WebKit
 
 /// WeBeep popup notifications: refreshed on open, tap to read, mark read on WeBeep too.
 /// One sheet: the detail is pushed inside it, not stacked as a second sheet.
@@ -10,6 +11,7 @@ struct NotificationsView: View {
     @Query(sort: \WebeepNotification.timecreated, order: .reverse) private var notifications: [WebeepNotification]
     @Query private var courses: [Course]
     @State private var selected: WebeepNotification?
+    @State private var pages = NotificationPages()
     @State private var isLoading = false
     @State private var error: String?
 
@@ -49,8 +51,9 @@ struct NotificationsView: View {
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
             }
             .navigationDestination(item: $selected) { n in
-                NotificationDetail(notification: n, course: n.courseID.flatMap { byID[$0] })
+                NotificationDetail(notification: n, course: n.courseID.flatMap { byID[$0] }, page: pages.page(for: n))
             }
+            .onChange(of: notifications.map(\.id), initial: true) { pages.prepare(notifications) }
             .task { await refresh() }
         }
     }
@@ -98,6 +101,35 @@ extension WebeepNotification {
         let prefix = subject.dropLast(ctx.count).trimmingCharacters(in: CharacterSet(charactersIn: ": \n"))
         return prefix.isEmpty ? nil : prefix
     }
+
+    /// The rendered announcement: title, author and date, then the post without Moodle's chrome.
+    @MainActor func makePage() -> WebPage {
+        let parsed = NotificationHTML.parse(htmlBody ?? "")
+        let meta = [parsed.author, timecreated.formatted(date: .abbreviated, time: .shortened)].compactMap { $0 }.joined(separator: " · ")
+        return HTMLDocument.page(title: postTitle, meta: meta, bodyHTML: parsed.body)
+    }
+}
+
+/// Pages for the notifications in the list, rendered before they are opened so the detail
+/// appears already filled. Bounded to the most recent ones; older ones render on demand.
+@MainActor
+final class NotificationPages {
+    private var pages: [Int: WebPage] = [:]
+    private let limit = 20
+
+    func page(for notification: WebeepNotification) -> WebPage {
+        if let page = pages[notification.id] { return page }
+        let page = notification.makePage()
+        pages[notification.id] = page
+        return page
+    }
+
+    /// `notifications` newest first: drops pages of notifications no longer listed, prepares the first `limit`.
+    func prepare(_ notifications: [WebeepNotification]) {
+        let ids = Set(notifications.map(\.id))
+        pages = pages.filter { ids.contains($0.key) }
+        for n in notifications.prefix(limit) { _ = page(for: n) }
+    }
 }
 
 /// Course tile, post subject and course name, time on the trailing side, dot while unread.
@@ -138,26 +170,16 @@ private struct NotificationRow: View {
     }
 }
 
-/// The post, with the Moodle chrome (breadcrumb, avatar, footer) stripped; author and date under
-/// the title, the course as navigation title.
+/// The prepared page of a notification (see `WebeepNotification.makePage`), the course as
+/// navigation title.
 struct NotificationDetail: View {
     let notification: WebeepNotification
     let course: Course?
+    let page: WebPage
     @Environment(\.openURL) private var openURL
-    private let parsed: NotificationHTML.Parsed
-
-    init(notification: WebeepNotification, course: Course?) {
-        self.notification = notification
-        self.course = course
-        parsed = NotificationHTML.parse(notification.htmlBody ?? "")
-    }
-
-    private var meta: String {
-        [parsed.author, notification.timecreated.formatted(date: .abbreviated, time: .shortened)].compactMap { $0 }.joined(separator: " · ")
-    }
 
     var body: some View {
-        HTMLDocumentView(title: notification.postTitle, meta: meta, bodyHTML: parsed.body)
+        HTMLDocumentView(page: page)
             .ignoresSafeArea(edges: .bottom)
             .navigationTitle(course?.title ?? notification.subjectPrefix ?? String(localized: "Notification"))
             .inlineNavigationTitle()
