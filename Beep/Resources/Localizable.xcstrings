@@ -978,6 +978,16 @@
         }
       }
     },
+    "Also from the menu bar while the window is closed, and when your Mac wakes. Skipped in Low Power Mode.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anche dalla barra dei menu a finestra chiusa, e al risveglio del Mac. Saltati con Risparmio energetico attivo."
+          }
+        }
+      }
+    },
     "Annual": {
       "localizations": {
         "it": {
@@ -1536,6 +1546,16 @@
         }
       }
     },
+    "Debug": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Debug"
+          }
+        }
+      }
+    },
     "Demo mode: enrolment is simulated, nothing is sent to WeBeep.": {
       "localizations": {
         "it": {
@@ -1888,6 +1908,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ogni 6 ore"
+          }
+        }
+      }
+    },
+    "Every course follows the catalogue.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutti i corsi seguono il catalogo."
           }
         }
       }
@@ -2358,6 +2388,16 @@
         }
       }
     },
+    "New files in the auto-download courses are fetched at every sync.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I nuovi file dei corsi con download automatico vengono scaricati a ogni sincronizzazione."
+          }
+        }
+      }
+    },
     "New files in these courses download automatically when you sync.": {
       "extractionState": "stale",
       "localizations": {
@@ -2626,6 +2666,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "OK"
+          }
+        }
+      }
+    },
+    "Obtained %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ottenuta il %@"
           }
         }
       }
@@ -2920,6 +2970,16 @@
         }
       }
     },
+    "Postpones background downloads until you open the app or reach Wi-Fi.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimanda i download in background finché non apri l'app o non trovi una rete Wi-Fi."
+          }
+        }
+      }
+    },
     "Preparing %lld of %lld…": {
       "localizations": {
         "en": {
@@ -3126,6 +3186,16 @@
         }
       }
     },
+    "Renew now": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinnova ora"
+          }
+        }
+      }
+    },
     "Renewed just now": {
       "localizations": {
         "it": {
@@ -3142,6 +3212,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ripristina vista"
+          }
+        }
+      }
+    },
+    "Restart onboarding": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riavvia l'onboarding"
           }
         }
       }
@@ -3265,6 +3345,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Selezionato"
+          }
+        }
+      }
+    },
+    "Semesters": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semestri"
           }
         }
       }
@@ -3485,6 +3575,16 @@
         }
       }
     },
+    "Sign out…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esci…"
+          }
+        }
+      }
+    },
     "Signed in": {
       "localizations": {
         "it": {
@@ -3511,6 +3611,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rinnovo silenzioso"
+          }
+        }
+      }
+    },
+    "Silent renewal enabled": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinnovo silenzioso attivo"
+          }
+        }
+      }
+    },
+    "Silent renewal unavailable, sign in again once": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinnovo silenzioso non disponibile, accedi di nuovo una volta"
+          }
+        }
+      }
+    },
+    "Simulate expired session": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simula sessione scaduta"
           }
         }
       }
@@ -3544,6 +3674,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Salta per ora"
+          }
+        }
+      }
+    },
+    "Skipped in Low Power Mode; iOS may space checks out further than the frequency you pick.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saltati con Risparmio energetico attivo; iOS può diradarli oltre la frequenza scelta."
           }
         }
       }
@@ -3744,6 +3884,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "L'accesso a WeBeep segue l'approccio introdotto da WeBeep Sync per desktop."
+          }
+        }
+      }
+    },
+    "The semester of each course comes from Politecnico's public course catalogue. A period set by hand from a course's context menu wins over it.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il semestre di ogni corso viene dal catalogo pubblico degli insegnamenti del Politecnico. Un periodo impostato a mano dal menu contestuale del corso ha la precedenza."
           }
         }
       }
@@ -4006,6 +4156,16 @@
         }
       }
     },
+    "Use the catalogue for all": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa il catalogo per tutti"
+          }
+        }
+      }
+    },
     "Use the catalogue for every course": {
       "localizations": {
         "it": {
@@ -4052,6 +4212,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "WeBeep Sync · GPL-3.0"
+          }
+        }
+      }
+    },
+    "WeBeep access key": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiave di accesso WeBeep"
           }
         }
       }
