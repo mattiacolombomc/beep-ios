@@ -578,7 +578,7 @@ private struct UnenrolDialog: ViewModifier {
             try? context.save()
             message = String(localized: "Done. You are no longer enrolled in \(c.title).")
         } catch {
-            message = String(describing: error)
+            message = error.localizedDescription
         }
     }
 }
@@ -663,7 +663,7 @@ private struct RenameFolderDialog: ViewModifier {
     }
 
     private func rename(_ c: Course, to newName: String) {
-        do { try opener.renameFolder(of: c, to: newName) } catch { self.error = String(describing: error) }
+        do { try opener.renameFolder(of: c, to: newName) } catch { self.error = error.localizedDescription }
         course = nil
     }
 }

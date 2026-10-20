@@ -184,7 +184,7 @@ final class SyncEngine {
             onInvalidToken?(trigger)
         } catch {
             report.errors.append(String(describing: error))
-            phase = .failed(String(describing: error))
+            phase = .failed(error.localizedDescription)
         }
         report.finishedAt = .now
         lastReport = report

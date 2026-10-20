@@ -106,7 +106,7 @@ struct CatalogSearchView: View {
         } catch MoodleError.invalidToken {
             session.signOut()
         } catch {
-            self.error = String(describing: error)
+            self.error = error.localizedDescription
         }
     }
 
@@ -127,7 +127,7 @@ struct CatalogSearchView: View {
                 enrolMessage = result.warnings?.compactMap(\.message).first ?? String(localized: "WeBeep refused the enrolment.")
             }
         } catch {
-            enrolMessage = String(describing: error)
+            enrolMessage = error.localizedDescription
         }
     }
 }

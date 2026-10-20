@@ -60,7 +60,7 @@ struct LoginView: View {
             do {
                 try await session.signIn(withToken: creds.token, privateToken: creds.privateToken)
             } catch {
-                errorMessage = String(describing: error)
+                errorMessage = error.localizedDescription
                 isValidating = false
                 passport = LoginFlow.makePassport()
             }
@@ -113,7 +113,7 @@ struct ManualTokenSheet: View {
 
     private func submit() {
         if token.trimmingCharacters(in: .whitespacesAndNewlines) == DemoData.reviewPassword {
-            do { try DemoData.enter(session: session, context: modelContext); dismiss() } catch { errorMessage = String(describing: error) }
+            do { try DemoData.enter(session: session, context: modelContext); dismiss() } catch { errorMessage = error.localizedDescription }
             return
         }
         isValidating = true
@@ -125,7 +125,7 @@ struct ManualTokenSheet: View {
             } catch MoodleError.invalidToken {
                 errorMessage = String(localized: "WeBeep rejected this token.")
             } catch {
-                errorMessage = String(describing: error)
+                errorMessage = error.localizedDescription
             }
             isValidating = false
         }

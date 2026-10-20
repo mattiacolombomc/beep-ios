@@ -2410,6 +2410,16 @@
         }
       }
     },
+    "No connection to WeBeep: %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna connessione a WeBeep: %@"
+          }
+        }
+      }
+    },
     "No courses yet": {
       "localizations": {
         "it": {
@@ -3996,6 +4006,16 @@
         }
       }
     },
+    "WeBeep answered with HTTP %lld.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep ha risposto con HTTP %lld."
+          }
+        }
+      }
+    },
     "WeBeep catalogue": {
       "localizations": {
         "it": {
@@ -4012,6 +4032,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "WeBeep non dice in quale semestre si tiene un corso, quindi Beep lo cerca nel catalogo pubblico degli insegnamenti del Politecnico. Viene inviato solo il codice del corso, nulla su di te. Succede una volta sola; i corsi dell'anno in corso vengono ricontrollati ogni settimana."
+          }
+        }
+      }
+    },
+    "WeBeep is not available right now, probably for maintenance. Try again later.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep non è disponibile in questo momento, probabilmente per manutenzione. Riprova più tardi."
           }
         }
       }
@@ -4052,6 +4082,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "WeBeep ha rifiutato questo token."
+          }
+        }
+      }
+    },
+    "WeBeep reported an error: %1$@ (%2$@)": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep ha segnalato un errore: %1$@ (%2$@)"
           }
         }
       }
@@ -4102,6 +4142,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "WeBeep non accetta più la chiave di accesso di Beep per %@. Accedi di nuovo per riprendere la sincronizzazione. File scaricati e impostazioni restano."
+          }
+        }
+      }
+    },
+    "WeBeep's answer could not be read.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La risposta di WeBeep non è leggibile."
           }
         }
       }
@@ -4192,6 +4242,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "La tua sessione WeBeep è scaduta"
+          }
+        }
+      }
+    },
+    "Your WeBeep session has expired. Sign in again.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La sessione WeBeep è scaduta. Accedi di nuovo."
           }
         }
       }

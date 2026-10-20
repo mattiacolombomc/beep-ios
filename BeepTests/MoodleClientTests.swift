@@ -30,6 +30,16 @@ struct MoodleClientTests {
         #expect(q["courseid"] == "41213")
     }
 
+    /// Down for maintenance, WeBeep answers every call with an HTML page (via a redirect to /error/).
+    @Test func maintenancePageIsReportedAsUnavailable() async throws {
+        let page = Data("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head><title>webeep - Sito non raggiungibile</title></head></html>".utf8)
+        let client = MoodleClient(token: "t", transport: StubTransport(data: page, status: 200))
+        await #expect(throws: MoodleError.unavailable) { try await client.siteInfo() }
+        #expect(MoodleError.unavailable.localizedDescription.contains("WeBeep"))
+        #expect(MoodleClient.looksLikeHTML(Data("  \n<html>".utf8)))
+        #expect(!MoodleClient.looksLikeHTML(Data("{\"a\":1}".utf8)))
+    }
+
     @Test func decodesSiteInfo() async throws {
         let client = MoodleClient(token: "t", transport: StubTransport(data: try fixture("site_info"), status: 200))
         let info = try await client.siteInfo()

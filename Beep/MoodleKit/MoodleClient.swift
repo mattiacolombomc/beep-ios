@@ -90,7 +90,14 @@ struct MoodleClient: Sendable {
             ? try await transport.post(url(function: function), form: parameters)
             : try await transport.get(url(function: function, parameters: parameters))
         guard (200...299).contains(response.statusCode) else { throw MoodleError.http(status: response.statusCode) }
+        // Down for maintenance, WeBeep redirects every call to an HTML page under /error/.
+        if response.url?.path().hasPrefix("/error") == true || Self.looksLikeHTML(data) { throw MoodleError.unavailable }
         return try Self.decode(type, from: data)
+    }
+
+    /// JSON never starts with "<"; a web page does.
+    static func looksLikeHTML(_ data: Data) -> Bool {
+        data.prefix(64).first { !($0 == 0x20 || $0 == 0x0A || $0 == 0x0D || $0 == 0x09) } == UInt8(ascii: "<")
     }
 
     static func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {

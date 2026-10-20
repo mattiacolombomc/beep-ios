@@ -171,6 +171,7 @@ nonisolated struct Indexer {
     @discardableResult
     func upsertNotifications(_ dtos: [NotificationDTO]) throws -> Int {
         let existing = try context.fetch(FetchDescriptor<WebeepNotification>())
+        let courses = try context.fetch(FetchDescriptor<Course>())
         let isBaseline = existing.isEmpty
         let byID = Dictionary(uniqueKeysWithValues: existing.map { ($0.id, $0) })
         var inserted = 0
@@ -178,6 +179,7 @@ nonisolated struct Indexer {
             let created = Date(timeIntervalSince1970: TimeInterval(dto.timecreated))
             let html = dto.fullmessagehtml ?? dto.fullmessage
             let courseID = html.flatMap(NotificationHTML.courseID)
+                ?? Self.matchCourse(in: (html ?? "") + "\n" + dto.subject, courses: courses)
             if let n = byID[dto.id] {
                 n.read = dto.read ?? n.read
                 n.subject = dto.subject
@@ -192,5 +194,16 @@ nonisolated struct Indexer {
         }
         try context.save()
         return isBaseline ? 0 : inserted
+    }
+
+    /// Notifications without a course link (quiz openings, assignment reminders) still name the
+    /// course in the text: the full Moodle name first, else a six-digit code that only one
+    /// course has (two editions share the code, and then only the name tells them apart).
+    static func matchCourse(in text: String, courses: [Course]) -> Int? {
+        if let course = courses.first(where: { !$0.fullname.isEmpty && text.contains($0.fullname) }) { return course.id }
+        let codes = Set(text.matches(of: /\b\d{6}\b/).map { String($0.0) })
+        guard !codes.isEmpty else { return nil }
+        let byCode = courses.filter { $0.code.map(codes.contains) ?? false }
+        return byCode.count == 1 ? byCode[0].id : nil
     }
 }

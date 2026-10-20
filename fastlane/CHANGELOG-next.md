@@ -2,6 +2,10 @@
 
 Testo da passare a `distribute_external` (`"changelog:…"`), iOS e Mac:
 
+Errori: quando WeBeep è in manutenzione Beep lo dice in chiaro invece di mostrare un errore tecnico; tutti i messaggi di errore sono ora leggibili. Le notifiche dei quiz e delle consegne, che non hanno il link al corso, vengono associate al corso dal nome.
+
+Errors: when WeBeep is down for maintenance Beep says so instead of showing a technical error; every error message is now readable. Quiz and assignment notifications, which carry no course link, are matched to their course by name.
+
 Download: un tocco sull'icona rossa di un file non scaricato mostra l'errore, con una spiegazione e "Riprova". Se il sistema interrompe il servizio di download in background, Beep riapre la connessione e riprova da solo.
 
 Downloads: tapping the red icon of a file that failed to download shows the error, with an explanation and "Try again". When the system drops the background download service, Beep opens a new connection and retries on its own.

@@ -54,7 +54,7 @@ final class TokenRenewer {
             session.markExpired()
             return .failed(String(localized: "the access key had already expired"))
         } catch {
-            return .failed(String(describing: error))
+            return .failed(error.localizedDescription)
         }
         let passport = LoginFlow.makePassport()
         let launch = LoginFlow.launchURL(passport: passport)
@@ -75,7 +75,7 @@ final class TokenRenewer {
             try session.adopt(token: creds.token, privateToken: creds.privateToken)
             return .renewed
         } catch {
-            return .failed(String(describing: error))
+            return .failed(error.localizedDescription)
         }
     }
 

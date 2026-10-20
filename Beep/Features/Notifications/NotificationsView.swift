@@ -77,7 +77,7 @@ struct NotificationsView: View {
         } catch MoodleError.invalidToken {
             session.signOut()
         } catch {
-            self.error = String(describing: error)
+            self.error = error.localizedDescription
         }
     }
 

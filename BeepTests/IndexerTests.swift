@@ -29,6 +29,32 @@ struct IndexerTests {
         return try #require(try context.fetch(FetchDescriptor<Course>(predicate: #Predicate { $0.id == 41213 })).first)
     }
 
+    @Test func notificationsWithoutACourseLinkAreMatchedByName() throws {
+        let se2 = try seedCourses()
+        let indexer = Indexer(context: context, language: "en")
+        // Quiz opening: no course/view.php link, the course is named in the text.
+        let quiz = NotificationDTO(id: 1, subject: "Opens Tuesday, 20 October 2026, 11:16: Trial Quiz 2026",
+                                   fullmessagehtml: "<p>Dear student,</p><p>the quiz <strong>Trial Quiz 2026</strong> in course \(se2.fullname) opens soon.</p><p><a href=\"https://webeep.polimi.it/mod/quiz/view.php?id=501641\">Go to the quiz</a></p>",
+                                   fullmessage: nil, contexturl: "https://webeep.polimi.it/mod/quiz/view.php?id=501641", contexturlname: "Trial Quiz 2026",
+                                   timecreated: 1_792_400_000, read: false)
+        // Nothing to go on: stays without a course.
+        let site = NotificationDTO(id: 2, subject: "Linux Day", fullmessagehtml: "<p>See you there.</p>", fullmessage: nil,
+                                   contexturl: nil, contexturlname: nil, timecreated: 1_792_400_001, read: false)
+        try indexer.upsertNotifications([quiz, site])
+        let saved = try context.fetch(FetchDescriptor<WebeepNotification>(sortBy: [SortDescriptor(\.id)]))
+        #expect(saved.map(\.courseID) == [se2.id, nil])
+    }
+
+    @Test func courseMatchByCodeNeedsAUniqueCode() throws {
+        let se2 = try seedCourses()
+        let all = try context.fetch(FetchDescriptor<Course>())
+        #expect(Indexer.matchCourse(in: "Deadline for \(se2.code ?? "") moved", courses: all) == se2.id)
+        #expect(Indexer.matchCourse(in: "No code here", courses: all) == nil)
+        let twin = Course(id: 99, fullname: "X", displayName: "X", title: "X", code: se2.code, professors: nil,
+                          categoryID: 1, categoryName: "2025-26", isFavourite: false, isHidden: false, syncEnabled: false)
+        #expect(Indexer.matchCourse(in: "Deadline for \(se2.code ?? "") moved", courses: all + [twin]) == nil)
+    }
+
     @Test func coursesGetParsedTitlesAndCategoryNames() throws {
         let course = try seedCourses()
         #expect(course.title == "Software Engineering 2")
