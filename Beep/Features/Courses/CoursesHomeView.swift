@@ -146,15 +146,29 @@ struct CoursesListView: View {
         return g
     }
     private var totalNew: Int { courses.reduce(0) { $0 + $1.newFilesCount } }
+    /// Courses the catalogue has never answered for: the semester filters cannot place them yet.
+    private var awaitingCatalogue: Bool {
+        courses.contains { $0.isAcademicYear && $0.code != nil && !$0.semesterIsManual && $0.semesterCheckedAt == nil }
+    }
 
     var body: some View {
         let g = groups
+        let catalogueBusy = semesterFilter != .all && awaitingCatalogue
         List(selection: isSplit ? $selection : nil) {
             if query.isEmpty {
                 Section {
                     StatusHeader(newCount: totalNew, onlyNew: $onlyNew)
                 }
                 .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+                .listSectionSeparator(.hidden)
+            }
+
+            if catalogueBusy {
+                Section {
+                    CataloguePanel()
+                }
+                .listRowInsets(EdgeInsets(top: 0, leading: Theme.Spacing.m, bottom: Theme.Spacing.s, trailing: Theme.Spacing.m))
                 .listRowBackground(Color.clear)
                 .listSectionSeparator(.hidden)
             }
@@ -166,7 +180,7 @@ struct CoursesListView: View {
                     Text("Pull to refresh or tap Sync to load your WeBeep courses.")
                 }
                 .listRowBackground(Color.clear)
-            } else if g.isEmpty {
+            } else if g.isEmpty && !catalogueBusy {
                 ContentUnavailableView.search(text: query)
                     .listRowBackground(Color.clear)
             }
@@ -224,6 +238,8 @@ struct CoursesListView: View {
         .searchable(text: $query, prompt: "Course, code or professor")
         #endif
         .minimizedSearchToolbar()
+        // A semester filter needs the catalogue: ask it now rather than at the next sync.
+        .onChange(of: semesterFilter, initial: true) { if semesterFilter != .all { sync.semesters.resolveDue() } }
         .refreshable { await syncNow() }
         // The toolbar lives in its own modifier with no inputs: typing in the search field, a sync
         // refreshing `courses`, or any other change of this view does not re-emit the toolbar, so
@@ -291,6 +307,53 @@ private struct RowLink: ViewModifier {
         } else {
             NavigationLink(value: id) { content }
         }
+    }
+}
+
+/// First use of a semester filter: says what Beep is doing while the Polimi catalogue answers,
+/// the way the system's setup screens do, with progress, then a retry when the catalogue could
+/// not be reached. Courses drop into the list below as their period arrives.
+private struct CataloguePanel: View {
+    @Environment(SyncEngine.self) private var sync
+
+    var body: some View {
+        let resolver = sync.semesters
+        VStack(spacing: Theme.Spacing.m) {
+            Image(systemName: resolver.isRunning ? "calendar.badge.clock" : "wifi.exclamationmark")
+                .font(.system(size: 40, weight: .medium))
+                .foregroundStyle(Color.accentColor)
+                .symbolEffect(.pulse, isActive: resolver.isRunning)
+                .contentTransition(.symbolEffect(.replace))
+            Text(resolver.isRunning ? "Reading the Politecnico catalogue" : "The catalogue did not answer")
+                .font(.title3.weight(.semibold))
+                .multilineTextAlignment(.center)
+            Text("WeBeep does not say in which semester a course runs, so Beep looks it up in Politecnico's public course catalogue. Only the course code is sent, nothing about you. It happens once; current-year courses are checked again weekly.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            if resolver.isRunning {
+                ProgressView(value: Double(resolver.done), total: Double(max(resolver.total, 1)))
+                    .tint(Color.accentColor)
+                Text("\(resolver.done) of \(resolver.total)")
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.tertiary)
+                    .contentTransition(.numericText())
+            } else {
+                Text("Some courses still have no period. The catalogue needs an internet connection.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                Button("Try again") { resolver.resolveDue() }
+                    .buttonStyle(.borderedProminent)
+            }
+        }
+        .padding(Theme.Spacing.l)
+        .frame(maxWidth: .infinity)
+        .background(Color.cardBackground, in: .rect(cornerRadius: Theme.cardRadius, style: .continuous))
+        #if os(macOS)
+        .overlay(RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous).strokeBorder(.separator))
+        #endif
+        .animation(.default, value: resolver.isRunning)
     }
 }
 

@@ -706,6 +706,16 @@
         }
       }
     },
+    "%lld of %lld": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld di %2$lld"
+          }
+        }
+      }
+    },
     "%lld of %lld courses": {
       "localizations": {
         "en": {
@@ -2936,6 +2946,16 @@
         }
       }
     },
+    "Reading the Politecnico catalogue": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leggo il catalogo del Politecnico"
+          }
+        }
+      }
+    },
     "Reading your WeBeep courses…": {
       "localizations": {
         "it": {
@@ -3458,6 +3478,16 @@
         }
       }
     },
+    "Some courses still have no period. The catalogue needs an internet connection.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alcuni corsi sono ancora senza periodo. Per leggere il catalogo serve la connessione a internet."
+          }
+        }
+      }
+    },
     "Sort": {
       "localizations": {
         "it": {
@@ -3588,6 +3618,16 @@
         }
       }
     },
+    "The catalogue did not answer": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il catalogo non ha risposto"
+          }
+        }
+      }
+    },
     "The course moves to the Archived group and stops auto-downloading. You can unarchive it any time.": {
       "localizations": {
         "it": {
@@ -3674,6 +3714,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Totale"
+          }
+        }
+      }
+    },
+    "Try again": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprova"
           }
         }
       }
@@ -3902,6 +3952,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Catalogo WeBeep"
+          }
+        }
+      }
+    },
+    "WeBeep does not say in which semester a course runs, so Beep looks it up in Politecnico's public course catalogue. Only the course code is sent, nothing about you. It happens once; current-year courses are checked again weekly.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep non dice in quale semestre si tiene un corso, quindi Beep lo cerca nel catalogo pubblico degli insegnamenti del Politecnico. Viene inviato solo il codice del corso, nulla su di te. Succede una volta sola; i corsi dell'anno in corso vengono ricontrollati ogni settimana."
           }
         }
       }

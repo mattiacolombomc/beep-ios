@@ -10,6 +10,10 @@ enum DemoData {
     static let flagKey = "demo.enabled"
     /// "Password" for App Review's demonstration mode; entered in the manual-token sheet.
     static let reviewPassword = "BeepReview2026"
+    /// Teaching periods of the demo courses, as the Polimi catalogue gives them (demo never calls it).
+    static let periods: [String: Semester] = ["054443": .first, "054307": .first, "056896": .first, "089182": .first, "088983": .first,
+                                              "099322": .second, "052537": .first, "095946": .first, "051144": .first, "085877": .second,
+                                              "086067": .first, "083424": .second, "081375": .first]
 
     /// Turns the current session into the demo (sample data, no WeBeep calls) until sign-out.
     @MainActor
@@ -48,12 +52,11 @@ enum DemoData {
         try indexer.upsertCourses(courses, categories: cats) { _, cat in AcademicYear.isCurrent(cat) }
 
         let all = try context.fetch(FetchDescriptor<Course>())
-        // Teaching periods as the Polimi catalogue gives them (demo never calls it).
-        let periods: [String: Semester] = ["054443": .first, "054307": .first, "056896": .first, "089182": .first, "088983": .first,
-                                           "099322": .second, "052537": .first, "095946": .first, "051144": .first, "085877": .second,
-                                           "086067": .first, "083424": .second, "081375": .first]
-        for course in all {
-            if let code = course.code, let period = periods[code] { course.semester = period; course.semesterCheckedAt = .now }
+        // Periods already "looked up", unless a debug launch wants to show the first-time panel.
+        if !ProcessInfo.processInfo.arguments.contains("-semesterUnresolved") {
+            for course in all {
+                if let code = course.code, let period = periods[code] { course.semester = period; course.semesterCheckedAt = .now }
+            }
         }
         for course in all where course.categoryName == "2026-27" {
             try indexer.upsertContents(sections(for: course.id), for: course, token: "demo")
