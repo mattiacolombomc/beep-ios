@@ -53,8 +53,12 @@ struct SettingsView: View {
                 #if os(macOS)
                 Section {
                     Toggle(isOn: $launchAtLogin) {
-                        Text("Open at login")
-                        Text("Beep starts with your Mac and keeps your courses up to date from the menu bar.")
+                        Label {
+                            Text("Open at login")
+                            Text("Keeps your courses up to date from the menu bar.")
+                        } icon: {
+                            Image(systemName: "power")
+                        }
                     }
                     .onChange(of: launchAtLogin) { _, on in launchAtLogin = LaunchAtLogin.set(on) }
                 }
@@ -64,8 +68,8 @@ struct SettingsView: View {
                 debugSection
                 #endif
                 Section("About") {
-                    NavigationLink("Acknowledgements") { AcknowledgementsView() }
-                    LabeledContent("Version", value: Bundle.main.versionString)
+                    NavigationLink { AcknowledgementsView() } label: { Label("Acknowledgements", systemImage: "heart") }
+                    LabeledContent { Text(Bundle.main.versionString) } label: { Label("Version", systemImage: "info.circle") }
                 }
                 #if os(iOS)
                 Section {
@@ -124,44 +128,56 @@ struct SettingsView: View {
     }
 
     private var syncSection: some View {
-        Section {
+        Section("Sync") {
             NavigationLink {
-                SyncCoursesView()
+                SyncCoursesView(courses: courses)
             } label: {
-                LabeledContent("Auto-download courses", value: "\(courses.filter(\.syncEnabled).count)")
+                LabeledContent {
+                    Text("\(courses.filter(\.syncEnabled).count)")
+                } label: {
+                    Label("Auto-download courses", systemImage: "arrow.down.circle")
+                }
             }
             Toggle(isOn: $backgroundRefresh) {
-                Text("Check in the background")
-                #if os(iOS)
-                Text("Skipped in Low Power Mode; iOS may space checks out further than the frequency you pick.")
-                #else
-                Text("Also from the menu bar while the window is closed, and when your Mac wakes. Skipped in Low Power Mode.")
-                #endif
+                Label {
+                    Text("Check in the background")
+                    #if os(iOS)
+                    Text("Skipped in Low Power Mode.")
+                    #else
+                    Text("Also with the window closed, from the menu bar.")
+                    #endif
+                } icon: {
+                    Image(systemName: "clock.arrow.2.circlepath")
+                }
             }
             .onChange(of: backgroundRefresh) { _, _ in rescheduleChecks() }
             if backgroundRefresh {
-                Picker("Check frequency", selection: $refreshMinutes) {
+                Picker(selection: $refreshMinutes) {
                     Text("Every hour at most").tag(60.0)
                     Text("Every 2 hours").tag(120.0)
                     Text("Every 6 hours").tag(360.0)
                     Text("Once a day").tag(1440.0)
+                } label: {
+                    Label("Check frequency", systemImage: "timer")
                 }
                 .onChange(of: refreshMinutes) { _, _ in rescheduleChecks() }
                 #if os(iOS)
                 Toggle(isOn: $backgroundWifiOnly) {
-                    Text("Background downloads on Wi-Fi only")
-                    Text("Postpones background downloads until you open the app or reach Wi-Fi.")
+                    Label {
+                        Text("Background downloads on Wi-Fi only")
+                        Text("Otherwise they wait until you open the app.")
+                    } icon: {
+                        Image(systemName: "wifi")
+                    }
                 }
                 #endif
             }
-            Toggle("Notify about new files", isOn: $notifications)
-                .onChange(of: notifications) { _, on in
-                    if on { Task { notifications = await Notifier.requestPermission() } }
-                }
-        } header: {
-            Text("Sync")
-        } footer: {
-            Text("New files in the auto-download courses are fetched at every sync.")
+            Toggle(isOn: $notifications) {
+                Label("Notify about new files", systemImage: "bell.badge")
+            }
+            .onChange(of: notifications) { _, on in
+                if on { Task { notifications = await Notifier.requestPermission() } }
+            }
         }
     }
 
@@ -179,33 +195,52 @@ struct SettingsView: View {
                 Button("Use the catalogue for all", action: resetPeriods)
                     .disabled(manualPeriods == 0 || sync.semesters.isRunning)
             } label: {
-                Text("Course periods")
-                Text(manualPeriods == 0 ? "Every course follows the catalogue." : "Set by hand: \(manualPeriods)")
+                Label {
+                    Text("Course periods")
+                    Text(manualPeriods == 0 ? "Every course follows the catalogue." : "Set by hand: \(manualPeriods)")
+                } icon: {
+                    Image(systemName: "calendar")
+                }
             }
             #else
-            LabeledContent("Course periods", value: manualPeriods == 0 ? String(localized: "From the catalogue") : String(localized: "Set by hand: \(manualPeriods)"))
+            LabeledContent {
+                Text(manualPeriods == 0 ? "From the catalogue" : "Set by hand: \(manualPeriods)")
+            } label: {
+                Label("Course periods", systemImage: "calendar")
+            }
             Button("Use the catalogue for all", systemImage: "calendar.badge.clock", action: resetPeriods)
                 .disabled(manualPeriods == 0 || sync.semesters.isRunning)
             #endif
         } header: {
             Text("Semesters")
         } footer: {
-            Text("The semester of each course comes from Politecnico's public course catalogue. A period set by hand from a course's context menu wins over it.")
+            Text("From Politecnico's public course catalogue. A period set by hand from a course's context menu wins.")
         }
     }
 
     private var storageSection: some View {
         Section {
             NavigationLink {
-                StorageView()
+                StorageView(courses: courses)
             } label: {
-                LabeledContent("Downloaded", value: String(localized: "\(downloadedCount) files · \(downloadedSize.fileSizeLabel)"))
+                LabeledContent {
+                    Text(String(localized: "\(downloadedCount) files · \(downloadedSize.fileSizeLabel)"))
+                } label: {
+                    Label("Downloaded", systemImage: "internaldrive")
+                }
             }
             #if os(iOS)
-            Button("Show in Files app", systemImage: "folder") {
+            Button {
                 var comps = URLComponents(url: URL.documentsDirectory, resolvingAgainstBaseURL: false)
                 comps?.scheme = "shareddocuments"
                 if let url = comps?.url { openURL(url) }
+            } label: {
+                Label {
+                    Text("Show in Files app")
+                    Text("Files → On My iPhone → Beep, one folder per course.")
+                } icon: {
+                    Image(systemName: "folder")
+                }
             }
             #else
             LabeledContent {
@@ -215,10 +250,14 @@ struct SettingsView: View {
                         .disabled(!folder.isChosen)
                 }
             } label: {
-                Text("Download folder")
-                Text(folder.url?.path(percentEncoded: false).abbreviatingHome ?? String(localized: "Not chosen"))
-                    .truncationMode(.middle)
-                    .lineLimit(1)
+                Label {
+                    Text("Download folder")
+                    Text(folder.url?.path(percentEncoded: false).abbreviatingHome ?? String(localized: "Not chosen"))
+                        .truncationMode(.middle)
+                        .lineLimit(1)
+                } icon: {
+                    Image(systemName: "folder")
+                }
             }
             if let error = folder.lastError {
                 Text(error).font(.footnote).foregroundStyle(.red)
@@ -227,10 +266,8 @@ struct SettingsView: View {
         } header: {
             Text("Storage")
         } footer: {
-            #if os(iOS)
-            Text("Files are saved in Files → On My iPhone → Beep, one folder per course, so any app can open and edit them.")
-            #else
-            Text("One folder per course. When you pick a new folder, files already downloaded move there.")
+            #if os(macOS)
+            Text("One folder per course. Pick a new folder and the downloads move there.")
             #endif
         }
     }
@@ -250,13 +287,19 @@ struct SettingsView: View {
                 }
                 .disabled(renewer.isRunning || session.privateToken == nil)
             } label: {
-                Text("WeBeep access key")
-                Text(sessionDetail)
+                Label {
+                    Text("WeBeep access key")
+                    Text(sessionDetail)
+                } icon: {
+                    Image(systemName: "key")
+                }
             }
             #else
-            VStack(alignment: .leading, spacing: 2) {
+            Label {
                 Text("WeBeep access key")
-                Text(sessionDetail).font(.footnote).foregroundStyle(.secondary)
+                Text(sessionDetail)
+            } icon: {
+                Image(systemName: "key")
             }
             Button {
                 Task { await renewer.renewNow() }
@@ -272,7 +315,7 @@ struct SettingsView: View {
         } header: {
             Text("Session")
         } footer: {
-            Text("Beep renews the WeBeep access key by itself about every 4 weeks, before it can expire. If WeBeep rejects it anyway you get a notification and a quick sign-in.")
+            Text("Renewed by itself about every 4 weeks. If WeBeep rejects it anyway you get a notification and a quick sign-in.")
         }
     }
 

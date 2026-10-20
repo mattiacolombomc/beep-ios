@@ -73,6 +73,11 @@ struct SearchTests {
         #expect(SyncCoursesView.visible(all, query: "comai", years: .current).map(\.id) == [current.id])
         #expect(SyncCoursesView.visible(all, query: "comai", years: .past).map(\.id) == [old.id])
         #expect(SyncCoursesView.visible(all, query: "nobody", years: .all).isEmpty)
+        // The period filter: a course in the other semester drops out, one still unknown too.
+        current.semester = .second
+        #expect(SyncCoursesView.visible(all, query: "", years: .current, semester: .second).map(\.id) == [current.id])
+        #expect(SyncCoursesView.visible(all, query: "", years: .current, semester: .first).isEmpty)
+        #expect(SyncCoursesView.visible(all, query: "", years: .all, semester: .second).map(\.id) == [current.id])
     }
 
     // MARK: Files across courses

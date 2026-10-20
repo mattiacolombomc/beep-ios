@@ -1,28 +1,28 @@
 import SwiftData
 import SwiftUI
 
-/// Pick which courses download new files automatically. Grouped by year,
-/// searchable, with bulk actions so 60 courses are manageable.
+/// Pick which courses download new files automatically. Grouped by year, searchable, with the
+/// same year and period filters as the home list, and bulk actions so 60 courses are manageable.
 struct SyncCoursesView: View {
-    @Query(sort: \Course.title) private var courses: [Course]
+    /// The parent's courses when it has them (Settings), else this view's own query (onboarding):
+    /// in the Mac Settings window a `@Query` inside a pushed view came back empty.
+    private let injected: [Course]?
+    @Query(sort: \Course.title) private var queried: [Course]
     /// Shared with the toolbar modifier as a reference: typing does not re-emit the toolbar.
     @State private var search = SearchText()
     @AppStorage("syncCourses.yearFilter") private var yearFilter: YearFilter = .current
+    @AppStorage("syncCourses.semesterFilter") private var semesterFilter: SemesterFilter = .all
+    @Environment(SyncEngine.self) private var sync
 
-    private var query: String { search.text }
-    private var visible: [Course] { Self.visible(courses, query: query, years: yearFilter) }
+    init(courses: [Course]? = nil) {
+        injected = courses
+    }
 
-    static func visible(_ courses: [Course], query: String, years: YearFilter) -> [Course] {
-        courses.filter { c in
-            if c.isHidden || c.isArchived { return false }
-            switch years {
-            case .all: break
-            case .current: if c.isAcademicYear && !c.isCurrentYear { return false }
-            case .past: if !c.isAcademicYear || c.isCurrentYear { return false }
-            case .year(let year): if AcademicYear.startYear(c.categoryName) != year { return false }
-            }
-            return c.matches(query)
-        }
+    private var courses: [Course] { injected ?? queried }
+    private var visible: [Course] { Self.visible(courses, query: search.text, years: yearFilter, semester: semesterFilter) }
+
+    static func visible(_ courses: [Course], query: String, years: YearFilter, semester: SemesterFilter = .all) -> [Course] {
+        courses.filter { !$0.isHidden && !$0.isArchived && $0.passes(years: years, semester: semester) && $0.matches(query) }
     }
 
     private var groups: [(name: String, courses: [Course])] {
@@ -35,20 +35,29 @@ struct SyncCoursesView: View {
             .map { ($0.key, $0.value) }
     }
 
-    private var enabledCount: Int { courses.filter(\.syncEnabled).count }
-
     var body: some View {
         List {
             Section {
-                Picker("Years", selection: $yearFilter) {
-                    ForEach(YearFilter.allCases) { Text($0.label).tag($0) }
+                HStack(spacing: Theme.Spacing.m) {
+                    Picker("Years", selection: $yearFilter) {
+                        ForEach(YearFilter.allCases) { Text($0.label).tag($0) }
+                        ForEach(sync.academicYears, id: \.self) { year in
+                            Text(YearFilter.year(year).label).tag(YearFilter.year(year))
+                        }
+                    }
+                    Picker("Period", selection: $semesterFilter) {
+                        ForEach(SemesterFilter.allCases) { Text($0.label).tag($0) }
+                    }
+                    Spacer(minLength: 0)
                 }
-                .pickerStyle(.segmented)
-                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
-                .listRowBackground(Color.clear)
-            } footer: {
-                Text("\(enabledCount) courses auto-download new files. Tap a row to toggle; use the menu for bulk changes.")
+                .pickerStyle(.menu)
+                .labelsHidden()
+                .onAppear { sync.refreshYears() }
             }
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: Theme.Spacing.xs, leading: Theme.Spacing.m, bottom: Theme.Spacing.xs, trailing: Theme.Spacing.m))
+            .listSectionSeparator(.hidden)
+
             ForEach(groups, id: \.name) { group in
                 Section {
                     ForEach(group.courses) { course in
@@ -63,8 +72,13 @@ struct SyncCoursesView: View {
                     }
                 }
             }
-            if visible.isEmpty {
-                ContentUnavailableView.search(text: query).listRowBackground(Color.clear)
+            if courses.isEmpty {
+                ContentUnavailableView("No courses yet", systemImage: "graduationcap")
+                    .listRowBackground(Color.clear)
+            } else if visible.isEmpty {
+                ContentUnavailableView("No course matches", systemImage: "line.3.horizontal.decrease",
+                                       description: Text("Change the year or period, or the search."))
+                    .listRowBackground(Color.clear)
             }
         }
         .groupedList()
@@ -80,7 +94,7 @@ struct SyncCoursesView: View {
         #else
         .searchable(text: $search.text, prompt: "Course, code or professor")
         #endif
-        .modifier(SyncCoursesToolbar(search: search))
+        .modifier(SyncCoursesToolbar(search: search, courses: courses))
     }
 }
 
@@ -88,8 +102,9 @@ struct SyncCoursesView: View {
 /// typing nor toggling a row re-emits the toolbar.
 private struct SyncCoursesToolbar: ViewModifier {
     let search: SearchText
-    @Query(sort: \Course.title) private var courses: [Course]
+    let courses: [Course]
     @AppStorage("syncCourses.yearFilter") private var yearFilter: YearFilter = .current
+    @AppStorage("syncCourses.semesterFilter") private var semesterFilter: SemesterFilter = .all
 
     func body(content: Content) -> some View {
         content.toolbar {
@@ -109,7 +124,7 @@ private struct SyncCoursesToolbar: ViewModifier {
         }
     }
 
-    private func shown() -> [Course] { SyncCoursesView.visible(courses, query: search.text, years: yearFilter) }
+    private func shown() -> [Course] { SyncCoursesView.visible(courses, query: search.text, years: yearFilter, semester: semesterFilter) }
 
     private func set(_ value: Bool, _ list: [Course]) {
         for c in list { c.syncEnabled = value }
@@ -127,7 +142,7 @@ private struct SyncCourseRow: View {
                 CourseTile(monogram: course.monogram, color: course.color, size: 40)
                 VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                     Text(course.title).font(.body).lineLimit(2).truncationMode(.middle)
-                    Text([course.code, course.professors].compactMap { $0 }.joined(separator: " · "))
+                    Text([course.semester.shortLabelText, course.code, course.professors].compactMap { $0 }.joined(separator: " · "))
                         .font(.subheadline).foregroundStyle(.secondary).lineLimit(1)
                 }
                 Spacer(minLength: Theme.Spacing.s)
@@ -141,5 +156,17 @@ private struct SyncCourseRow: View {
         .buttonStyle(.plain)
         .sensoryFeedback(.selection, trigger: course.syncEnabled)
         .accessibilityValue(course.syncEnabled ? "On" : "Off")
+    }
+}
+
+private extension Semester {
+    /// "1st sem" as plain text for the row's detail line.
+    var shortLabelText: String? {
+        switch self {
+        case .unknown: nil
+        case .first: String(localized: "1st sem")
+        case .second: String(localized: "2nd sem")
+        case .annual: String(localized: "Annual")
+        }
     }
 }

@@ -70,7 +70,7 @@ final class Course {
     var isAcademicYear: Bool { AcademicYear.isAcademicYear(categoryName) }
     var isCurrentYear: Bool { AcademicYear.isCurrent(categoryName) }
 
-    var semester: Semester {
+    nonisolated var semester: Semester {
         get { Semester(rawValue: semesterRaw) ?? .unknown }
         set { semesterRaw = newValue.rawValue }
     }

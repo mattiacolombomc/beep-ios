@@ -27,7 +27,9 @@ struct StorageView: View {
     @Environment(FileOpener.self) private var opener
     @Environment(\.modelContext) private var context
     @Environment(\.openURL) private var openURL
-    @Query(sort: \Course.title) private var courses: [Course]
+    /// From Settings, which already has them: a `@Query` in a pushed view of the Mac Settings
+    /// window came back empty.
+    let courses: [Course]
     @State private var removeTarget: Course?
 
     private var usage: [CourseStorage] { StorageUsage.byCourse(courses) }

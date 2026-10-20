@@ -988,6 +988,16 @@
         }
       }
     },
+    "Also with the window closed, from the menu bar.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anche a finestra chiusa, dalla barra dei menu."
+          }
+        }
+      }
+    },
     "Annual": {
       "localizations": {
         "it": {
@@ -1270,6 +1280,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Annulla tutto"
+          }
+        }
+      }
+    },
+    "Change the year or period, or the search.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambia anno o periodo, oppure la ricerca."
           }
         }
       }
@@ -2062,6 +2082,16 @@
         }
       }
     },
+    "Files → On My iPhone → Beep, one folder per course.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File → Sul mio iPhone → Beep, una cartella per corso."
+          }
+        }
+      }
+    },
     "Filter": {
       "localizations": {
         "it": {
@@ -2138,6 +2168,16 @@
         }
       }
     },
+    "From Politecnico's public course catalogue. A period set by hand from a course's context menu wins.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dal catalogo pubblico degli insegnamenti del Politecnico. Un periodo impostato a mano dal menu contestuale del corso ha la precedenza."
+          }
+        }
+      }
+    },
     "From the catalogue": {
       "localizations": {
         "it": {
@@ -2164,6 +2204,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Adesso"
+          }
+        }
+      }
+    },
+    "Keeps your courses up to date from the menu bar.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiene aggiornati i corsi dalla barra dei menu."
           }
         }
       }
@@ -2480,6 +2530,16 @@
         }
       }
     },
+    "No course matches": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun corso corrisponde"
+          }
+        }
+      }
+    },
     "No courses yet": {
       "localizations": {
         "it": {
@@ -2730,6 +2790,16 @@
         }
       }
     },
+    "One folder per course. Pick a new folder and the downloads move there.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una cartella per corso. Scegli una nuova cartella e i download si spostano lì."
+          }
+        }
+      }
+    },
     "One folder per course. When you pick a new folder, files already downloaded move there.": {
       "localizations": {
         "it": {
@@ -2926,6 +2996,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Altro"
+          }
+        }
+      }
+    },
+    "Otherwise they wait until you open the app.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altrimenti aspettano che tu apra l'app."
           }
         }
       }
@@ -3192,6 +3272,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rinnova ora"
+          }
+        }
+      }
+    },
+    "Renewed by itself about every 4 weeks. If WeBeep rejects it anyway you get a notification and a quick sign-in.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si rinnova da sola circa ogni 4 settimane. Se WeBeep la rifiuta comunque ricevi una notifica e un accesso rapido."
           }
         }
       }
@@ -3674,6 +3764,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Salta per ora"
+          }
+        }
+      }
+    },
+    "Skipped in Low Power Mode.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saltati con Risparmio energetico attivo."
           }
         }
       }

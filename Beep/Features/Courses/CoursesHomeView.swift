@@ -47,7 +47,7 @@ struct CoursesHomeView: View {
 
 /// Academic-year filter: every year, the current one, the past ones, or one given year. Stored
 /// as a string ("year:2025") by `@AppStorage`; combines with `SemesterFilter`.
-enum YearFilter: RawRepresentable, Hashable, Identifiable {
+nonisolated enum YearFilter: RawRepresentable, Hashable, Identifiable {
     case all, current, past
     case year(Int)
 
@@ -91,7 +91,7 @@ enum YearFilter: RawRepresentable, Hashable, Identifiable {
 /// in the current year unless a year filter says otherwise. Annual courses pass every semester
 /// filter, courses whose period is still unknown pass none, courses outside an academic year are
 /// left alone.
-enum SemesterFilter: String, CaseIterable, Identifiable {
+nonisolated enum SemesterFilter: String, CaseIterable, Identifiable {
     case all, current, first, second
     var id: Self { self }
     var label: LocalizedStringKey {
@@ -110,6 +110,23 @@ enum SemesterFilter: String, CaseIterable, Identifiable {
         case .first: .first
         case .second: .second
         }
+    }
+}
+
+extension Course {
+    /// The year and period filters, as the home list and the auto-download picker apply them.
+    func passes(years: YearFilter, semester: SemesterFilter) -> Bool {
+        switch years {
+        case .all: break
+        case .current: if isAcademicYear && !isCurrentYear { return false }
+        case .past: if !isAcademicYear || isCurrentYear { return false }
+        case .year(let year): if AcademicYear.startYear(categoryName) != year { return false }
+        }
+        if let wanted = semester.semester, isAcademicYear {
+            if semester == .current && years == .all && !isCurrentYear { return false }
+            if !self.semester.runs(in: wanted) { return false }
+        }
+        return true
     }
 }
 
@@ -140,17 +157,7 @@ struct CoursesListView: View {
             if c.isArchived && !showArchived { return false }
             if onlyNew && c.newFilesCount == 0 { return false }
             if onlyAutoDownload && !c.syncEnabled { return false }
-            switch yearFilter {
-            case .all: break
-            case .current: if c.isAcademicYear && !c.isCurrentYear { return false }
-            case .past: if !c.isAcademicYear || c.isCurrentYear { return false }
-            case .year(let year): if AcademicYear.startYear(c.categoryName) != year { return false }
-            }
-            if let semester = semesterFilter.semester, c.isAcademicYear {
-                if semesterFilter == .current && yearFilter == .all && !c.isCurrentYear { return false }
-                if !c.semester.runs(in: semester) { return false }
-            }
-            return c.matches(query)
+            return c.passes(years: yearFilter, semester: semesterFilter) && c.matches(query)
         }
     }
 
