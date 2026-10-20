@@ -1,31 +1,42 @@
 # Beep
 
 Native SwiftUI client for WeBeep, the Moodle platform of Politecnico di Milano.
-iOS and iPadOS 26+, Liquid Glass, adaptive layout (iPhone, iPad, foldable).
+iOS, iPadOS and macOS 26+, Liquid Glass, adaptive layout (iPhone, iPad, foldable,
+Mac window and menu bar).
 
 Beep is sync-centric: it keeps a local index of your courses and files, downloads
 new material automatically for the courses you choose, shows what's new, and lets
 you search files inside a course or across all of them. Downloaded files live in
-the Files app ("On My iPhone → Beep") so any other app can open and edit them.
+the Files app ("On My iPhone → Beep") or in a folder of your choice on the Mac, so
+any other app can open and edit them.
 
 ## Features
 
 - Sign in with Polimi credentials or SPID once; the WeBeep access key is stored in the Keychain and renewed silently.
 - Courses grouped by academic year with favourites, archive, filters and instant search.
-- Course view with folders, in-course file search by type, download all, and QuickLook preview.
-- Background downloads for the courses you choose, "what's new" badges, recent-files feed, global file search.
+- Filter by period: current semester, 1st or 2nd semester, and any single academic year. Each course shows its semester next to the year; the data comes from Politecnico's public course catalogue (the "Manifesti degli Studi"), checked after each sync and weekly for current-year courses. A panel shows the progress the first time; a course's period can be set by hand from its context menu and reset to the catalogue from Settings.
+- Course view with folders, in-course file search by type, download all, long-press multi-select, drag files out to other apps on iPad, and QuickLook preview.
+- Background downloads for the courses you choose, "what's new" badges, recent-files feed, global file search. A failed download shows why on tap, with "Try again"; Beep reconnects and retries on its own when the system drops the background download service.
 - Background checks with local notifications for new files and announcements (frequency and Wi-Fi-only configurable).
-- WeBeep notifications, read-only announcements and forums, Moodle pages.
+- WeBeep notifications with the course tile and the announcement title; the detail opens instantly inside the same sheet, text only, with clickable links. Quiz and assignment notifications are matched to their course. Read-only announcements and forums, Moodle pages.
+- WeBeep maintenance is recognised from its own page and shown above the courses and in the Sync tile until WeBeep answers again; every error message is readable.
 - WeBeep catalogue: enrol in new courses and leave self-enrolment courses from the app.
+- Settings grouped with icons and short details on both platforms, including the auto-download course list with year and period filters.
 - Spotlight indexing, "Latest material" home-screen widget, Siri/Shortcuts intents, `beep://` deep links.
 - Files live in the Files app, one folder per course (renamable), so any other app can open them.
+- Mac: menu bar panel with status, newest files and quick actions that keeps syncing while the window is closed, sync folder of your choice (Show in Finder), scheduled sync, open at login, the course menu and multi-select in the window toolbar.
+- iOS: the sync bar lives in a glass drop that opens on tap; a sync never blocks the UI.
+
+## TestFlight
+
+Try the beta on iPhone, iPad and Mac: https://testflight.apple.com/join/9jjKgnRp
 
 Successor of [myPoliFile](https://github.com/matteovisotto/myPoliFile) by Matteo
 Visotto (MIT). See `NOTICE` for attributions.
 
 ## Requirements
 
-- Xcode 27, iOS 26 SDK
+- Xcode 27, iOS 26 and macOS 26 SDKs
 - [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`)
 - fastlane + 1Password CLI for TestFlight uploads (optional)
 
@@ -34,15 +45,26 @@ Visotto (MIT). See `NOTICE` for attributions.
 ```sh
 xcodegen generate
 open Beep.xcodeproj
-# or
+# or, iOS
 xcodebuild -project Beep.xcodeproj -scheme Beep \
   -destination 'platform=iOS Simulator,name=iPhone 17' build
 xcodebuild -project Beep.xcodeproj -scheme Beep \
   -destination 'platform=iOS Simulator,name=iPhone 17' test
+# or, Mac
+xcodebuild -project Beep.xcodeproj -scheme BeepMac \
+  -destination 'platform=macOS' build
+xcodebuild -project Beep.xcodeproj -scheme BeepMac \
+  -destination 'platform=macOS' test
 ```
 
+Debug builds accept `-demo` (sample data, no account) and `-semesterUnresolved`
+(demo courses without a period, to see the catalogue panel).
+
 `project.yml` is the source of truth; `Beep.xcodeproj` is generated and committed
-so fastlane can bump build numbers.
+so fastlane can bump build numbers. TestFlight: `fastlane beta_ios`, `fastlane
+beta_mac`, then `fastlane distribute_external build:N platform:ios|osx
+changelog:…`, run through `op run --env-file=fastlane/.env -- fastlane <lane>` so
+the App Store Connect key comes from 1Password.
 
 ## Structure
 
@@ -56,14 +78,12 @@ Beep/
   Features/     one folder per screen
   Design/       theme tokens and shared components
   Resources/    assets, string catalog (en, it)
-BeepTests/      unit tests with JSON fixtures
-docs/superpowers/specs/  design documents
+BeepMac/        Mac app: window, toolbar, menu bar, sync folder, launch at login
+BeepWidget/     "Latest material" widget
+BeepTests/      unit tests with JSON and HTML fixtures
+BeepMacTests/   latency budgets for the Mac window
 fastlane/       TestFlight lanes
 ```
-
-## Design document
-
-See `docs/superpowers/specs/2026-09-16-beep-design.md`.
 
 ## License
 
