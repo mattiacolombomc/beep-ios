@@ -8,7 +8,10 @@ import SwiftData
 /// then hops to the main actor to update the model.
 @Observable
 final class DownloadManager {
-    static let sessionIdentifier = "com.mattiacolombo.Beep.downloads"
+    /// Background sessions are owned by the system per identifier: a second process using the same
+    /// one disconnects the first (-997 on every task). The demo build, which may run next to the
+    /// installed app, gets its own.
+    static var sessionIdentifier: String { DemoData.isEnabled ? "com.mattiacolombo.Beep.downloads.demo" : "com.mattiacolombo.Beep.downloads" }
 
     struct Progress: Equatable {
         var active = 0
@@ -45,16 +48,23 @@ final class DownloadManager {
         self.context = context
         self.local = local
         self.delegate = Delegate()
+        session = makeSession()
+        delegate.manager = self
+        delegate.fixedRoot = local.fixedRoot
+        reconcile()
+    }
+
+    private func makeSession() -> URLSession {
         let config = URLSessionConfiguration.background(withIdentifier: Self.sessionIdentifier)
         config.isDiscretionary = false
         config.sessionSendsLaunchEvents = true
         config.allowsCellularAccess = true
         config.httpMaximumConnectionsPerHost = maxConcurrent
-        session = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
-        delegate.manager = self
-        delegate.fixedRoot = local.fixedRoot
-        reconcile()
+        return URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
     }
+
+    /// Keys already retried after the system dropped the background session; a second drop is a failure.
+    private var retriedAfterDisconnect: Set<String> = []
 
     // MARK: Public API
 
@@ -158,9 +168,32 @@ final class DownloadManager {
         if expected > 0 { fileProgress[key] = min(Double(received) / Double(expected), 0.99) }
     }
 
+    /// The system dropped the whole background session (-997): every task is dead, not just this
+    /// one. Open a fresh session and queue the file again, once.
+    fileprivate func sessionDisconnected(key: String, message: String) {
+        guard !retriedAfterDisconnect.contains(key) else {
+            didFinish(key: key, relativePath: nil, error: message)
+            return
+        }
+        retriedAfterDisconnect.insert(key)
+        inFlight.removeValue(forKey: key)
+        fileProgress.removeValue(forKey: key)
+        if inFlight.isEmpty {
+            session.invalidateAndCancel()
+            session = makeSession()
+        }
+        if let file = file(for: key) {
+            file.state = .notDownloaded
+            enqueue(file, priority: true)
+        } else {
+            pump()
+        }
+    }
+
     fileprivate func didFinish(key: String, relativePath: String?, error: String?) {
         inFlight.removeValue(forKey: key)
         fileProgress.removeValue(forKey: key)
+        if error == nil { retriedAfterDisconnect.remove(key) }
         if let file = file(for: key) {
             if let error {
                 file.state = .failed
@@ -230,8 +263,13 @@ final class DownloadManager {
 
         func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
             guard let error, let info = task.taskDescription.flatMap(Self.parse) else { return }
-            if (error as NSError).code == NSURLErrorCancelled { return }
+            let code = (error as NSError).code
+            if code == NSURLErrorCancelled { return }
             let message = error.localizedDescription
+            if code == NSURLErrorBackgroundSessionWasDisconnected {
+                Task { @MainActor in self.manager?.sessionDisconnected(key: info.key, message: message) }
+                return
+            }
             Task { @MainActor in self.manager?.didFinish(key: info.key, relativePath: nil, error: message) }
         }
 

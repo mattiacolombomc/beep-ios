@@ -103,6 +103,7 @@ struct FileStateBadge: View {
     let file: FileItem
     let isNew: Bool
     @Environment(FileOpener.self) private var opener
+    @State private var showsError = false
 
     var body: some View {
         HStack(spacing: Theme.Spacing.s) {
@@ -121,7 +122,16 @@ struct FileStateBadge: View {
                     Image(systemName: file.hasUpdate ? "arrow.triangle.2.circlepath.circle" : "checkmark.circle.fill")
                         .foregroundStyle(file.hasUpdate ? AnyShapeStyle(.orange) : AnyShapeStyle(.tint))
                 case .failed:
-                    Image(systemName: "exclamationmark.circle").foregroundStyle(.red)
+                    // The row itself retries; the badge says what went wrong.
+                    Button { showsError = true } label: {
+                        Image(systemName: "exclamationmark.circle").foregroundStyle(.red)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Download failed")
+                    .popover(isPresented: $showsError, arrowEdge: .trailing) {
+                        DownloadErrorPopover(file: file) { showsError = false }
+                            .presentationCompactAdaptation(.popover)
+                    }
                 case .notDownloaded:
                     Image(systemName: "icloud.and.arrow.down").foregroundStyle(.tertiary)
                 }
@@ -129,6 +139,53 @@ struct FileStateBadge: View {
             .font(.body)
             .frame(width: 24, height: 24)
         }
+    }
+}
+
+/// Why a download failed, in the system's words plus a plain-language hint for the cases we
+/// know, and a button to try again.
+private struct DownloadErrorPopover: View {
+    let file: FileItem
+    let dismiss: () -> Void
+    @Environment(FileOpener.self) private var opener
+
+    /// A hint for the errors whose system message says nothing useful to a student.
+    private var hint: LocalizedStringKey? {
+        let message = (file.lastError ?? "").lowercased()
+        if message.contains("background") || message.contains("in background") {
+            return "The system dropped the background download service, which happens when two copies of Beep run at once. Trying again opens a new connection."
+        }
+        if message.hasPrefix("http 4") {
+            return "WeBeep refused the file: the access key may have expired. Sign out and in again if it keeps happening."
+        }
+        return nil
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+            Label("Download failed", systemImage: "exclamationmark.triangle")
+                .font(.headline)
+                .foregroundStyle(.red)
+            Text(file.lastError ?? String(localized: "Unknown error"))
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .textSelection(.enabled)
+                .fixedSize(horizontal: false, vertical: true)
+            if let hint {
+                Text(hint)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Button("Try again") {
+                dismiss()
+                opener.download(file)
+            }
+            .buttonStyle(.borderedProminent)
+            .padding(.top, Theme.Spacing.xs)
+        }
+        .padding(Theme.Spacing.m)
+        .frame(minWidth: 260, maxWidth: 320, alignment: .leading)
     }
 }
 
