@@ -2248,6 +2248,16 @@
         }
       }
     },
+    "Maintenance": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manutenzione"
+          }
+        }
+      }
+    },
     "Mark all read": {
       "localizations": {
         "it": {
@@ -3488,6 +3498,16 @@
     "Simulate expired session (debug)": {
       "shouldTranslate": false
     },
+    "Since %@. Beep tries again at the next sync.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dalle %@. Beep riprova alla prossima sincronizzazione."
+          }
+        }
+      }
+    },
     "Since your last visit": {
       "localizations": {
         "it": {
@@ -4036,6 +4056,16 @@
         }
       }
     },
+    "WeBeep is not answering. The files already downloaded stay available.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep non risponde. I file già scaricati restano disponibili."
+          }
+        }
+      }
+    },
     "WeBeep is not available right now, probably for maintenance. Try again later.": {
       "localizations": {
         "it": {
@@ -4046,12 +4076,32 @@
         }
       }
     },
+    "WeBeep is under maintenance": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep è in manutenzione"
+          }
+        }
+      }
+    },
     "WeBeep login": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Accesso WeBeep"
+          }
+        }
+      }
+    },
+    "WeBeep not available": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep non disponibile"
           }
         }
       }

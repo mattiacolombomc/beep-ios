@@ -30,12 +30,26 @@ struct MoodleClientTests {
         #expect(q["courseid"] == "41213")
     }
 
-    /// Down for maintenance, WeBeep answers every call with an HTML page (via a redirect to /error/).
-    @Test func maintenancePageIsReportedAsUnavailable() async throws {
-        let page = Data("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\n<html><head><title>webeep - Sito non raggiungibile</title></head></html>".utf8)
-        let client = MoodleClient(token: "t", transport: StubTransport(data: page, status: 200))
-        await #expect(throws: MoodleError.unavailable) { try await client.siteInfo() }
-        #expect(MoodleError.unavailable.localizedDescription.contains("WeBeep"))
+    /// Down for maintenance, WeBeep answers every call with its HTML page (via a redirect to
+    /// /error/): the error carries the page's own sentence, in the app's language.
+    @Test func maintenancePageIsReportedWithItsOwnWords() async throws {
+        final class Anchor {}
+        let url = try #require(Bundle(for: Anchor.self).url(forResource: "webeep_maintenance", withExtension: "html"))
+        let page = try Data(contentsOf: url)
+        let italian = MoodleClient(token: "t", transport: StubTransport(data: page, status: 200), language: "it")
+        await #expect(throws: MoodleError.unavailable(message: "Il servizio non è disponibile per un aggiornamento di sistema. Riprova più tardi!")) {
+            try await italian.siteInfo()
+        }
+        let english = MoodleClient(token: "t", transport: StubTransport(data: page, status: 200), language: "en")
+        await #expect(throws: MoodleError.unavailable(message: "We're down for maintenance. Be right back!")) {
+            try await english.siteInfo()
+        }
+        // Any other web page: still unavailable, no sentence to quote, a generic message.
+        let other = Data("<html><body><h1>Errore 404: File non trovato</h1></body></html>".utf8)
+        await #expect(throws: MoodleError.unavailable(message: nil)) {
+            try await MoodleClient(token: "t", transport: StubTransport(data: other, status: 200)).siteInfo()
+        }
+        #expect(MoodleError.unavailable(message: nil).localizedDescription.contains("WeBeep"))
         #expect(MoodleClient.looksLikeHTML(Data("  \n<html>".utf8)))
         #expect(!MoodleClient.looksLikeHTML(Data("{\"a\":1}".utf8)))
     }

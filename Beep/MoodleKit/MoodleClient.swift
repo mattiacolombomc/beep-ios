@@ -91,14 +91,52 @@ struct MoodleClient: Sendable {
             : try await transport.get(url(function: function, parameters: parameters))
         guard (200...299).contains(response.statusCode) else { throw MoodleError.http(status: response.statusCode) }
         // Down for maintenance, WeBeep redirects every call to an HTML page under /error/.
-        if response.url?.path().hasPrefix("/error") == true || Self.looksLikeHTML(data) { throw MoodleError.unavailable }
-        return try Self.decode(type, from: data)
+        if response.url?.path().hasPrefix("/error") == true || Self.looksLikeHTML(data) {
+            let message = Self.maintenanceMessage(in: String(decoding: data, as: UTF8.self), language: language)
+            NotificationCenter.default.post(name: .webeepUnavailable, object: nil, userInfo: message.map { ["message": $0] })
+            throw MoodleError.unavailable(message: message)
+        }
+        let value = try Self.decode(type, from: data)
+        NotificationCenter.default.post(name: .webeepAvailable, object: nil)
+        return value
     }
 
     /// JSON never starts with "<"; a web page does.
     static func looksLikeHTML(_ data: Data) -> Bool {
         data.prefix(64).first { !($0 == 0x20 || $0 == 0x0A || $0 == 0x0D || $0 == 0x09) } == UInt8(ascii: "<")
     }
+
+    /// The sentence WeBeep's maintenance page shows, in `language` ("it" or "en"); nil for any
+    /// other web page. Looked up by keyword so a reworded page still has a fair chance.
+    static func maintenanceMessage(in html: String, language: String) -> String? {
+        let body = html.replacing(/<(script|style)\b.*?<\/\1>/.ignoresCase().dotMatchesNewlines(), with: " ")
+        let lines = body.replacing(/<[^>]+>/, with: "\n").split(separator: "\n")
+            .map { decodeEntities(String($0)).split(whereSeparator: \.isWhitespace).joined(separator: " ") }
+            .filter { !$0.isEmpty }
+        let keywords = language == "it" ? ["manutenzione", "aggiornamento di sistema", "non è disponibile"] : ["maintenance", "not available", "be right back"]
+        return lines.first { line in let l = line.lowercased(); return keywords.contains { l.contains($0) } && !l.contains("/") }
+    }
+
+    private static func decodeEntities(_ s: String) -> String {
+        var out = s
+        for (entity, char) in [("&egrave;", "è"), ("&eacute;", "é"), ("&agrave;", "à"), ("&ugrave;", "ù"), ("&ograve;", "ò"), ("&igrave;", "ì"),
+                               ("&#39;", "'"), ("&apos;", "'"), ("&quot;", "\""), ("&nbsp;", " "), ("&amp;", "&")] {
+            out = out.replacing(entity, with: char)
+        }
+        return out
+    }
+}
+
+extension Notification.Name {
+    /// WeBeep answered a web page instead of data (maintenance); `userInfo["message"]` is its text.
+    static let webeepUnavailable = Notification.Name("Beep.webeepUnavailable")
+    /// A web-service call succeeded again.
+    static let webeepAvailable = Notification.Name("Beep.webeepAvailable")
+}
+
+// MARK: - Decoding
+
+extension MoodleClient {
 
     static func decode<T: Decodable>(_ type: T.Type, from data: Data) throws -> T {
         let decoder = JSONDecoder()

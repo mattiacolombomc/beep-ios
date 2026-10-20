@@ -196,6 +196,15 @@ struct CoursesListView: View {
                 .listSectionSeparator(.hidden)
             }
 
+            if let outage = session.outage, query.isEmpty {
+                Section {
+                    OutageBanner(outage: outage)
+                }
+                .listRowInsets(EdgeInsets(top: 0, leading: Theme.Spacing.m, bottom: Theme.Spacing.s, trailing: Theme.Spacing.m))
+                .listRowBackground(Color.clear)
+                .listSectionSeparator(.hidden)
+            }
+
             if catalogueBusy {
                 Section {
                     CataloguePanel()
@@ -342,6 +351,39 @@ private struct RowLink: ViewModifier {
     }
 }
 
+/// WeBeep is down (maintenance): its own words, since when, and that Beep retries by itself.
+/// Shown until a call to WeBeep works again.
+private struct OutageBanner: View {
+    let outage: AppSession.Outage
+
+    var body: some View {
+        HStack(alignment: .top, spacing: Theme.Spacing.m) {
+            Image(systemName: "wrench.and.screwdriver.fill")
+                .font(.title2)
+                .foregroundStyle(.orange)
+                .frame(width: 32)
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                Text("WeBeep is under maintenance")
+                    .font(.headline)
+                Text(outage.message ?? String(localized: "WeBeep is not answering. The files already downloaded stay available."))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("Since \(outage.since.formatted(date: .omitted, time: .shortened)). Beep tries again at the next sync.")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(Theme.Spacing.m)
+        .background(Color.cardBackground, in: .rect(cornerRadius: Theme.cardRadius, style: .continuous))
+        #if os(macOS)
+        .overlay(RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous).strokeBorder(.separator))
+        #endif
+        .accessibilityElement(children: .combine)
+    }
+}
+
 /// First use of a semester filter, and "Refresh periods from the catalogue": says what Beep is
 /// doing while the Polimi catalogue answers, the way the system's setup screens do, with
 /// progress, then a retry when the catalogue could not be reached. Courses drop into the list
@@ -404,6 +446,7 @@ private struct CataloguePanel: View {
 
 private struct StatusHeader: View {
     @Environment(SyncEngine.self) private var sync
+    @Environment(AppSession.self) private var session
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var sizeClass
     private var isCompact: Bool { sizeClass == .compact }
@@ -446,13 +489,15 @@ private struct StatusHeader: View {
     }
 
     private var syncSymbol: String {
+        if session.outage != nil { return "wrench.and.screwdriver" }
         switch sync.phase {
-        case .idle: "checkmark.circle"
-        case .indexing: "arrow.triangle.2.circlepath"
-        case .failed: "exclamationmark.triangle"
+        case .idle: return "checkmark.circle"
+        case .indexing: return "arrow.triangle.2.circlepath"
+        case .failed: return "exclamationmark.triangle"
         }
     }
     private var syncValue: String {
+        if session.outage != nil { return String(localized: "Maintenance") }
         switch sync.phase {
         case .indexing(let done, let total, _): return "\(done)/\(total)"
         case .failed: return String(localized: "Failed")
@@ -462,10 +507,11 @@ private struct StatusHeader: View {
         }
     }
     private var syncDetail: LocalizedStringKey {
+        if session.outage != nil { return "WeBeep not available" }
         switch sync.phase {
-        case .indexing: "Updating courses…"
-        case .failed: "Pull to retry"
-        case .idle: "Last update"
+        case .indexing: return "Updating courses…"
+        case .failed: return "Pull to retry"
+        case .idle: return "Last update"
         }
     }
 }

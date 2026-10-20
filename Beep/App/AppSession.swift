@@ -32,9 +32,30 @@ final class AppSession {
     /// Called when a different WeBeep user signs in (the local store must be wiped).
     var onUserChanged: (() -> Void)?
 
+    /// WeBeep is answering web pages instead of data (maintenance): set by the first such
+    /// answer, cleared by the first call that works again.
+    struct Outage: Equatable {
+        /// The maintenance page's own sentence, when it had one.
+        var message: String?
+        var since: Date
+    }
+    private(set) var outage: Outage?
+    private var observers: [any NSObjectProtocol] = []
+
     init(tokenStore: TokenStore = TokenStore(), defaults: UserDefaults = .standard) {
         self.tokenStore = tokenStore
         self.defaults = defaults
+        let center = NotificationCenter.default
+        observers.append(center.addObserver(forName: .webeepUnavailable, object: nil, queue: .main) { [weak self] note in
+            let message = note.userInfo?["message"] as? String
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                if self.outage == nil { self.outage = Outage(message: message, since: .now) } else if message != nil { self.outage?.message = message }
+            }
+        })
+        observers.append(center.addObserver(forName: .webeepAvailable, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { if self?.outage != nil { self?.outage = nil } }
+        })
     }
 
     var client: MoodleClient? { token.map { MoodleClient(token: $0) } }

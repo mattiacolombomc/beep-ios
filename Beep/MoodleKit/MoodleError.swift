@@ -8,8 +8,10 @@ nonisolated enum MoodleError: Error, Equatable, Sendable {
     case decoding(String)
     case transport(String)
     /// WeBeep answered with a web page instead of data: down for maintenance (every call is
-    /// redirected to `/error/`), or otherwise not itself.
-    case unavailable
+    /// redirected to `/error/`), or otherwise not itself. `message` is the page's own sentence
+    /// in the app's language when it has one ("Il servizio non è disponibile per un
+    /// aggiornamento di sistema. Riprova più tardi!").
+    case unavailable(message: String?)
 }
 
 /// What the user reads: `error.localizedDescription`, never `String(describing:)`.
@@ -21,7 +23,7 @@ extension MoodleError: LocalizedError {
         case .http(let status): String(localized: "WeBeep answered with HTTP \(status).")
         case .decoding: String(localized: "WeBeep's answer could not be read.")
         case .transport(let detail): String(localized: "No connection to WeBeep: \(detail)")
-        case .unavailable: String(localized: "WeBeep is not available right now, probably for maintenance. Try again later.")
+        case .unavailable(let message): message ?? String(localized: "WeBeep is not available right now, probably for maintenance. Try again later.")
         }
     }
 }
