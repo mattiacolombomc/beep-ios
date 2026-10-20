@@ -19,6 +19,8 @@ struct SettingsView: View {
     @State private var pickFolder = false
     #endif
 
+    private var manualPeriods: Int { courses.reduce(0) { $0 + ($1.semesterIsManual ? 1 : 0) } }
+
     /// Re-arms (or stops) periodic checks after a settings change.
     private func rescheduleChecks() {
         #if os(iOS)
@@ -95,6 +97,16 @@ struct SettingsView: View {
                     #else
                     Text("New files in these courses download automatically when you sync. Beep keeps checking from the menu bar while its window is closed, and catches up when your Mac wakes. Checks are skipped in Low Power Mode.")
                     #endif
+                }
+                Section {
+                    LabeledContent("Course periods", value: manualPeriods == 0 ? String(localized: "From the catalogue") : String(localized: "Set by hand: \(manualPeriods)"))
+                    Button("Use the catalogue for every course", systemImage: "calendar.badge.clock") {
+                        for course in courses where course.semesterIsManual { course.semesterIsManual = false }
+                        sync.semesters.resolveDue(force: true)
+                    }
+                    .disabled(manualPeriods == 0 || sync.semesters.isRunning)
+                } footer: {
+                    Text("The semester of each course comes from Politecnico's public course catalogue. A period set by hand from a course's context menu wins over it; this puts the catalogue back in charge for all courses.")
                 }
                 Section {
                     NavigationLink {

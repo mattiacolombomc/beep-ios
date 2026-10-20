@@ -1466,6 +1466,16 @@
         }
       }
     },
+    "Course periods": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Periodi dei corsi"
+          }
+        }
+      }
+    },
     "Course, code or professor": {
       "localizations": {
         "it": {
@@ -3279,6 +3289,16 @@
         }
       }
     },
+    "Set by hand: %lld": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impostati a mano: %lld"
+          }
+        }
+      }
+    },
     "Settings": {
       "localizations": {
         "it": {
@@ -3728,6 +3748,16 @@
         }
       }
     },
+    "The semester of each course comes from Politecnico's public course catalogue. A period set by hand from a course's context menu wins over it; this puts the catalogue back in charge for all courses.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il semestre di ogni corso viene dal catalogo pubblico degli insegnamenti del Politecnico. Un periodo impostato a mano dal menu contestuale del corso ha la precedenza; questo rimette il catalogo al comando per tutti i corsi."
+          }
+        }
+      }
+    },
     "The system dropped the background download service, which happens when two copies of Beep run at once. Trying again opens a new connection.": {
       "localizations": {
         "it": {
@@ -3972,6 +4002,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Usa il titolo del corso"
+          }
+        }
+      }
+    },
+    "Use the catalogue for every course": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa il catalogo per tutti i corsi"
           }
         }
       }

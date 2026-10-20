@@ -530,8 +530,9 @@ struct CourseContextMenu: View {
         Binding(get: { course.semesterIsManual ? course.semesterRaw : -1 },
                 set: { raw in
                     if raw < 0 {
+                        // Back to the catalogue: keep the last check so the list shows no panel
+                        // while the answer comes in; the lookup overwrites the hand-set value.
                         course.semesterIsManual = false
-                        course.semesterCheckedAt = nil
                         Task { await sync.semesters.resolve(course) }
                     } else {
                         course.semesterIsManual = true
