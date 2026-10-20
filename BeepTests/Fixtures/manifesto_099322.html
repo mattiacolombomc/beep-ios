@@ -1,0 +1,1897 @@
+
+<!DOCTYPE html>
+<html class="no-js">
+	<head>
+		<title>Ricerca Per Insegnamento</title>
+		<script type='text/javascript'>var jaf_js_LANG = 'IT';</script>
+<link rel="stylesheet" type="text/css" href="//webcommons.polimi.it/webcommons/assets/ateneo2014.css.jsp?v=4&__load_ts=1792398208300" />
+<link rel='stylesheet' href='https://webcommons.polimi.it/webcommons/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css' type='text/css' media='screen' />
+<script src='https://webcommons.polimi.it/webcommons/ajax/libs/jqueryui/1.10.4/ui.js.jsp?lang=IT&amp;tab=yes'></script> 
+<SCRIPT type="text/javascript">
+   $.ajaxSetup ({ /* non mettere in cache le richieste AJAX (server per IE6 e IE7) */
+      cache: false
+   });
+</SCRIPT>
+
+
+<link rel="stylesheet" type="text/css" href="/manifesti/css/custom.css?__load_ts=1792398208300" />
+<link rel="stylesheet" type="text/css" href="/manifesti/css/custom4retrocompat.css?__load_ts=1792398208300" />
+
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#loading').remove();
+	});	
+</script>
+
+<link type="text/css" href="/manifesti/js/jquery-toastmessage/css/jquery.toastmessage.css?__load_ts=1792398208300" rel="stylesheet"/>		
+<script type="text/javascript" src="/manifesti/js/jquery-toastmessage/jquery.toastmessage.js?__load_ts=1792398208300"></script>
+		
+<script type="text/javascript" src="/manifesti/js/jquery.PrintArea.js?__load_ts=1792398208300"></script>		
+	
+<script type="text/javascript" src="/manifesti/js/jquery.form.js?__load_ts=1792398208300"></script>
+<script type="text/javascript" src="/manifesti/js/getValueFromQueryString.js?__load_ts=1792398208300"></script>
+
+
+<link media="screen" rel="stylesheet" type="text/css" href="/manifesti/css/table-IE.css?__load_ts=1792398208300">
+<link media="screen" rel="stylesheet" type="text/css" href="/manifesti/css/OrarioSlot.css?__load_ts=1792398208300">
+<link media="print" rel="stylesheet" type="text/css" href="/manifesti/css/table-IE-print.css?__load_ts=1792398208300">
+<link media="print" rel="stylesheet" type="text/css" href="/manifesti/css/OrarioSlot.css?__load_ts=1792398208300">
+
+
+<link type="text/css" rel="stylesheet" href="/manifesti/css/dropdown-button.css?__load_ts=1792398208300" />
+
+
+
+
+		
+		
+		<link rel="canonical" href="https://onlineservices.polimi.it/manifesti/manifesti/controller/ricerche/RicercaPerInsegnamentoPublic.do?evn_default=evento&lang=IT" />
+		
+		
+	</head>
+	<body>
+		<div id="jafBodyContainer">
+			<div id="polijPageHeader">
+				<script type='text/javascript'>var jaf_js_LANG = 'IT';</script>
+<table id="poliheader" >
+	<tr>
+		<td class="jaf-text-align-left td-logo-polimi" >
+			<a href="http://www.polimi.it" >
+				<img class="logo-polimi" alt="logo-polimi" src="//webcommons.polimi.it/webcommons/assets/logo_polimi_testo.png" style="border: 0px none"/>
+			</a>
+			<div id="loading">
+				<strong>Loading... <img src='//webcommons.polimi.it/webcommons/assets/loading.gif' alt="" /></strong>
+			</div>
+		</td>
+            <td class="jaf-text-align-center info-DB" >
+		        
+                	
+		        
+            </td>
+			<td class="jaf-text-align-right info-utente" >
+				            
+					
+				
+            </td>
+		</tr>
+</table>
+				
+
+	
+		
+	
+	<div id="policontext">
+		<nav class='nomeApp policontext-link' style="float: left; margin: auto 1em;" >
+			 manifesti
+		</nav>
+		<div class="policontext-link">
+			<nav>
+				
+				
+				
+			</nav>
+		</div>
+		<div class="jaf-float-clear" ></div>
+	</div>
+			</div>
+			
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table style="border-spacing: 0;border-collapse: collapse;" class="TablePage">
+<tr class="TrPage">
+<script type='text/javascript'>var jaf_js_LANG = 'IT';</script>
+
+	
+	
+	
+	<td style="width:20%;" class="LeftBar">
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- script per la gestione del carrello orario -->	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+	function bindLeftbarPerCarrello(){				
+
+				$("#dialog-form-sezioni-orario").hide();
+			
+			    var tmp_func = "";
+
+				$('td.orario_td.no_sezioni>a>img[src *= put]').parent('a').each(function(index) {
+					var aa = '';
+					var kCorsoLa;
+					var kIndir = '';
+					var cInsegn = '';
+					var annoCorso = '';
+					var semestre = '';
+					
+					aa = $.getValueFromQs($(this).attr('href'), 'aa');
+					kCorsoLa = $.getValueFromQs($(this).attr('href'), 'k_corso_la');
+					kIndir = $.getValueFromQs($(this).attr('href'), 'k_indir');
+					cInsegn = $.getValueFromQs($(this).attr('href'), 'codDescr');
+					annoCorso = $.getValueFromQs($(this).attr('href'), 'anno_corso');
+					semestre = $.getValueFromQs($(this).attr('href'), 'semestre');
+
+					
+					 generaUrlCart("cart_add", this.name, aa, kCorsoLa, kIndir, cInsegn, annoCorso, semestre, '');
+					 
+				 });
+
+				$('td.orario_td.no_sezioni>a>img[src *= remove]').parent('a').each(function(index) { 
+					
+					var aa = '';
+					var kCorsoLa;
+					var kIndir = '';
+					var cInsegn = '';
+					var annoCorso = '';
+					var semestre = '';
+					
+					aa = $.getValueFromQs($(this).attr('href'), 'aa');
+					kCorsoLa = $.getValueFromQs($(this).attr('href'), 'k_corso_la');
+					kIndir = $.getValueFromQs($(this).attr('href'), 'k_indir');
+					cInsegn = $.getValueFromQs($(this).attr('href'), 'codDescr');
+					annoCorso = $.getValueFromQs($(this).attr('href'), 'anno_corso');
+					semestre = $.getValueFromQs($(this).attr('href'), 'semestre');
+														
+					generaUrlCart("cart_del", this.name, aa, kCorsoLa, kIndir, cInsegn, annoCorso, semestre, '');
+				 });
+
+
+				$('td.orario_td.con_sezioni>a').each(function(index) {		
+					
+					  var aa = '';
+					  var kCorsoLa;
+					  var kIndir = '';
+					  var cInsegn = '';
+					  var annoCorso = '';
+					  var idItemOfferta = '';
+					  var idGruppo = '';
+					  var idRiga = '';
+					  
+					  aa = $.getValueFromQs($(this).attr('href'), 'aa');
+					  kCorsoLa = $.getValueFromQs($(this).attr('href'), 'k_corso_la');
+					  kIndir = $.getValueFromQs($(this).attr('href'), 'k_indir');
+					  cInsegn = $.getValueFromQs($(this).attr('href'), 'codDescr');
+					  annoCorso = $.getValueFromQs($(this).attr('href'), 'anno_corso');
+					  idItemOfferta = $.getValueFromQs($(this).attr('href'), 'idItemOfferta');
+					  idGruppo = $.getValueFromQs($(this).attr('href'), 'idGruppo');
+					  idRiga = $.getValueFromQs($(this).attr('href'), 'idRiga');
+
+					  tmp_func = "show_sezioni('"+this.name+"', '"+ cInsegn +"', '"+ annoCorso +"', '"+ idItemOfferta +"', '"+ idGruppo +"', '"+ idRiga +"'); return false;";					  				  
+					  var newclick = new Function(tmp_func);
+					  $("a[name='" + this.name + "']").unbind('click');
+					  $("a[name='" + this.name + "']").click(newclick);					  					  					  								  
+				});
+
+
+			//gestione javascript x carrello orario
+
+			$('select[name=sel_semestre]').change(function(){
+				$('#formCarrelloOrario').submit();
+			});
+
+			$('select[name=sel_aa]').change(function(){
+				$('#formCarrelloOrario').submit();
+			});
+
+			
+			$("#idDialogHelpOrario").dialog({
+				autoOpen: false,
+				modal: true,
+				resizable: false,
+				width: 700
+				});
+
+			$("#idHelpOrario").click(function(){
+				$("#idDialogHelpOrario").dialog("open");
+				return false;
+				});
+
+			$("#dialog-form-sezioni-orario").dialog({
+				autoOpen: false,
+				modal: true,
+				resizable: false,
+				height: 300,
+				buttons: {
+					"Aggiungi": function() {						
+							var semestre = '';
+							var nomeSezione = '';
+							
+							var valChkSelected = $("input[name='sel_sezione']:checked").val();
+							
+							if(valChkSelected!=''){
+								semestre = valChkSelected.substring(0, valChkSelected.indexOf('_'));
+								nomeSezione = valChkSelected.substring(valChkSelected.indexOf('_')+1);
+							}									
+							
+							cart_add($("input[name='chiaveItemOrarioManifestiNoSezione']").val()
+										, '2026'
+										, '-1'
+										, ''
+										, $("input[name='c_insegn_sel_sezione']").val()
+										, $("input[name='ac_sel_sezione']").val()
+										, semestre
+										, nomeSezione);						  										               
+							$( this ).dialog("close");										
+					},
+					"Annulla": function() {						
+						$( this ).dialog("close");
+					},
+					"Rimuovi": function(){																										
+						var semestre = '';
+						var nomeSezione = '';
+						
+						var valChkSelected = $("input[name='sel_sezione']:checked").val();
+						
+						if(valChkSelected!=''){
+							semestre = valChkSelected.substring(0, valChkSelected.indexOf('_'));
+							nomeSezione = valChkSelected.substring(valChkSelected.indexOf('_')+1);
+						}
+												
+						cart_del($("input[name='chiaveItemOrarioManifestiNoSezione']").val()
+									, '2026'
+									, '-1'
+									, ''
+									, $("input[name='c_insegn_sel_sezione']").val()
+									, $("input[name='ac_sel_sezione']").val()
+									, semestre
+									, nomeSezione);
+						
+						$( this ).dialog("close");
+					}
+				},
+				close: function() {	
+							
+				}
+			});
+			
+					
+		}
+
+
+		
+		function generaUrlCart(functionName, chiave, aa, kCorsoLa, kIndir, cInsegn, annoCorso, semestre, nomeSezione){
+			var tmp_func = "";
+
+			tmp_func = functionName+"('"+chiave+"', '"+ aa +"', '"+ kCorsoLa +"', '"+ kIndir +"','"+cInsegn+"', '"+ annoCorso +"', '"+semestre+"','"+nomeSezione+"'); return false;";
+			
+			var newclick = new Function(tmp_func);
+			$("a[name='" + chiave + "']").unbind('click');						
+			$("a[name='" + chiave + "']").click(newclick);										
+			
+			return false;
+		}
+		
+		function cart_add(chiaveOrario, aa, kCorsoLa, kIndir, cInsegn, annoCorso, semestre, nomeSezione)
+		{							
+			cart_call("EVN_ADDCART=EVENTO", chiaveOrario, aa, kCorsoLa, kIndir, cInsegn, annoCorso, semestre, nomeSezione);
+		}
+
+
+		function cart_del(chiaveOrario, aa, kCorsoLa, kIndir, cInsegn, annoCorso, semestre, nomeSezione){
+			cart_call("EVN_DELCART=EVENTO", chiaveOrario, aa, kCorsoLa, kIndir, cInsegn, annoCorso, semestre, nomeSezione);
+		}
+
+		
+		
+		function cart_call(event, chiaveOrario, aa, kCorsoLa, kIndir, cInsegn, annoCorso, semestre, nomeSezione){			
+			
+			$.ajax({url: '/manifesti/manifesti/controller/ManifestoPublic.do?'+event,
+			      data: {aa: aa,
+			    	     k_corso_la: kCorsoLa,
+			    	     k_indir : kIndir,
+			    	     codDescr : cInsegn,
+			    	     ac_ins: annoCorso,
+			    	     semestre : semestre,
+			    	     sezione : nomeSezione,
+		                 lang: 'IT'},
+			      success: function(xml) {
+
+				  //parse xml 
+              	  var success = $(xml).find('success');
+              	  var error = $(xml).find('error'); 
+					  if (success.length > 0)
+					  {
+					  	var num_item = success.find('num-ins-cart').text();
+					  	var name = success.find("desc-ins-add").text();
+
+					  	var msg = 'Il tuo orario personalizzato contiene #numItemOrario/#maxItemOrario insegnamenti';
+                        msg = msg.replace("#numItemOrario", num_item);
+                        msg = msg.replace("#maxItemOrario", 15);
+						 
+						$('#info_cart').html('<td class="TextCommand" style="text-align: left;" colspan="10">'+ msg +'</td>');											
+						
+						var messageSuccess = name;
+										
+						if(nomeSezione!= '' ){
+								if(event=="EVN_ADDCART=EVENTO"){									
+									$("a[name='" + chiaveOrario + "']>img").attr('src', '/manifesti/images/cart/zoom.png');
+									toastMessagePopup(messageSuccess, 'success');
+								}else{
+									$("a[name='" + chiaveOrario + "']>img").attr('src', '/manifesti/images/cart/cart_put.png');
+									toastMessagePopup(messageSuccess, 'notice');
+								}
+							}else{				
+									
+							
+							if(event=="EVN_ADDCART=EVENTO"){
+								$("a[name='" + chiaveOrario + "']>img").attr('src', '/manifesti/images/cart/cart_remove.png');
+								generaUrlCart("cart_del", chiaveOrario, aa, kCorsoLa, kIndir, cInsegn, annoCorso, semestre, nomeSezione);
+								
+								
+								
+								toastMessagePopup(messageSuccess, 'success');
+																
+							}else{								
+								$("a[name='" + chiaveOrario + "']>img").attr('src', '/manifesti/images/cart/cart_put.png');
+								generaUrlCart("cart_add", chiaveOrario, aa, kCorsoLa, kIndir, cInsegn, annoCorso, semestre, nomeSezione);
+																					
+								toastMessagePopup(messageSuccess, 'notice');
+							}
+						}
+					  } else {							 
+						  if(error.length > 0){							  
+						  	toastMessagePopup(error.find('desc-error').text(), 'warning');
+						  }else{
+							  toastMessagePopup('Errore!', 'warning');
+						  }				  											 
+					  }
+					  														
+			      },
+			      error: function(request, status, error) {						    	  
+			    	  toastMessagePopup('Errore di connessione!<br>Connection error!', 'error');	
+				      }
+			     });
+		     			  
+		  return false;
+		}
+
+		/*
+		 tipo: success, notice, warning, error
+		*/
+		function toastMessagePopup(message, tipo){
+			$().toastmessage('showToast', {
+	            text     : message,
+	            sticky   : false,
+	            position : 'top-right',
+	            type     : tipo
+	        });
+
+		}
+
+		function show_sezioni(chiaveOrario, cInsegn, annoCorso, idItemOfferta, idGruppo, idRiga){
+			
+				
+			$.ajax({url: '/manifesti/manifesti/controller/ManifestoPublic.do?evn_showsezioni=evento',
+			      data: {aa: 2026,
+			    	  	 k_cf: -1,
+			    	  	 k_corso_la : -1,
+			    	  	 k_indir: '',	
+			    	  	 codDescr : cInsegn,
+			    	  	 ac_ins : annoCorso,
+			    	  	 idItemOfferta : idItemOfferta,
+			    	  	 idGruppo : idGruppo,
+			    	     idRiga: idRiga,
+		                 lang: 'IT'},
+			      success: function(html) {			                	 
+		   			         $("#dialog-form-sezioni-orario").html(html);
+		                	 $("#dialog-form-sezioni-orario").dialog("open");
+		                	 var chkRadioDoc = $("input[name = sel_sezione][checked = checked]");
+							 if(chkRadioDoc.size()>0){
+									if(chkRadioDoc.parent("td").parent("tr").prev("tr").size() > 0){
+										if(chkRadioDoc.parent("td").parent("tr").prev("tr").prev("tr").size() > 0){
+											$("#dialog-form-sezioni-orario").scrollTop($("input[name = sel_sezione][checked = checked]").parent("td").parent("tr").prev("tr").prev("tr").position().top);
+										}
+									}
+							 }								
+			      },
+			      error: function(request, status, error) {alert('err');}
+			     });
+
+            return false;
+		}
+		
+		
+		/*******
+		per scaglioni e box incarico scheda docente
+		********/
+		
+		function refresh_url_box_inc(){
+			$("td[class *= 'orario_td scaglioni'] a>img[src *= 'put']").parent('a').each(function(index) { 					
+				generaUrlCartAdd_box_inc(this.name, $(this).attr('href'));				  					  					  								  
+			 });
+
+			$("td[class *= 'orario_td scaglioni'] a>img[src *= 'remove']").parent('a').each(function(index) { 
+				generaUrlCartDel_box_inc(this.name, $(this).attr('href'));				  					  					  								  
+			 });
+		};	
+		
+		function generaUrlCartAdd_box_inc(chiave, url){		
+			
+			var aa = '';
+			var kCorsoLa;
+			var kIndir = '';
+			var cInsegn = '';
+			var annoCorso = '';
+			var semestre = '';
+			var nomesezione = '';
+				
+			aa = $.getValueFromQs(url, 'aa');
+			kCorsoLa = $.getValueFromQs(url, 'k_corso_la');		
+			kIndir = $.getValueFromQs(url, 'k_indir');
+			cInsegn = $.getValueFromQs(url, 'codDescr');
+			annoCorso = $.getValueFromQs(url, 'anno_corso');
+			semestre = $.getValueFromQs(url, 'semestre'); 
+			nomesezione = $.getValueFromQs(url, 'sezione');
+			
+			generaUrlCart("cart_add", chiave, aa, kCorsoLa, kIndir, cInsegn, annoCorso, semestre, nomesezione);
+		}
+
+		function generaUrlCartDel_box_inc(chiave, url){
+			
+			var aa = '';
+			var kCorsoLa;
+			var kIndir = '';
+			var cInsegn = '';
+			var annoCorso = '';
+			var semestre = '';
+			var nomesezione = '';
+				
+			aa = $.getValueFromQs(url, 'aa');
+			kCorsoLa = $.getValueFromQs(url, 'k_corso_la');		
+			kIndir = $.getValueFromQs(url, 'k_indir');
+			cInsegn = $.getValueFromQs(url, 'codDescr');
+			annoCorso = $.getValueFromQs(url, 'anno_corso');
+			semestre = $.getValueFromQs(url, 'semestre'); 
+			nomesezione = $.getValueFromQs(url, 'sezione');
+			
+			generaUrlCart("cart_del", chiave, aa, kCorsoLa, kIndir, cInsegn, annoCorso, semestre, nomesezione);
+		}
+
+	</script>
+	
+
+
+
+
+<!-- MANIFESTO -->
+<TABLE class="TableCommand"  style='border-spacing:0; border-collapse:collapse;'><TR><TH class="HeadCommand">Manifesto</TH></TR>
+
+	
+					
+	
+		   
+	       
+		   
+	<tr><td class="BodyFunction"><a href="/manifesti/manifesti/controller/MostraIndirizziPublic.do?evn_default=EVENTO&check_params=1&lang=IT&aa=2026&jaf_currentWFID=main" title="Struttura Corso di Studi" class="linkFunction">
+	              <div class="polij-function-text-container" >
+	                    <div class="polij-function-icon"><i class="fa fa-fw "></i></div>
+	                    <div class="polij-function-text">Struttura Corso di Studi</div>
+	             </div>
+	       </a></td></tr>
+	
+	
+	
+		   
+	       
+		
+	<tr><td class="BodyFunction"><a href="/manifesti/manifesti/controller/ManifestoPublic.do?evn_default=EVENTO&&check_params=1&lang=IT&aa=2026&jaf_currentWFID=main" title="Cerca/Visualizza Manifesto" class="linkFunction">
+	              <div class="polij-function-text-container">
+	                    <div class="polij-function-icon"><i class="fa fa-fw "></i></div>
+	                    <div class="polij-function-text">Cerca/Visualizza Manifesto</div>
+	             </div>
+	       </a></td></tr>
+				
+	
+		
+		
+	
+</TABLE>
+
+
+
+<TABLE class="TableCommand"  style='border-spacing:0; border-collapse:collapse;'><TR><TH class="HeadCommand">Regolamento didattico</TH></TR>
+
+	
+		
+			
+				
+			       
+			       
+				   
+				<tr><td class="BodyFunction"><a href="/manifesti/manifesti/controller/extra/ProgrammiInterdisciplinariPublic.do?evn_default=EVENTO&check_params=1&lang=IT&aa=2026&jaf_currentWFID=main" title="Programmi interdisciplinari" class="linkFunction">
+		              <div class="polij-function-text-container" >
+	                    <div class="polij-function-icon"><i class="fa fa-fw "></i></div>
+	                    <div  class="polij-function-text">Programmi interdisciplinari</div>
+		             </div>
+			       </a></td></tr>
+		
+		
+	   
+		
+	       
+	       
+		   
+		<tr><td class="BodyFunction"><a href="https://app.powerbi.com/view?r=eyJrIjoiZmVmMjUzNDYtMWVkMS00ZjRiLTg3MmEtYWU0ODBlZTRkMGZhIiwidCI6IjBhMTc3MTJiLTZkZjMtNDI1ZC04MDhlLTMwOWRmMjhhNWVlYiIsImMiOjh9&pageName=ReportSection03ddcddf668bd294f5ac" title="Indicatori corsi di studio" class="linkFunction" target="_blank">
+	              <div class="polij-function-text-container" >
+	                    <div class="polij-function-icon "><i class="fa fa-fw fa-external-link"></i></div>
+	                    <div  class="polij-function-text">Indicatori corsi di studio</div>
+	             </div>
+	       </a></td></tr>
+	
+		
+  					
+			
+		       
+		       
+			   
+			<tr><td class="BodyFunction"><a href="/manifesti/manifesti/controller/extra/ScambiInternazionaliPublic.do?evn_default=EVENTO&check_params=1&lang=IT&aa=2026&jaf_currentWFID=main" title="Internazionalizzazione" class="linkFunction">
+		              <div class="polij-function-text-container" >
+		                    <div class="polij-function-icon"><i class="fa fa-fw "></i></div>
+		                    <div  class="polij-function-text">Internazionalizzazione</div>
+		             </div>
+		       </a></td></tr>
+		
+	
+	
+</TABLE>
+
+
+	
+<!-- CARRELLO ORARIO  -->
+
+
+<TABLE class="TableCommand"  style='border-spacing:0; border-collapse:collapse;'><TR><TH class="HeadCommand"><div style="float:left">Orario Personalizzato</div><div style="float:right"><a id="idHelpOrario" href="/manifesti/manifesti/controller/ManifestoPublic.do?evn_gointrocarrello=evento&aa=2026&k_cf=-1&k_corso_la=-1&ac_ins=0&lang=IT&tipoCorso=ALL_TIPO_CORSO&semestre=ALL_SEMESTRI&tipoInsegnamento=ALL_TIPO_INSEGNAMENTO&sede=ALL_SEDI&aree=-1&codDescr=099322"><img src="/manifesti/images/help.png" border="0"></a></div></TH></TR>
+	
+	
+	
+		
+		
+	       
+		   
+		<tr><td class="BodyFunction"><a id="info_disable_cart" class="linkFunction inattivo">
+	             Il tuo orario personalizzato è disabilitato
+	       </a></td></tr>
+		
+		
+		       
+		       
+			   
+		<tr><td class="BodyFunction"><a id="enable_cart" href="/manifesti/manifesti/controller/ManifestoPublic.do?evn_gointrocarrello=evento&aa=2026&k_cf=-1&k_corso_la=-1&ac_ins=0&lang=IT&tipoCorso=ALL_TIPO_CORSO&semestre=ALL_SEMESTRI&tipoInsegnamento=ALL_TIPO_INSEGNAMENTO&sede=ALL_SEDI&aree=-1&codDescr=099322&jaf_currentWFID=main" title="Abilita" class="linkFunction">
+		              <div class="polij-function-text-container" >
+		                    <div class="polij-function-icon"><i class="fa fa-fw "></i></div>
+		                    <div  class="polij-function-text">Abilita</div>
+		             </div>
+		       </a></td></tr>
+	 
+</TABLE>
+			
+
+	<style type="text/css">
+
+		
+		.orario_td {
+			display: none;
+		}
+		
+
+		.popup_msg{
+			position: absolute;
+			z-index: 10;
+			width: 172px;
+			height: 102px;
+			text-align: left;
+			color: #000000;
+			font: 0.7em Verdana, Arial;
+			font-weight: bold;
+			background: url(/manifesti/images/cart/bg_image.gif) bottom right no-repeat;
+			display: none;
+		}
+		
+	</style>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			
+			bindLeftbarPerCarrello();
+			
+			$('#print1').click(function() {
+				$('#orarioSinottico').printArea();
+			});
+	
+			$('#print2').click(function() {
+				$('#orarioTestuale').printArea();
+			});		
+	
+		});
+	</script>
+	
+	<div id="idDialogHelpOrario" title="Orario didattico" style="display:none">
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+	ol.listaaa li {padding-bottom: 4px; padding-top: 4px; vertical-align:middle;};
+</style>
+<blockquote>
+	Con questa funzione puoi costruire il tuo calendario settimanale delle lezioni, personalizzato sulla base dei corsi che intendi seguire.<br /> <strong><span style="text-decoration: underline;">Attenzione: l'Orario Personalizzato non sostituisce la presentazione del piano degli studi!</span></strong> E' uno strumento informale, che ti può aiutare a gestire al meglio l'organizzazione della frequenza alle lezioni prima della presentazione del piano studi.<br />Dopo aver presentato piano ti raccomandiamo di utilizzare il servizio <strong>Orario delle lezioni</strong> presente nel tuo elenco dei Servizi Online. <br /><br /> Per creare il calendario personalizzato segui queste istruzioni:
+	<ol class="listaaa">		
+	   
+			<li>Clicca sul link "Abilita" per procedere. Ti verrà chiesto il cognome e nome per determinare il tuo scaglione alfabetico.</li>
+				
+		<li>
+			Per aggiungere o togliere insegnamenti dal tuo Orario Personalizzato, utilizza le iconcine che trovi in corrispondenza degli insegnamenti:
+			<ul style="margin-left:1.5em; padding-left:1.5em; margin-top:0.3em">
+				<li style="list-style:none"><img src="/manifesti/images/cart/cart_put.png" border="0" style="float:left; margin-right:1em">aggiunta dell'insegnamento</li>
+		        <li style="list-style:none"><img src="/manifesti/images/cart/cart_remove.png" border="0" style="float:left; margin-right:1em">rimozione dell'insegnamento</li>
+		        <li style="list-style:none"><img src="/manifesti/images/cart/zoom.png" border="0" style="float:left; margin-right:1em; margin-bottom:1.5em">selezione della sezione del laboratorio di Architettura<br/>(N.B: la sezione effettiva in cui si dovrà seguire la didattica verrà determinata dopo la presentazione dei Piani di Studio)</li>
+			</ul> 
+		</li>
+		<li>
+			Nella barra laterale a sinistra è indicato il numero degli insegnamenti inseriti nell'Orario.<br>Sono inoltre presenti questi comandi:
+			   <ul style="margin-left:1.5em; padding-left:1.5em; margin-top:0.3em">
+			   	  <li style="list-style:none"><img src="/manifesti/images/cart/cart_go.png" border="0" style="float:left; margin-right:1em">Visualizza orario: permette di visualizzare l'orario sinottico settimanale</li>
+			   	  <li style="list-style:none"><img src="/manifesti/images/cart/cart_disabled.png" border="0" style="float:left; margin-right:1em">Elimina orario: cancella le selezioni effettuate</li>
+			   </ul>	
+		</li>
+		
+	</ol>
+	
+	Al termine dell'inserimento, puoi stampare il calendario che hai costruito.
+	</blockquote>
+	</div>
+	
+
+<!-- VINCOLI -->
+		
+
+
+<!-- RICERCHE -->
+<TABLE class="TableCommand"  style='border-spacing:0; border-collapse:collapse;'><TR><TH class="HeadCommand">Ricerche</TH></TR>
+
+		
+	
+		
+	    	
+       	
+	   
+ 	<tr><td class="BodyFunction"><a href="/manifesti/manifesti/controller/ricerche/RicercaPerDocentiPublic.do?evn_default=EVENTO&aa=2026&lang=IT&jaf_currentWFID=main" title="Cerca Docenti" class="linkFunction">
+              <div class="polij-function-text-container" >
+                    <div class="polij-function-icon"><i class="fa fa-fw "></i></div>
+                    <div class="polij-function-text">Cerca Docenti</div>
+             </div>
+       	</a></td></tr>	
+ 	
+	
+
+	
+		
+	   					 	   
+       
+	   
+ 	<tr><td class="BodyFunction"><a class="linkFunction inattivo">
+              <div class="polij-function-text-container" >
+                    <div class="polij-function-icon"><i class="fa fa-fw fa-chevron-right"></i></div>
+                    <div class="polij-function-text">Cerca Insegnamenti</div>
+             </div>
+       </a></td></tr>	
+ 	
+	
+		
+	   					 	   
+       
+	   
+ 	<tr><td class="BodyFunction"><a href="/manifesti/manifesti/controller/ricerche/RicercaPerInsegnamentoVOPublic.do?evn_default=EVENTO&aa=2026&lang=IT&jaf_currentWFID=main" title="Cerca insegnamenti degli Ordinamenti precedenti al D.M.509" class="linkFunction">
+              <div class="polij-function-text-container" >
+                    <div class="polij-function-icon"><i class="fa fa-fw "></i></div>
+                    <div class="polij-function-text">Cerca insegnamenti degli Ordinamenti precedenti al D.M.509</div>
+             </div>
+       </a></td></tr>
+	
+	
+		
+	   					 	   
+       
+	   
+ 	<tr><td class="BodyFunction"><a href="/manifesti/manifesti/controller/ricerche/RicercaInsegnamentiErogatiInLinguaInglesePublic.do?evn_default=EVENTO&aa=2026&lang=IT&jaf_currentWFID=main" title="Erogati in lingua Inglese" class="linkFunction">
+              <div class="polij-function-text-container" >
+                    <div class="polij-function-icon"><i class="fa fa-fw "></i></div>
+                    <div class="polij-function-text">Erogati in lingua Inglese</div>
+             </div>
+       </a></td></tr>
+ 	
+</TABLE>
+
+
+
+
+
+
+
+			
+			
+				<br>
+				<TABLE cellspacing="0" cellpadding="3">   <TBODY><TR>        <TD class="TitleInfoCard">Legenda</TD>   </TR></TBODY></TABLE><TABLE width="100%" class="BoxInfoCard" cellspacing="0" cellpadding="5">  <TBODY>   </TBODY></TABLE>
+			
+			
+	</td>
+	
+		
+	<td style="width:80%;" class="CenterBar">
+		
+		
+		
+		 
+
+
+
+
+
+<div class="PageTitleContainer">
+ 	<div class="PageTitle">Cerca Insegnamenti</div>
+ 	
+ 	<div class="PageTitleLang">
+ 		
+	 		<a href="/manifesti/manifesti/controller/ricerche/RicercaPerInsegnamentoPublic.do?evn_default=EVENTO&aa=2026&k_cf=-1&k_corso_la=-1&ac_ins=0&lang=EN&tipoCorso=ALL_TIPO_CORSO&semestre=ALL_SEMESTRI&tipoInsegnamento=ALL_TIPO_INSEGNAMENTO&sede=ALL_SEDI&aree=-1&codDescr=099322&insegn_ricerca=099322" title="English" id="link_cambia_lingua">
+	 			<img src="//webcommons.test.polimi.it/webcommons/assets/english.gif" alt="English" title="English">
+	 		</a>
+	 	
+ 	</div>
+ 	
+ </div>	
+		
+		<FORM action="/manifesti/manifesti/controller/ricerche/RicercaPerInsegnamentoPublic.do?jaf_currentWFID=main" method="POST">
+		
+		
+		
+		<table style="border-spacing: 0;border-collapse: collapse;" class="BodyInfoCard">
+<tr>
+
+<td class="TitleInfoCard">Parametri di Ricerca <span id="apri_param_ric" class="polij_tasto_apri" style="display: inline;">(<a href='#'>Altre opzioni di ricerca >></a>)</span><span id="chiudi_param_ric" class="polij_tasto_chiudi" style="display: inline;">(<a href='#'>Nascondi opzioni di ricerca <<</a>)</span></td>
+</TR>
+</TABLE>
+<TABLE  class="BoxInfoCard" style='border-spacing: 0;border-collapse: collapse;'>
+
+		
+			<tr>
+				<td colspan="1" rowspan="1" style="width: 16%" class="ElementInfoCard1 jaf-card-element">
+					Anno Accademico
+				</td>
+				
+				<td colspan="3" rowspan="1" class="ElementInfoCard2 jaf-card-element">
+					<select style="width:15%" name="aa" id="idAaRicercaInsegnamenti">
+						
+									<option value="2026" SELECTED>2026/2027</option>
+								
+									<option value="2025" >2025/2026</option>
+								
+									<option value="2024" >2024/2025</option>
+								
+									<option value="2023" >2023/2024</option>
+								
+									<option value="2022" >2022/2023</option>
+								
+									<option value="2021" >2021/2022</option>
+								
+					</select>
+				</td>
+			</tr>
+			
+			<tr class="nascondi_riga">
+				<td class="ElementInfoCard1" width="16%">
+					Scuola
+				</td>
+			
+				<td class="ElementInfoCard2" colspan="3">
+					<select name="k_cf" style="width:100%">
+					
+							  <option value="-1" SELECTED>Qualunque Scuola</option>							
+						
+							  <option value="222" >Scuola di Architettura Urbanistica Ingegneria delle Costruzioni</option>							
+						
+							  <option value="19" >Scuola del Design</option>							
+						
+							  <option value="225" >Scuola di Ingegneria Industriale e dell'Informazione</option>							
+						
+							  <option value="1" >Scuola di Ingegneria Civile, Ambientale e Territoriale</option>							
+						
+							  <option value="233" > Scuola di Specializzazione</option>							
+						
+
+					</select>	
+				</td>
+			</tr>
+			
+			<tr class="nascondi_riga">
+				<td class="ElementInfoCard1" width="16%">
+					Sede
+				</td>
+			
+				<td class="ElementInfoCard2" width="34%">
+					<select name="sede" style="width:100%">
+					
+							  <option value="ALL_SEDI" SELECTED>
+							       Qualunque sede
+							  </option>							
+						
+							  <option value="CO" >
+							       CO - COMO
+							  </option>							
+						
+							  <option value="CR" >
+							       CR - CREMONA
+							  </option>							
+						
+							  <option value="LC" >
+							       LC - LECCO
+							  </option>							
+						
+							  <option value="MN" >
+							       MN - MANTOVA
+							  </option>							
+						
+							  <option value="BV" >
+							       BV - MILANO BOVISA
+							  </option>							
+						
+							  <option value="MI" >
+							       MI - MILANO LEONARDO
+							  </option>							
+						
+							  <option value="PC" >
+							       PC - PIACENZA
+							  </option>							
+						
+
+					</select>	
+				</td>
+
+				<td class="ElementInfoCard1" width="16%">
+					Tipo Corso
+				</td>
+				
+				<td class="ElementInfoCard2" width="34%">
+					<select name="tipoCorso" style="width:100%">
+					
+							
+							
+							
+							<option value="ALL_TIPO_CORSO" SELECTED>
+								
+								Qualunque tipo
+							</option>
+						
+							
+							
+							
+							<option value="1" >
+								
+									1 - 
+								
+								LAUREA DI PRIMO LIVELLO
+							</option>
+						
+							
+							
+							
+							<option value="2" >
+								
+									2 - 
+								
+								LAUREA SPECIALISTICA
+							</option>
+						
+							
+							
+							
+							<option value="3" >
+								
+									3 - 
+								
+								LAUREA A CICLO UNICO
+							</option>
+						
+							
+							
+							
+							<option value="A" >
+								
+									A - 
+								
+								CORSO DI TIROCINIO FORMATIVO ATTIVO
+							</option>
+						
+							
+							
+							
+							<option value="L" >
+								
+									L - 
+								
+								LAUREA
+							</option>
+						
+							
+							
+							
+							<option value="M" >
+								
+									M - 
+								
+								LAUREA MAGISTRALE
+							</option>
+						
+							
+							
+							
+							<option value="U" >
+								
+									U - 
+								
+								SCUOLA DI SPECIALIZZAZIONE
+							</option>
+						
+					</select>
+				</td>
+			</tr>
+			
+			<tr class="nascondi_riga">
+				<td class="ElementInfoCard1" width="16%">
+					Anno Corso
+				</td>
+				
+				<td class="ElementInfoCard2" width="34%">
+					<select name="ac_ins" style="width:100%">
+						<option value="0" SELECTED>Qualunque anno di corso</option>
+						
+								<option value="1" >1° anno</option>
+							
+								<option value="2" >2° anno</option>
+							
+								<option value="3" >3° anno</option>
+							
+								<option value="4" >4° anno</option>
+							
+								<option value="5" >5° anno</option>
+							
+					</select>
+				</td>
+
+				<td class="ElementInfoCard1" width="16%">
+					Periodo
+				</td>
+				
+				<td class="ElementInfoCard2" width="34%">
+					<select name="semestre" style="width:100%">
+						
+									<option value="ALL_SEMESTRI" SELECTED>
+										Qualunque semestre
+									</option>
+								
+									<option value="1" >
+										1° semestre
+									</option>
+								
+									<option value="2" >
+										2° semestre
+									</option>
+								
+									<option value="A" >
+										Annuale
+									</option>
+								
+									<option value="4" >
+										1° trimestre
+									</option>
+								
+									<option value="5" >
+										2° trimestre
+									</option>
+								
+									<option value="6" >
+										3° trimestre
+									</option>
+								
+					</select>
+				</td>
+			</tr>
+			
+			<tr class="nascondi_riga">
+				<td class="ElementInfoCard1" width="16%">
+					Area Didattica
+				</td>
+				
+				<td class="ElementInfoCard2" width="34%">
+					<select name="aree" style="width:100%">
+						
+									<option value="-1" SELECTED>
+										Qualunque Area Didattica
+									</option>
+								
+									<option value="8" >
+										Ingegneria civile ed Architettura
+									</option>
+								
+									<option value="9" >
+										Ingegneria industriale e dell'informazione
+									</option>
+								
+									<option value="7" >
+										Scienze agrarie e veterinarie
+									</option>
+								
+									<option value="5" >
+										Scienze biologiche
+									</option>
+								
+									<option value="3" >
+										Scienze chimiche
+									</option>
+								
+									<option value="10" >
+										Scienze dell'antichità, filologico-letterarie e storico-artistiche
+									</option>
+								
+									<option value="4" >
+										Scienze della Terra
+									</option>
+								
+									<option value="13" >
+										Scienze economiche e statistiche
+									</option>
+								
+									<option value="2" >
+										Scienze fisiche
+									</option>
+								
+									<option value="12" >
+										Scienze giuridiche
+									</option>
+								
+									<option value="1" >
+										Scienze matematiche e informatiche
+									</option>
+								
+									<option value="6" >
+										Scienze mediche
+									</option>
+								
+									<option value="14" >
+										Scienze politiche e sociali
+									</option>
+								
+									<option value="11" >
+										Scienze storiche, filosofiche, pedagogiche e psicologiche
+									</option>
+								
+					</select>
+				</td>
+			
+				<td class="ElementInfoCard1" width="16%">
+					Tipo Insegnamento
+				</td>
+				
+				<td class="ElementInfoCard2" width="34%">
+					<select name="tipoInsegnamento" style="width:100%">
+						
+									<option value="ALL_TIPO_INSEGNAMENTO" SELECTED>
+										Qualunque tipo
+									</option>
+								
+									<option value="I" >
+										corso integrato
+									</option>
+								
+									<option value="L" >
+										laboratorio
+									</option>
+								
+									<option value="M" >
+										monodisciplinare
+									</option>
+								
+									<option value="S" >
+										modulo di corso strutturato
+									</option>
+								
+									<option value="T" >
+										tirocinio
+									</option>
+								
+									<option value="V" >
+										prova finale
+									</option>
+								
+					</select>
+				</td>
+			</tr>
+			
+			<tr>
+				<td colspan="1" rowspan="1" style="width: 16%" class="ElementInfoCard1 jaf-card-element">
+					  Codice/Descrizione Insegnamento <br>
+					  <i>
+					 		(minimo 3 caratteri)
+					  </i>
+				</td>
+				
+				<td colspan="3" rowspan="1" class="ElementInfoCard2 jaf-card-element">
+					<input type="text" value="099322" name="insegn_ricerca" style="width:100%">
+				</td>
+			</tr>
+			
+			<tr>
+			    
+				<td colspan="4" rowspan="1" style="width: 16%" class="ElementInfoCard2 jaf-card-element">
+					<input id="idBtnRicercaInsegnamenti" type="submit" value="Esegui Ricerca" name="evn_default">
+				</td>
+								
+			</tr>
+			
+			<input type="hidden" name="lang" value="IT"/>
+			
+		</TABLE>
+
+		</FORM>
+		
+<script type="text/javascript">
+	$( function() {
+		$("#chiudi_param_ric").click(function () {
+ 			$(".nascondi_riga").hide();
+ 			$("#apri_param_ric").show();
+ 			$("#chiudi_param_ric").hide();
+ 			return false;});
+		$("#apri_param_ric").click(function () {
+ 			$(".nascondi_riga").show();
+ 			$("#apri_param_ric").hide();
+			$("#chiudi_param_ric").show();
+ 			return false;});
+		$("#apri_param_ric").hide();
+		
+		$("#idAaRicercaInsegnamenti").change(function(){			
+			$("#idBtnRicercaInsegnamenti").click();
+		});
+	});
+</script>
+
+<!-- DISPLAY DEI RISULTATI -->
+		
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+		
+		
+			<TABLE  class="BoxInfoCard SimpleCardOut" style='border-spacing: 0;border-collapse: collapse;'>
+
+				<tr>
+					<td colspan="1" rowspan="1" class="ElementSimpleCard2 jaf-card-element">
+						 Trovati <b>9</b> insegnamenti che corrispondono ai parametri di ricerca impostati
+					</td>
+				</tr>
+			</TABLE>
+
+			<br>
+		
+		
+			
+										
+    		         <TABLE cellspacing="0" cellpadding="3">
+    		            <TBODY><TR>
+    		                <TD class="TitleInfoCard"> Risultati della Ricerca</TD>
+    		            </TR></TBODY>
+    		         </TABLE>
+    	
+    	             <TABLE width="100%" class="TableDati" cellspacing="0" cellpadding="5">
+    				   <TBODY>
+					
+							<TR>
+								<TD class="ElementSimpleCard1" colspan="7">
+									Corso di Studi <i>
+									<a target="_blank"
+										href="/manifesti/manifesti/controller/ManifestoPublic.do?evn_default=evento&aa=2026&k_corso_la=358&lang=IT">									
+										 
+											Ing. Ind-Inf (1 liv.)(ord. 270) - MI (358) Ingegneria Informatica
+										
+									</a>
+									</i>
+								</TD>
+							</TR>						
+					
+							<TR style="border-top: thin solid #ccc;">
+								<TH class="HeadColumn1" width="12%" style="text-align:center">Tipo</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Codice</TH>
+								<TH class="HeadColumn1" width="48%" style="text-align:center">Denominazione Insegnamento</div></TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Codice Piano di Studio preventivamente approvato</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Anno Corso</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Periodo</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Dettaglio</TH>
+							</TR>
+						
+								<TR>									
+									<TD class="ElementInfoCard2" width="12%">
+										<div style="text-align:center;">
+											
+												Monodisciplinare
+												
+										</div>
+									</TD>
+									
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">
+											<b>099322</b>
+										</div>
+									</TD>
+																	
+									<TD class="ElementInfoCard2"  width="48%">
+											
+												SEGNALI PER LE COMUNICAZIONI
+											
+									</TD>									
+													
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">I3I</div>
+									</TD>				
+																
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">3</div>
+									</TD>																
+																	
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">2° sem</div>
+									</TD>
+									
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">	
+										    									
+												<a href="/manifesti/manifesti/controller/ManifestoPublic.do?EVN_DETTAGLIO_RIGA_MANIFESTO=evento&k_corso_la=358&k_indir=I3I&idItemOfferta=184457&idGruppo=5817&idRiga=352881&codDescr=099322&semestre=2&aa=2026&lang=IT&jaf_currentWFID=main" target="_blank"> 
+													<img border="0" src="/manifesti/images/manifesto.gif" alt="link al dettaglio dell'insegnamento" height="20"/>
+												</a>
+											
+										</div>
+									</TD>
+									
+								</TR>
+					
+								<TR>									
+									<TD class="ElementInfoCard1" width="12%">
+										<div style="text-align:center;">
+											
+												Monodisciplinare
+												
+										</div>
+									</TD>
+									
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">
+											<b>099322</b>
+										</div>
+									</TD>
+																	
+									<TD class="ElementInfoCard1"  width="48%">
+											
+												SEGNALI PER LE COMUNICAZIONI
+											
+									</TD>									
+													
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">I3C</div>
+									</TD>				
+																
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">3</div>
+									</TD>																
+																	
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">2° sem</div>
+									</TD>
+									
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">	
+										    									
+												<a href="/manifesti/manifesti/controller/ManifestoPublic.do?EVN_DETTAGLIO_RIGA_MANIFESTO=evento&k_corso_la=358&k_indir=I3C&idItemOfferta=185473&idGruppo=5935&idRiga=356146&codDescr=099322&semestre=2&aa=2026&lang=IT&jaf_currentWFID=main" target="_blank"> 
+													<img border="0" src="/manifesti/images/manifesto.gif" alt="link al dettaglio dell'insegnamento" height="20"/>
+												</a>
+											
+										</div>
+									</TD>
+									
+								</TR>
+					
+						
+						<TR>
+							<TD colspan="7" class="ElementInfoCard2">
+								&nbsp;
+							</TD>
+						</TR>
+						
+							<TR>
+								<TD class="ElementSimpleCard1" colspan="7">
+									Corso di Studi <i>
+									<a target="_blank"
+										href="/manifesti/manifesti/controller/ManifestoPublic.do?evn_default=evento&aa=2026&k_corso_la=365&lang=IT">									
+										 
+											Ing. Ind-Inf (1 liv.)(ord. 270) - MI (365) Ingegneria Matematica
+										
+									</a>
+									</i>
+								</TD>
+							</TR>						
+					
+							<TR style="border-top: thin solid #ccc;">
+								<TH class="HeadColumn1" width="12%" style="text-align:center">Tipo</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Codice</TH>
+								<TH class="HeadColumn1" width="48%" style="text-align:center">Denominazione Insegnamento</div></TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Codice Piano di Studio preventivamente approvato</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Anno Corso</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Periodo</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Dettaglio</TH>
+							</TR>
+						
+								<TR>									
+									<TD class="ElementInfoCard2" width="12%">
+										<div style="text-align:center;">
+											
+												Monodisciplinare
+												
+										</div>
+									</TD>
+									
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">
+											<b>099322</b>
+										</div>
+									</TD>
+																	
+									<TD class="ElementInfoCard2"  width="48%">
+											
+												SEGNALI PER LE COMUNICAZIONI
+											
+									</TD>									
+													
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">MTM</div>
+									</TD>				
+																
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">3</div>
+									</TD>																
+																	
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">2° sem</div>
+									</TD>
+									
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">	
+										    									
+												<a href="/manifesti/manifesti/controller/ManifestoPublic.do?EVN_DETTAGLIO_RIGA_MANIFESTO=evento&k_corso_la=365&k_indir=MTM&idItemOfferta=185041&idGruppo=5896&idRiga=355003&codDescr=099322&semestre=2&aa=2026&lang=IT&jaf_currentWFID=main" target="_blank"> 
+													<img border="0" src="/manifesti/images/manifesto.gif" alt="link al dettaglio dell'insegnamento" height="20"/>
+												</a>
+											
+										</div>
+									</TD>
+									
+								</TR>
+					
+						
+						<TR>
+							<TD colspan="7" class="ElementInfoCard2">
+								&nbsp;
+							</TD>
+						</TR>
+						
+							<TR>
+								<TD class="ElementSimpleCard1" colspan="7">
+									Corso di Studi <i>
+									<a target="_blank"
+										href="/manifesti/manifesti/controller/ManifestoPublic.do?evn_default=evento&aa=2026&k_corso_la=531&lang=IT">									
+										 
+											Ing. Ind-Inf (1 liv.)(ord. 96/23) - MI (531) Ingegneria Informatica
+										
+									</a>
+									</i>
+								</TD>
+							</TR>						
+					
+							<TR style="border-top: thin solid #ccc;">
+								<TH class="HeadColumn1" width="12%" style="text-align:center">Tipo</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Codice</TH>
+								<TH class="HeadColumn1" width="48%" style="text-align:center">Denominazione Insegnamento</div></TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Codice Piano di Studio preventivamente approvato</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Anno Corso</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Periodo</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Dettaglio</TH>
+							</TR>
+						
+								<TR>									
+									<TD class="ElementInfoCard2" width="12%">
+										<div style="text-align:center;">
+											
+												Monodisciplinare
+												
+										</div>
+									</TD>
+									
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">
+											<b>099322</b>
+										</div>
+									</TD>
+																	
+									<TD class="ElementInfoCard2"  width="48%">
+											
+												SEGNALI PER LE COMUNICAZIONI
+											
+									</TD>									
+													
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">IT1</div>
+									</TD>				
+																
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">2</div>
+									</TD>																
+																	
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">2° sem</div>
+									</TD>
+									
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">	
+										    									
+												<a href="/manifesti/manifesti/controller/ManifestoPublic.do?EVN_DETTAGLIO_RIGA_MANIFESTO=evento&k_corso_la=531&k_indir=IT1&idItemOfferta=181364&idRiga=344065&codDescr=099322&semestre=2&aa=2026&lang=IT&jaf_currentWFID=main" target="_blank"> 
+													<img border="0" src="/manifesti/images/manifesto.gif" alt="link al dettaglio dell'insegnamento" height="20"/>
+												</a>
+											
+										</div>
+									</TD>
+									
+								</TR>
+					
+								<TR>									
+									<TD class="ElementInfoCard1" width="12%">
+										<div style="text-align:center;">
+											
+												Monodisciplinare
+												
+										</div>
+									</TD>
+									
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">
+											<b>099322</b>
+										</div>
+									</TD>
+																	
+									<TD class="ElementInfoCard1"  width="48%">
+											
+												SEGNALI PER LE COMUNICAZIONI
+											
+									</TD>									
+													
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">I3C</div>
+									</TD>				
+																
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">3</div>
+									</TD>																
+																	
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">2° sem</div>
+									</TD>
+									
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">	
+										    									
+												<a href="/manifesti/manifesti/controller/ManifestoPublic.do?EVN_DETTAGLIO_RIGA_MANIFESTO=evento&k_corso_la=531&k_indir=I3C&idItemOfferta=181639&idGruppo=5675&idRiga=344886&codDescr=099322&semestre=2&aa=2026&lang=IT&jaf_currentWFID=main" target="_blank"> 
+													<img border="0" src="/manifesti/images/manifesto.gif" alt="link al dettaglio dell'insegnamento" height="20"/>
+												</a>
+											
+										</div>
+									</TD>
+									
+								</TR>
+					
+								<TR>									
+									<TD class="ElementInfoCard2" width="12%">
+										<div style="text-align:center;">
+											
+												Monodisciplinare
+												
+										</div>
+									</TD>
+									
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">
+											<b>099322</b>
+										</div>
+									</TD>
+																	
+									<TD class="ElementInfoCard2"  width="48%">
+											
+												SEGNALI PER LE COMUNICAZIONI
+											
+									</TD>									
+													
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">I3I</div>
+									</TD>				
+																
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">3</div>
+									</TD>																
+																	
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">2° sem</div>
+									</TD>
+									
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">	
+										    									
+												<a href="/manifesti/manifesti/controller/ManifestoPublic.do?EVN_DETTAGLIO_RIGA_MANIFESTO=evento&k_corso_la=531&k_indir=I3I&idItemOfferta=182534&idGruppo=5734&idRiga=347320&codDescr=099322&semestre=2&aa=2026&lang=IT&jaf_currentWFID=main" target="_blank"> 
+													<img border="0" src="/manifesti/images/manifesto.gif" alt="link al dettaglio dell'insegnamento" height="20"/>
+												</a>
+											
+										</div>
+									</TD>
+									
+								</TR>
+					
+						
+						<TR>
+							<TD colspan="7" class="ElementInfoCard2">
+								&nbsp;
+							</TD>
+						</TR>
+						
+							<TR>
+								<TD class="ElementSimpleCard1" colspan="7">
+									Corso di Studi <i>
+									<a target="_blank"
+										href="/manifesti/manifesti/controller/ManifestoPublic.do?evn_default=evento&aa=2026&k_corso_la=532&lang=IT">									
+										 
+											Ing. Ind-Inf (1 liv.)(ord. 96/23) - MI (532) Ingegneria Matematica
+										
+									</a>
+									</i>
+								</TD>
+							</TR>						
+					
+							<TR style="border-top: thin solid #ccc;">
+								<TH class="HeadColumn1" width="12%" style="text-align:center">Tipo</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Codice</TH>
+								<TH class="HeadColumn1" width="48%" style="text-align:center">Denominazione Insegnamento</div></TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Codice Piano di Studio preventivamente approvato</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Anno Corso</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Periodo</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Dettaglio</TH>
+							</TR>
+						
+								<TR>									
+									<TD class="ElementInfoCard2" width="12%">
+										<div style="text-align:center;">
+											
+												Monodisciplinare
+												
+										</div>
+									</TD>
+									
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">
+											<b>099322</b>
+										</div>
+									</TD>
+																	
+									<TD class="ElementInfoCard2"  width="48%">
+											
+												SEGNALI PER LE COMUNICAZIONI
+											
+									</TD>									
+													
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">MTM</div>
+									</TD>				
+																
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">3</div>
+									</TD>																
+																	
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">2° sem</div>
+									</TD>
+									
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">	
+										    									
+												<a href="/manifesti/manifesti/controller/ManifestoPublic.do?EVN_DETTAGLIO_RIGA_MANIFESTO=evento&k_corso_la=532&k_indir=MTM&idItemOfferta=182558&idGruppo=5736&idRiga=347357&codDescr=099322&semestre=2&aa=2026&lang=IT&jaf_currentWFID=main" target="_blank"> 
+													<img border="0" src="/manifesti/images/manifesto.gif" alt="link al dettaglio dell'insegnamento" height="20"/>
+												</a>
+											
+										</div>
+									</TD>
+									
+								</TR>
+					
+						
+						<TR>
+							<TD colspan="7" class="ElementInfoCard2">
+								&nbsp;
+							</TD>
+						</TR>
+						
+							<TR>
+								<TD class="ElementSimpleCard1" colspan="7">
+									Corso di Studi <i>
+									<a target="_blank"
+										href="/manifesti/manifesti/controller/ManifestoPublic.do?evn_default=evento&aa=2026&k_corso_la=542&lang=IT">									
+										 
+											Ing. Ind-Inf (Mag.)(ord. 96/23) - MI (542) Computer Science and Engineering
+										
+									</a>
+									</i>
+								</TD>
+							</TR>						
+					
+							<TR style="border-top: thin solid #ccc;">
+								<TH class="HeadColumn1" width="12%" style="text-align:center">Tipo</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Codice</TH>
+								<TH class="HeadColumn1" width="48%" style="text-align:center">Denominazione Insegnamento</div></TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Codice Piano di Studio preventivamente approvato</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Anno Corso</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Periodo</TH>
+								<TH class="HeadColumn1" width="8%" style="text-align:center">Dettaglio</TH>
+							</TR>
+						
+								<TR>									
+									<TD class="ElementInfoCard2" width="12%">
+										<div style="text-align:center;">
+											
+												Monodisciplinare
+												
+										</div>
+									</TD>
+									
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">
+											<b>099322</b>
+										</div>
+									</TD>
+																	
+									<TD class="ElementInfoCard2"  width="48%">
+											
+												SEGNALI PER LE COMUNICAZIONI
+											
+									</TD>									
+													
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">T2A</div>
+									</TD>				
+																
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">1</div>
+									</TD>																
+																	
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">2° sem</div>
+									</TD>
+									
+									<TD class="ElementInfoCard2" width="8%">
+										<div style="text-align:center;">	
+										    									
+												<a href="/manifesti/manifesti/controller/ManifestoPublic.do?EVN_DETTAGLIO_RIGA_MANIFESTO=evento&k_corso_la=542&k_indir=T2A&idItemOfferta=182799&idGruppo=5598&idRiga=342468&codDescr=099322&semestre=2&aa=2026&lang=IT&jaf_currentWFID=main" target="_blank"> 
+													<img border="0" src="/manifesti/images/manifesto.gif" alt="link al dettaglio dell'insegnamento" height="20"/>
+												</a>
+											
+										</div>
+									</TD>
+									
+								</TR>
+					
+								<TR>									
+									<TD class="ElementInfoCard1" width="12%">
+										<div style="text-align:center;">
+											
+												Monodisciplinare
+												
+										</div>
+									</TD>
+									
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">
+											<b>099322</b>
+										</div>
+									</TD>
+																	
+									<TD class="ElementInfoCard1"  width="48%">
+											
+												SEGNALI PER LE COMUNICAZIONI
+											
+									</TD>									
+													
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">T2A</div>
+									</TD>				
+																
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">2</div>
+									</TD>																
+																	
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">2° sem</div>
+									</TD>
+									
+									<TD class="ElementInfoCard1" width="8%">
+										<div style="text-align:center;">	
+										    									
+												<a href="/manifesti/manifesti/controller/ManifestoPublic.do?EVN_DETTAGLIO_RIGA_MANIFESTO=evento&k_corso_la=542&k_indir=T2A&idItemOfferta=182831&idGruppo=5598&idRiga=342468&codDescr=099322&semestre=2&aa=2026&lang=IT&jaf_currentWFID=main" target="_blank"> 
+													<img border="0" src="/manifesti/images/manifesto.gif" alt="link al dettaglio dell'insegnamento" height="20"/>
+												</a>
+											
+										</div>
+									</TD>
+									
+								</TR>
+					
+					  </TBODY>
+					 </TABLE>
+    				   
+					
+				
+				
+	</td>
+
+</tr></table>
+			
+
+
+<table class="polifooter">
+	<tfoot class="tfoot-tablePage">
+    	<tr>
+    		<td >
+    			<div class="jaf-text-align-left">
+	   				 manifesti v. 3.15.1 / 3.15.1
+	   			</div>
+    		</td>
+    		<td>
+    			<div class="jaf-text-align-center">
+					Area Servizi ICT
+    			</div>
+    		</td>
+    		<td>
+    			<div class="jaf-text-align-right" id="div-tfoot-tablePage-centerBar">
+    				19/10/2026
+    			</div>
+    		</td>
+	   	</tr>
+    </tfoot>
+</table>
+		</div>
+	</body>
+</html>

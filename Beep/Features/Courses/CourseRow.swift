@@ -53,6 +53,14 @@ struct CourseMetaLine: View {
                     .padding(.vertical, 2)
                     .background(course.color.opacity(0.14), in: .capsule)
             }
+            if course.isAcademicYear, let period = course.semester.shortLabel {
+                Text(period)
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(.quaternary, in: .capsule)
+            }
             if let code = course.code {
                 Text(code)
                     .font(.caption.monospaced())
@@ -67,5 +75,17 @@ struct CourseMetaLine: View {
         }
         .lineLimit(1)
         .accessibilityElement(children: .combine)
+    }
+}
+
+extension Semester {
+    /// Tag text for list rows; nil while unknown (no tag rather than a question mark).
+    var shortLabel: LocalizedStringKey? {
+        switch self {
+        case .unknown: nil
+        case .first: "1st sem"
+        case .second: "2nd sem"
+        case .annual: "Annual"
+        }
     }
 }

@@ -31,6 +31,13 @@ final class Course {
     /// Files first seen after `lastSeenAt`; maintained by the Indexer and reset when the course is opened,
     /// so list rows and the home header never have to walk the files relationship.
     var newFilesCount: Int = 0
+    /// Teaching period (`semester`), looked up in the Polimi catalogue by `SemesterResolver`
+    /// unless `semesterIsManual`.
+    var semesterRaw: Int = 0
+    /// Last catalogue lookup, nil when never done; the resolver decides when to look again.
+    var semesterCheckedAt: Date?
+    /// Chosen by the user from the context menu: the catalogue never overwrites it.
+    var semesterIsManual: Bool = false
 
     @Relationship(deleteRule: .cascade, inverse: \CourseSection.course) var sections: [CourseSection] = []
     @Relationship(deleteRule: .cascade, inverse: \FileItem.course) var files: [FileItem] = []
@@ -62,6 +69,11 @@ final class Course {
 
     var isAcademicYear: Bool { AcademicYear.isAcademicYear(categoryName) }
     var isCurrentYear: Bool { AcademicYear.isCurrent(categoryName) }
+
+    var semester: Semester {
+        get { Semester(rawValue: semesterRaw) ?? .unknown }
+        set { semesterRaw = newValue.rawValue }
+    }
 
     /// Where this course's downloads live, relative to the download root: the course folder plus
     /// one sub-folder per academic year ("Data Bases 2/2026-27"), so two editions never mix.

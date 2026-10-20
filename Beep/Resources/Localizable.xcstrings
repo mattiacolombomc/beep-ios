@@ -838,6 +838,46 @@
         }
       }
     },
+    "1st sem": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1° sem"
+          }
+        }
+      }
+    },
+    "1st semester": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1° semestre"
+          }
+        }
+      }
+    },
+    "2nd sem": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2° sem"
+          }
+        }
+      }
+    },
+    "2nd semester": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2° semestre"
+          }
+        }
+      }
+    },
     "About": {
       "localizations": {
         "it": {
@@ -898,6 +938,16 @@
         }
       }
     },
+    "All periods": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutti i periodi"
+          }
+        }
+      }
+    },
     "All years": {
       "localizations": {
         "it": {
@@ -914,6 +964,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Consenti notifiche"
+          }
+        }
+      }
+    },
+    "Annual": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annuale"
           }
         }
       }
@@ -1432,6 +1492,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "I corsi con download automatico riscaricano i nuovi file alla prossima sincronizzazione. Disattiva il download automatico di un corso per tenere libero il suo spazio."
+          }
+        }
+      }
+    },
+    "Current semester": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semestre in corso"
           }
         }
       }
@@ -1994,6 +2064,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nome cartella"
+          }
+        }
+      }
+    },
+    "From the catalogue": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dal catalogo"
           }
         }
       }
@@ -2760,6 +2840,16 @@
         }
       }
     },
+    "Period": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Periodo"
+          }
+        }
+      }
+    },
     "Pick a course": {
       "localizations": {
         "it": {
@@ -2862,6 +2952,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Recenti"
+          }
+        }
+      }
+    },
+    "Refresh periods from the catalogue": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiorna periodi dal catalogo"
           }
         }
       }

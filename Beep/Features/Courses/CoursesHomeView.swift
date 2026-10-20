@@ -57,6 +57,31 @@ enum YearFilter: String, CaseIterable, Identifiable {
     }
 }
 
+/// Teaching period filter. "Current semester" is the one under way now (`AcademicYear.currentSemester`)
+/// in the current year; annual courses pass every semester filter, courses whose period is still
+/// unknown pass none, courses outside an academic year are left alone.
+enum SemesterFilter: String, CaseIterable, Identifiable {
+    case all, current, first, second
+    var id: Self { self }
+    var label: LocalizedStringKey {
+        switch self {
+        case .all: "All periods"
+        case .current: "Current semester"
+        case .first: "1st semester"
+        case .second: "2nd semester"
+        }
+    }
+    /// The semester kept by this filter, as of now.
+    var semester: Semester? {
+        switch self {
+        case .all: nil
+        case .current: AcademicYear.currentSemester()
+        case .first: .first
+        case .second: .second
+        }
+    }
+}
+
 struct CoursesListView: View {
     @Binding var selection: Int?
     /// True when hosted as the sidebar of a split view (rows select instead of pushing).
@@ -68,6 +93,7 @@ struct CoursesListView: View {
     @Query(sort: \Course.title) private var courses: [Course]
     @State private var query = ""
     @AppStorage("home.yearFilter") private var yearFilter: YearFilter = .all
+    @AppStorage("home.semesterFilter") private var semesterFilter: SemesterFilter = .all
     @AppStorage("home.showHidden") private var showHidden = false
     @AppStorage("home.showArchived") private var showArchived = false
     @AppStorage("home.onlyNew") private var onlyNew = false
@@ -87,6 +113,10 @@ struct CoursesListView: View {
             case .all: break
             case .current: if c.isAcademicYear && !c.isCurrentYear { return false }
             case .past: if !c.isAcademicYear || c.isCurrentYear { return false }
+            }
+            if let semester = semesterFilter.semester, c.isAcademicYear {
+                if semesterFilter == .current && !c.isCurrentYear { return false }
+                if !c.semester.runs(in: semester) { return false }
             }
             return c.matches(query)
         }
@@ -339,10 +369,38 @@ struct CourseContextMenu: View {
     var onUnenrol: (() -> Void)? = nil
     @Environment(\.openURL) private var openURL
     @Environment(FileOpener.self) private var opener
+    @Environment(SyncEngine.self) private var sync
+
+    /// Manual period, or -1 for "whatever the catalogue says".
+    private var periodChoice: Binding<Int> {
+        Binding(get: { course.semesterIsManual ? course.semesterRaw : -1 },
+                set: { raw in
+                    if raw < 0 {
+                        course.semesterIsManual = false
+                        course.semesterCheckedAt = nil
+                        Task { await sync.semesters.resolve(course) }
+                    } else {
+                        course.semesterIsManual = true
+                        course.semesterRaw = raw
+                    }
+                })
+    }
 
     var body: some View {
         Toggle(isOn: $course.isFavourite) { Label("Favourite", systemImage: "star") }
         Toggle(isOn: $course.syncEnabled) { Label("Auto-download new files", systemImage: "arrow.down.circle") }
+        if course.isAcademicYear && course.code != nil {
+            Menu {
+                Picker("Period", selection: periodChoice) {
+                    Text("From the catalogue").tag(-1)
+                    Text("1st semester").tag(Semester.first.rawValue)
+                    Text("2nd semester").tag(Semester.second.rawValue)
+                    Text("Annual").tag(Semester.annual.rawValue)
+                }
+            } label: {
+                Label("Period", systemImage: "calendar")
+            }
+        }
         #if os(macOS)
         if let dir = opener.directory(of: course) {
             Button { opener.reveal(dir) } label: { Label("Show in Finder", systemImage: "folder") }
@@ -510,18 +568,23 @@ extension View {
 /// so it sits in the iOS navigation bar and in the Mac window toolbar alike.
 struct CoursesFilterMenu: View {
     let findOtherCourses: () -> Void
+    @Environment(SyncEngine.self) private var sync
     @AppStorage("home.yearFilter") private var yearFilter: YearFilter = .all
+    @AppStorage("home.semesterFilter") private var semesterFilter: SemesterFilter = .all
     @AppStorage("home.showHidden") private var showHidden = false
     @AppStorage("home.showArchived") private var showArchived = false
     @AppStorage("home.onlyNew") private var onlyNew = false
     @AppStorage("home.onlyAutoDownload") private var onlyAutoDownload = false
 
-    private var isFilterActive: Bool { yearFilter != .all || showHidden || showArchived || onlyNew || onlyAutoDownload }
+    private var isFilterActive: Bool { yearFilter != .all || semesterFilter != .all || showHidden || showArchived || onlyNew || onlyAutoDownload }
 
     var body: some View {
         Menu {
             Picker("Years", selection: $yearFilter) {
                 ForEach(YearFilter.allCases) { Text($0.label).tag($0) }
+            }
+            Picker("Period", selection: $semesterFilter) {
+                ForEach(SemesterFilter.allCases) { Text($0.label).tag($0) }
             }
             Toggle("Only with new files", systemImage: "sparkles", isOn: $onlyNew)
             Toggle("Only auto-download", systemImage: "arrow.down.circle", isOn: $onlyAutoDownload)
@@ -529,6 +592,8 @@ struct CoursesFilterMenu: View {
             Toggle("Show archived", systemImage: "archivebox", isOn: $showArchived)
             Toggle("Show hidden on WeBeep", systemImage: "eye.slash", isOn: $showHidden)
             Divider()
+            Button { sync.semesters.resolveDue(force: true) } label: { Label("Refresh periods from the catalogue", systemImage: "calendar.badge.clock") }
+                .disabled(sync.semesters.isRunning)
             Button(action: findOtherCourses) { Label("Find other courses…", systemImage: "books.vertical") }
         } label: {
             Label("Filter", systemImage: isFilterActive ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease")

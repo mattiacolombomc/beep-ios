@@ -13,6 +13,7 @@
 		047B89C25FD887996594B75D /* BeepCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D3F9CFBDB92949C4ADD498 /* BeepCommands.swift */; };
 		049B97B4CEFB34D2219422FC /* GlobalSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 627F23C0ADBE033E203C10F3 /* GlobalSearchView.swift */; };
 		04EEDD128E3DD53F7C4A9FCD /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB8DD2552D68CA4F2DAB7922 /* DownloadManager.swift */; };
+		06DBF7138477280FCD405A04 /* manifesto_099322.html in Resources */ = {isa = PBXBuildFile; fileRef = 1F4E2FE3CF9F94D4288AC810 /* manifesto_099322.html */; };
 		08565BE1761ADCDA22C31FD1 /* FilePresenters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FF0B94F1558DB6DA49A610F /* FilePresenters.swift */; };
 		08A9ECF4EF260AF2E2EA31DC /* CourseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB403E03ED555E80094485A /* CourseDTO.swift */; };
 		0A007D04A7D8879E7BF81CCE /* ActiveSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42ECB2251E1F23DF902EB827 /* ActiveSection.swift */; };
@@ -62,6 +63,7 @@
 		3327218B5E09E7B30CA063E2 /* users_courses.json in Resources */ = {isa = PBXBuildFile; fileRef = EC0BB1DC0D87DE1F7BCDE019 /* users_courses.json */; };
 		34E348ADA7CF1B6BB837AD24 /* AppShortcuts.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = D08AF1F2615097E65A6709CB /* AppShortcuts.xcstrings */; };
 		3753DE3FC210E0B7D4492B8F /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E0A9DEA0B195D1C341C16A8 /* LoginView.swift */; };
+		37BF1631B7913C28B41DA3B4 /* SemesterResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A106A2F4C214D150B61ABD0D /* SemesterResolver.swift */; };
 		38E915034426D597D953CB8A /* StatusTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CC05CAD9EE8A0567A6406E7 /* StatusTile.swift */; };
 		4141E0AE22FD7B8AFB1B9418 /* TokenRenewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA184C5F47F6D595DF12167 /* TokenRenewer.swift */; };
 		4190859D37F8969EC27E0856 /* categories.json in Resources */ = {isa = PBXBuildFile; fileRef = 3F0D756C3B06D3C63DA23AB7 /* categories.json */; };
@@ -87,6 +89,7 @@
 		61E1CAC843B541E29EC8870F /* AppServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3B13A614078AA947AC892F4 /* AppServices.swift */; };
 		62867A97EF75CA0307482E7F /* SyncCoursesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310DD6AAE1D1B781EFA5601C /* SyncCoursesView.swift */; };
 		6582E6A7A97DE717817C7706 /* LoginWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DE24B0F8748037EA115797 /* LoginWebView.swift */; };
+		65E9CA01C5C76566DADFF63B /* SemesterResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A106A2F4C214D150B61ABD0D /* SemesterResolver.swift */; };
 		6C4AB023B505AD19B002477E /* CoursesHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A8C5004148D51BFD22BB6DE /* CoursesHomeView.swift */; };
 		6EB13DC139D52DFA7995C990 /* NotificationHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA49ED7BCABAB45AB8683EB2 /* NotificationHTML.swift */; };
 		6F407F8DA48E88D7EC61CD4D /* CourseNameParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F027F03142CE65043329E3 /* CourseNameParser.swift */; };
@@ -159,6 +162,7 @@
 		D02206F4A1CEA2CBEAD3B18B /* LaunchAtLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CAA1F04047A2BE48B86A81 /* LaunchAtLogin.swift */; };
 		D05AB28595411D236FF1A740 /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6239253FDE3EEE913FFD0B /* PageView.swift */; };
 		D06EDE2500B8063422C11257 /* MoodleClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DA016BEE918F3CECA3C896C /* MoodleClient.swift */; };
+		D18293394F51D3A23E8BF9AA /* PolimiCatalogueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 408F1F5C535D633E147A746A /* PolimiCatalogueTests.swift */; };
 		D2090CA81A5389D97FE3C779 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD984B3CFFCA2AD81EA3EDC8 /* SyncEngine.swift */; };
 		D21B2D226467AFE6CF491CAA /* SessionExpiredView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B386C894EC086F44EAA51A75 /* SessionExpiredView.swift */; };
 		D22389311B69D6C1A23C94DF /* AcademicYear.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2A5A24A4239BD7AB55BDAA /* AcademicYear.swift */; };
@@ -172,6 +176,7 @@
 		DAA031E7642FE2F986BBB0A4 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFB947E1DDE4DB52EA62CD43 /* WelcomeView.swift */; };
 		DB3D146033B474942585D55E /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79808CD1C374D0352A1F0E37 /* Models.swift */; };
 		DB9A38011CA86FD6B9C5B993 /* SmokeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03582BA59A9B5D1BEC9FF227 /* SmokeTests.swift */; };
+		DC7EF684A68B685345753CF1 /* PolimiCatalogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14ECDD3CD8D8A04FCCDA7E3 /* PolimiCatalogue.swift */; };
 		DE3C36585B5CAF65EA5DFA95 /* HTMLDocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D6B05C73E46F07902DEE37 /* HTMLDocumentView.swift */; };
 		DE595796DBEEB098132E6E4C /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B0FCDC6C27FDB36BBF67A34 /* NotificationsView.swift */; };
 		DFAFBD4BF6D969D0088EDA20 /* CourseRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24626E92874EE99AAA4BB29F /* CourseRow.swift */; };
@@ -180,6 +185,7 @@
 		E1017A3721D41B553FE4977E /* site_info.json in Resources */ = {isa = PBXBuildFile; fileRef = E87CF57754DAA246400A385A /* site_info.json */; };
 		E2E83C2B436478E835455C9E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18DC03A9A41FBAA63B81F471 /* SettingsView.swift */; };
 		E4A3CFA25AF1A17E45E0601F /* WindowToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079EA3256FFDB9D0BFF88398 /* WindowToolbar.swift */; };
+		E50B84C571A1FC3D33A85F0D /* manifesto_052537.html in Resources */ = {isa = PBXBuildFile; fileRef = 2B58C776F9C88D3D08102EE7 /* manifesto_052537.html */; };
 		E6B366A3AC0BA7A882DD78E3 /* NotificationDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE09B0D0E5769EBAB31D00DD /* NotificationDTO.swift */; };
 		E7C9800AF33A0A668EADE19C /* DownloadFolderStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1556E6D390ED343E2B97D21 /* DownloadFolderStep.swift */; };
 		E88CD27C477A23D6D8D88EC3 /* DownloadLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CB5C03288C4631C89F3255 /* DownloadLocation.swift */; };
@@ -188,6 +194,7 @@
 		EC232FE862F9BB22793D1F39 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6B066E9E6BA18F6A3E1B38 /* Platform.swift */; };
 		ECC33AE508D8A7E799C94E1E /* ForumDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3894DE45915C01852E61D255 /* ForumDTO.swift */; };
 		EDF824725C2A3DFDFC277F99 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18D872AD99A30965F745633 /* AppDelegate.swift */; };
+		F081B0AA41CD12D234B21940 /* PolimiCatalogue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14ECDD3CD8D8A04FCCDA7E3 /* PolimiCatalogue.swift */; };
 		F084D7DC257BC96EAC6CE568 /* Perf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F7505EEF6F03AE93A6C5BA /* Perf.swift */; };
 		F1C4736E1042272250DE4EE2 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6B066E9E6BA18F6A3E1B38 /* Platform.swift */; };
 		F23CAFFA458B9E6314482632 /* CourseTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33057622945CF80070DEDD5E /* CourseTile.swift */; };
@@ -258,10 +265,12 @@
 		19452E311E45FA947869B393 /* StoreContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreContainer.swift; sourceTree = "<group>"; };
 		1A8C5004148D51BFD22BB6DE /* CoursesHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursesHomeView.swift; sourceTree = "<group>"; };
 		1DBC50D833C0B4E7AAACF5B1 /* BeepMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeepMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F4E2FE3CF9F94D4288AC810 /* manifesto_099322.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = manifesto_099322.html; sourceTree = "<group>"; };
 		24626E92874EE99AAA4BB29F /* CourseRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseRow.swift; sourceTree = "<group>"; };
 		269D9C6B193F29B7CE5B6822 /* Multilang.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Multilang.swift; sourceTree = "<group>"; };
 		286AB63D1C7EF76A73108AAA /* MoodleError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodleError.swift; sourceTree = "<group>"; };
 		28FC5D2010DAB3286DF95F13 /* NOTICE */ = {isa = PBXFileReference; path = NOTICE; sourceTree = "<group>"; };
+		2B58C776F9C88D3D08102EE7 /* manifesto_052537.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = manifesto_052537.html; sourceTree = "<group>"; };
 		2CC05CAD9EE8A0567A6406E7 /* StatusTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusTile.swift; sourceTree = "<group>"; };
 		2CC53B63D46E49459D86BB94 /* DownloadFolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadFolder.swift; sourceTree = "<group>"; };
 		2DA016BEE918F3CECA3C896C /* MoodleClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodleClient.swift; sourceTree = "<group>"; };
@@ -273,6 +282,7 @@
 		3CB34AA4EAD533461613DC3C /* FileDrag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDrag.swift; sourceTree = "<group>"; };
 		3E0A9DEA0B195D1C341C16A8 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		3F0D756C3B06D3C63DA23AB7 /* categories.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = categories.json; sourceTree = "<group>"; };
+		408F1F5C535D633E147A746A /* PolimiCatalogueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolimiCatalogueTests.swift; sourceTree = "<group>"; };
 		42ECB2251E1F23DF902EB827 /* ActiveSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveSection.swift; sourceTree = "<group>"; };
 		45D6B05C73E46F07902DEE37 /* HTMLDocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLDocumentView.swift; sourceTree = "<group>"; };
 		482F95F0759BFE87A14120AC /* MacSyncScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSyncScheduler.swift; sourceTree = "<group>"; };
@@ -315,6 +325,7 @@
 		9B277ED54290D81DF1A0DB17 /* course_contents.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = course_contents.json; sourceTree = "<group>"; };
 		9D988C29D5162025A8E0C42E /* Notifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifier.swift; sourceTree = "<group>"; };
 		9FEEA578AD0563216F3CD65A /* SiteInfoDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteInfoDTO.swift; sourceTree = "<group>"; };
+		A106A2F4C214D150B61ABD0D /* SemesterResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemesterResolver.swift; sourceTree = "<group>"; };
 		AA7789D4DEFC3C8FC5C88418 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
 		AD984B3CFFCA2AD81EA3EDC8 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
 		ADA162076A63985DB48527FD /* AcknowledgementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowledgementsView.swift; sourceTree = "<group>"; };
@@ -329,6 +340,7 @@
 		BE799A9BBADFC00A51DC1EA4 /* CatalogDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogDTO.swift; sourceTree = "<group>"; };
 		BF6B066E9E6BA18F6A3E1B38 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
 		C1381077E90889ED860A5B5A /* SwitchBenchmark.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchBenchmark.swift; sourceTree = "<group>"; };
+		C14ECDD3CD8D8A04FCCDA7E3 /* PolimiCatalogue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolimiCatalogue.swift; sourceTree = "<group>"; };
 		C18D872AD99A30965F745633 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C956A75A7DA5D53C8767CFAA /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		CAA184C5F47F6D595DF12167 /* TokenRenewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRenewer.swift; sourceTree = "<group>"; };
@@ -460,6 +472,7 @@
 				286AB63D1C7EF76A73108AAA /* MoodleError.swift */,
 				269D9C6B193F29B7CE5B6822 /* Multilang.swift */,
 				EA49ED7BCABAB45AB8683EB2 /* NotificationHTML.swift */,
+				C14ECDD3CD8D8A04FCCDA7E3 /* PolimiCatalogue.swift */,
 				68F2BBAD4174512B55CD28E8 /* DTO */,
 			);
 			path = MoodleKit;
@@ -485,6 +498,7 @@
 				F9067B06949346483A092C39 /* IndexActor.swift */,
 				B1D5FBE3ACEA751305B2C656 /* Indexer.swift */,
 				9D988C29D5162025A8E0C42E /* Notifier.swift */,
+				A106A2F4C214D150B61ABD0D /* SemesterResolver.swift */,
 				83D6CBF323937FA85E39701E /* SpotlightIndexer.swift */,
 				AD984B3CFFCA2AD81EA3EDC8 /* SyncEngine.swift */,
 			);
@@ -497,6 +511,8 @@
 				3F0D756C3B06D3C63DA23AB7 /* categories.json */,
 				9B277ED54290D81DF1A0DB17 /* course_contents.json */,
 				AF462B1F1184F0A52D098EC7 /* error_invalidtoken.json */,
+				2B58C776F9C88D3D08102EE7 /* manifesto_052537.html */,
+				1F4E2FE3CF9F94D4288AC810 /* manifesto_099322.html */,
 				E87CF57754DAA246400A385A /* site_info.json */,
 				EC0BB1DC0D87DE1F7BCDE019 /* users_courses.json */,
 			);
@@ -532,6 +548,7 @@
 				E5859EC2B8B8ECA33F4EA63B /* MoodleClientTests.swift */,
 				CAB8F9B05C965CA7DF432E0A /* MultilangTests.swift */,
 				591204CDA9D4449A5DF917D4 /* NotificationHTMLTests.swift */,
+				408F1F5C535D633E147A746A /* PolimiCatalogueTests.swift */,
 				F7ECA4B213C32A75D01B15E0 /* SearchTests.swift */,
 				03582BA59A9B5D1BEC9FF227 /* SmokeTests.swift */,
 				EE7C6702A357FF323A160C90 /* StorageUsageTests.swift */,
@@ -893,6 +910,8 @@
 				4190859D37F8969EC27E0856 /* categories.json in Resources */,
 				C1A3A74FB37AACF97A8403B5 /* course_contents.json in Resources */,
 				9FEF5A7A095D2FA9AB77273F /* error_invalidtoken.json in Resources */,
+				E50B84C571A1FC3D33A85F0D /* manifesto_052537.html in Resources */,
+				06DBF7138477280FCD405A04 /* manifesto_099322.html in Resources */,
 				E1017A3721D41B553FE4977E /* site_info.json in Resources */,
 				3327218B5E09E7B30CA063E2 /* users_courses.json in Resources */,
 			);
@@ -988,8 +1007,10 @@
 				D05AB28595411D236FF1A740 /* PageView.swift in Sources */,
 				30CAD51890E664C282C7E6FE /* Perf.swift in Sources */,
 				EC232FE862F9BB22793D1F39 /* Platform.swift in Sources */,
+				F081B0AA41CD12D234B21940 /* PolimiCatalogue.swift in Sources */,
 				C70D230868A8C31F0BAF7FA4 /* RecentFilesView.swift in Sources */,
 				18B7639BDE9D793A67425BB9 /* RootView.swift in Sources */,
+				65E9CA01C5C76566DADFF63B /* SemesterResolver.swift in Sources */,
 				1C70F38C178B18E8A1341340 /* SessionExpiredView.swift in Sources */,
 				E2E83C2B436478E835455C9E /* SettingsView.swift in Sources */,
 				554CDC9100A3085D2A65E5EE /* SiteInfoDTO.swift in Sources */,
@@ -1040,6 +1061,7 @@
 				4FBB247F1378B5331C795811 /* MoodleClientTests.swift in Sources */,
 				F8228C12F6DCDD1BD3E58ED9 /* MultilangTests.swift in Sources */,
 				616BF66625739DBCB3C5AE70 /* NotificationHTMLTests.swift in Sources */,
+				D18293394F51D3A23E8BF9AA /* PolimiCatalogueTests.swift in Sources */,
 				F5FB05BC9C5D8F9C6F017105 /* SearchTests.swift in Sources */,
 				DB9A38011CA86FD6B9C5B993 /* SmokeTests.swift in Sources */,
 				7C255764E2D1BC6AE93AB4A6 /* StorageUsageTests.swift in Sources */,
@@ -1106,8 +1128,10 @@
 				0B1704EAB59D17E78F41D5E3 /* PageView.swift in Sources */,
 				F084D7DC257BC96EAC6CE568 /* Perf.swift in Sources */,
 				F1C4736E1042272250DE4EE2 /* Platform.swift in Sources */,
+				DC7EF684A68B685345753CF1 /* PolimiCatalogue.swift in Sources */,
 				D4242DA20C3804FC6C8B4749 /* RecentFilesView.swift in Sources */,
 				0F71D99FFD4B012266DCCA65 /* RootView.swift in Sources */,
+				37BF1631B7913C28B41DA3B4 /* SemesterResolver.swift in Sources */,
 				D21B2D226467AFE6CF491CAA /* SessionExpiredView.swift in Sources */,
 				A17B535957C22F5DCCF9322A /* SettingsView.swift in Sources */,
 				0BFCB4E536F0DEF226744E67 /* SiteInfoDTO.swift in Sources */,

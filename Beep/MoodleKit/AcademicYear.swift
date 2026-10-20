@@ -44,4 +44,23 @@ nonisolated enum AcademicYear {
     static func isCurrent(_ categoryName: String, at date: Date, calendar: Calendar = .current) -> Bool {
         startYear(categoryName) == currentStartYear(at: date, calendar: calendar)
     }
+
+    /// Semester under way at `date`: the first runs from September, lectures of the second start
+    /// in the second half of February at Polimi.
+    static func currentSemester(at date: Date = .now, calendar: Calendar = .current) -> Semester {
+        let c = calendar.dateComponents([.month, .day], from: date)
+        switch (c.month ?? 1, c.day ?? 1) {
+        case (3...8, _), (2, 15...): return .second
+        default: return .first
+        }
+    }
+}
+
+/// Teaching period of a course. WeBeep does not know it: it comes from the Polimi catalogue
+/// (`PolimiCatalogue`) or from the user.
+nonisolated enum Semester: Int, Codable, Sendable, CaseIterable {
+    case unknown = 0, first = 1, second = 2, annual = 3
+
+    /// Taught during `semester`? Annual courses run in both; unknown in neither.
+    func runs(in semester: Semester) -> Bool { self == semester || self == .annual }
 }

@@ -45,6 +45,8 @@ final class SyncEngine {
     }
 
     let downloads: DownloadManager
+    /// Teaching periods from the Polimi catalogue, refreshed after each full sync.
+    let semesters: SemesterResolver
     /// WeBeep rejected the token during a sync.
     var onInvalidToken: ((Trigger) -> Void)?
     /// Main context: the download queue reads from it.
@@ -58,6 +60,7 @@ final class SyncEngine {
         self.context = container.mainContext
         self.storeTask = Task.detached(priority: .userInitiated) { IndexActor(modelContainer: container) }
         self.downloads = downloads
+        self.semesters = SemesterResolver(context: container.mainContext)
         lastSyncAt = UserDefaults.standard.object(forKey: "lastSyncAt") as? Date
     }
 
@@ -162,6 +165,7 @@ final class SyncEngine {
             if userID != nil {
                 let container = context.container
                 Task.detached(priority: .utility) { await SpotlightIndexer.reindex(container: container) }
+                semesters.resolveDue()
             }
             WidgetCenter.shared.reloadAllTimelines()
         } catch MoodleError.invalidToken {
