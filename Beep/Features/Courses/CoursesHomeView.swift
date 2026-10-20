@@ -45,21 +45,52 @@ struct CoursesHomeView: View {
 }
 #endif
 
-enum YearFilter: String, CaseIterable, Identifiable {
+/// Academic-year filter: every year, the current one, the past ones, or one given year. Stored
+/// as a string ("year:2025") by `@AppStorage`; combines with `SemesterFilter`.
+enum YearFilter: RawRepresentable, Hashable, Identifiable {
     case all, current, past
-    var id: Self { self }
+    case year(Int)
+
+    /// The fixed choices; the years themselves come from the courses (`SyncEngine.academicYears`).
+    static let allCases: [YearFilter] = [.all, .current, .past]
+
+    init?(rawValue: String) {
+        switch rawValue {
+        case "all": self = .all
+        case "current": self = .current
+        case "past": self = .past
+        default:
+            guard rawValue.hasPrefix("year:"), let year = Int(rawValue.dropFirst(5)) else { return nil }
+            self = .year(year)
+        }
+    }
+
+    var rawValue: String {
+        switch self {
+        case .all: "all"
+        case .current: "current"
+        case .past: "past"
+        case .year(let year): "year:\(year)"
+        }
+    }
+
+    var id: String { rawValue }
+
     var label: LocalizedStringKey {
         switch self {
         case .all: "All years"
         case .current: "Current year"
         case .past: "Past years"
+        case .year(let year): LocalizedStringKey(AcademicYear.categoryName(startYear: year))
         }
     }
 }
 
-/// Teaching period filter. "Current semester" is the one under way now (`AcademicYear.currentSemester`)
-/// in the current year; annual courses pass every semester filter, courses whose period is still
-/// unknown pass none, courses outside an academic year are left alone.
+/// Teaching period filter, combined with `YearFilter`: "current year" + "1st semester" is this
+/// year's first semester. "Current semester" is the one under way now (`AcademicYear.currentSemester`),
+/// in the current year unless a year filter says otherwise. Annual courses pass every semester
+/// filter, courses whose period is still unknown pass none, courses outside an academic year are
+/// left alone.
 enum SemesterFilter: String, CaseIterable, Identifiable {
     case all, current, first, second
     var id: Self { self }
@@ -113,9 +144,10 @@ struct CoursesListView: View {
             case .all: break
             case .current: if c.isAcademicYear && !c.isCurrentYear { return false }
             case .past: if !c.isAcademicYear || c.isCurrentYear { return false }
+            case .year(let year): if AcademicYear.startYear(c.categoryName) != year { return false }
             }
             if let semester = semesterFilter.semester, c.isAcademicYear {
-                if semesterFilter == .current && !c.isCurrentYear { return false }
+                if semesterFilter == .current && yearFilter == .all && !c.isCurrentYear { return false }
                 if !c.semester.runs(in: semester) { return false }
             }
             return c.matches(query)
@@ -153,7 +185,7 @@ struct CoursesListView: View {
 
     var body: some View {
         let g = groups
-        let catalogueBusy = semesterFilter != .all && awaitingCatalogue
+        let catalogueBusy = (semesterFilter != .all && awaitingCatalogue) || sync.semesters.showsPanel
         List(selection: isSplit ? $selection : nil) {
             if query.isEmpty {
                 Section {
@@ -310,11 +342,18 @@ private struct RowLink: ViewModifier {
     }
 }
 
-/// First use of a semester filter: says what Beep is doing while the Polimi catalogue answers,
-/// the way the system's setup screens do, with progress, then a retry when the catalogue could
-/// not be reached. Courses drop into the list below as their period arrives.
+/// First use of a semester filter, and "Refresh periods from the catalogue": says what Beep is
+/// doing while the Polimi catalogue answers, the way the system's setup screens do, with
+/// progress, then a retry when the catalogue could not be reached. Courses drop into the list
+/// below as their period arrives.
 private struct CataloguePanel: View {
     @Environment(SyncEngine.self) private var sync
+
+    private var title: LocalizedStringKey {
+        let resolver = sync.semesters
+        if !resolver.isRunning { return "The catalogue did not answer" }
+        return resolver.forced ? "Refreshing periods from the catalogue" : "Reading the Politecnico catalogue"
+    }
 
     var body: some View {
         let resolver = sync.semesters
@@ -324,7 +363,7 @@ private struct CataloguePanel: View {
                 .foregroundStyle(Color.accentColor)
                 .symbolEffect(.pulse, isActive: resolver.isRunning)
                 .contentTransition(.symbolEffect(.replace))
-            Text(resolver.isRunning ? "Reading the Politecnico catalogue" : "The catalogue did not answer")
+            Text(title)
                 .font(.title3.weight(.semibold))
                 .multilineTextAlignment(.center)
             Text("WeBeep does not say in which semester a course runs, so Beep looks it up in Politecnico's public course catalogue. Only the course code is sent, nothing about you. It happens once; current-year courses are checked again weekly.")
@@ -343,8 +382,14 @@ private struct CataloguePanel: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
-                Button("Try again") { resolver.resolveDue() }
-                    .buttonStyle(.borderedProminent)
+                HStack(spacing: Theme.Spacing.m) {
+                    if resolver.forced {
+                        Button("Dismiss") { resolver.dismissFailure() }
+                            .buttonStyle(.bordered)
+                    }
+                    Button("Try again") { resolver.resolveDue(force: resolver.forced) }
+                        .buttonStyle(.borderedProminent)
+                }
             }
         }
         .padding(Theme.Spacing.l)
@@ -645,6 +690,9 @@ struct CoursesFilterMenu: View {
         Menu {
             Picker("Years", selection: $yearFilter) {
                 ForEach(YearFilter.allCases) { Text($0.label).tag($0) }
+                ForEach(sync.academicYears, id: \.self) { year in
+                    Text(YearFilter.year(year).label).tag(YearFilter.year(year))
+                }
             }
             Picker("Period", selection: $semesterFilter) {
                 ForEach(SemesterFilter.allCases) { Text($0.label).tag($0) }
@@ -661,6 +709,7 @@ struct CoursesFilterMenu: View {
         } label: {
             Label("Filter", systemImage: isFilterActive ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease")
         }
+        .onAppear { sync.refreshYears() }
     }
 }
 

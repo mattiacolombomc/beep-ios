@@ -117,6 +117,7 @@
 		8BFBAD8978D84465EDC8B377 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 0478DD28AE32D428A6FF72E7 /* AppIcon.icon */; };
 		9188DC82DB7F3A6F3321851B /* CatalogSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A9F48A8D454DFCDEA10154 /* CatalogSearchView.swift */; };
 		919C7277B153CC18EAC6F099 /* TokenRenewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAA184C5F47F6D595DF12167 /* TokenRenewer.swift */; };
+		91E6844E344792CD7C2F243D /* FiltersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92B449DE21EA9F3D2A60345 /* FiltersTests.swift */; };
 		932255233D251C70B33ED696 /* SpotlightIndexer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D6CBF323937FA85E39701E /* SpotlightIndexer.swift */; };
 		944899B3F36B3B224260543B /* StoreContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19452E311E45FA947869B393 /* StoreContainer.swift */; };
 		949311B6F788275147505257 /* CourseRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24626E92874EE99AAA4BB29F /* CourseRow.swift */; };
@@ -359,6 +360,7 @@
 		E5859EC2B8B8ECA33F4EA63B /* MoodleClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoodleClientTests.swift; sourceTree = "<group>"; };
 		E87CF57754DAA246400A385A /* site_info.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = site_info.json; sourceTree = "<group>"; };
 		E8E35EF16BA8B7C2DEAA32F0 /* SyncFolderBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncFolderBar.swift; sourceTree = "<group>"; };
+		E92B449DE21EA9F3D2A60345 /* FiltersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersTests.swift; sourceTree = "<group>"; };
 		EA49ED7BCABAB45AB8683EB2 /* NotificationHTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHTML.swift; sourceTree = "<group>"; };
 		EC0BB1DC0D87DE1F7BCDE019 /* users_courses.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = users_courses.json; sourceTree = "<group>"; };
 		ED2785533331D773CF0D25D5 /* AppSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSession.swift; sourceTree = "<group>"; };
@@ -542,6 +544,7 @@
 				3416213C83DDF3DE7B444F5C /* CourseNameParserTests.swift */,
 				1785ECB33E2120F74210ACAE /* FileSelectionTests.swift */,
 				F3BF39A74533D9FEBB64D126 /* FileURLTokenizerTests.swift */,
+				E92B449DE21EA9F3D2A60345 /* FiltersTests.swift */,
 				5EC0BE5246B5005FBF7AF7A2 /* IndexerTests.swift */,
 				BCB2A417054F68350208AB6C /* LocalFilesTests.swift */,
 				D8A86362F900DB06EED974BA /* LoginFlowTests.swift */,
@@ -1055,6 +1058,7 @@
 				78939754EF3C3D1067462E53 /* CourseNameParserTests.swift in Sources */,
 				F79A8F7EC2051591EB2FFF82 /* FileSelectionTests.swift in Sources */,
 				118F5092D57A515A3426808C /* FileURLTokenizerTests.swift in Sources */,
+				91E6844E344792CD7C2F243D /* FiltersTests.swift in Sources */,
 				7737B668FFFEB4C395AEF153 /* IndexerTests.swift in Sources */,
 				7BA95232FC983C887333025A /* LocalFilesTests.swift in Sources */,
 				14951E8148A77C6FAC5A148A /* LoginFlowTests.swift in Sources */,

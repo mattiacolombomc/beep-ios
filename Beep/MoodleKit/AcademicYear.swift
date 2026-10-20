@@ -21,6 +21,11 @@ nonisolated enum AcademicYear {
         return year
     }
 
+    /// WeBeep's category name for the year starting in `startYear`: "2026-27".
+    static func categoryName(startYear: Int) -> String {
+        "\(startYear)-" + String(format: "%02d", (startYear + 1) % 100)
+    }
+
     /// Start year of the academic year that is current now, cached for a minute.
     static func currentStartYear() -> Int {
         let now = Date.now

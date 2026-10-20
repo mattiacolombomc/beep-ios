@@ -1576,6 +1576,16 @@
         }
       }
     },
+    "Dismiss": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ignora"
+          }
+        }
+      }
+    },
     "Done": {
       "localizations": {
         "it": {
@@ -1612,6 +1622,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scarica tutto (%lld)"
+          }
+        }
+      }
+    },
+    "Download failed": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download non riuscito"
           }
         }
       }
@@ -2986,6 +3006,16 @@
         }
       }
     },
+    "Refreshing periods from the catalogue": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiorno i periodi dal catalogo"
+          }
+        }
+      }
+    },
     "Reload": {
       "localizations": {
         "it": {
@@ -3668,6 +3698,16 @@
         }
       }
     },
+    "The system dropped the background download service, which happens when two copies of Beep run at once. Trying again opens a new connection.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il sistema ha interrotto il servizio di download in background: succede quando girano due copie di Beep insieme. Riprovando si apre una nuova connessione."
+          }
+        }
+      }
+    },
     "This course has no content on WeBeep yet.": {
       "localizations": {
         "it": {
@@ -3804,6 +3844,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rimuovi dai preferiti"
+          }
+        }
+      }
+    },
+    "Unknown error": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Errore sconosciuto"
           }
         }
       }
@@ -3982,6 +4032,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "WeBeep ha rifiutato l'iscrizione."
+          }
+        }
+      }
+    },
+    "WeBeep refused the file: the access key may have expired. Sign out and in again if it keeps happening.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WeBeep ha rifiutato il file: la chiave di accesso potrebbe essere scaduta. Se continua, esci e accedi di nuovo."
           }
         }
       }

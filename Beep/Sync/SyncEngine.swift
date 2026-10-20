@@ -47,6 +47,9 @@ final class SyncEngine {
     let downloads: DownloadManager
     /// Teaching periods from the Polimi catalogue, refreshed after each full sync.
     let semesters: SemesterResolver
+    /// Start years of the academic years the courses belong to, newest first; the filter menu
+    /// lists them. Changes only when a year appears or goes, so observers are rarely re-rendered.
+    private(set) var academicYears: [Int] = []
     /// WeBeep rejected the token during a sync.
     var onInvalidToken: ((Trigger) -> Void)?
     /// Main context: the download queue reads from it.
@@ -65,6 +68,12 @@ final class SyncEngine {
     }
 
     var isRunning: Bool { running != nil }
+
+    func refreshYears() {
+        let courses = (try? context.fetch(FetchDescriptor<Course>())) ?? []
+        let years = Set(courses.compactMap { AcademicYear.startYear($0.categoryName) }).sorted(by: >)
+        if years != academicYears { academicYears = years }
+    }
 
     /// Refreshes the course list and every course's contents. Coalesces concurrent calls.
     @discardableResult
@@ -107,6 +116,7 @@ final class SyncEngine {
                 try await store.upsertCourses(courses, categories: categories)
                 // Edition folders may have changed (a new section of a course in the same year).
                 _ = downloads.local.migrateLayout(courses: try context.fetch(FetchDescriptor<Course>()))
+                refreshYears()
             }
             let targets = try await store.targets(only: courseID)
             phase = .indexing(done: 0, total: targets.count, current: targets.first?.title)

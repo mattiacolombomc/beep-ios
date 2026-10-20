@@ -17,7 +17,17 @@ final class SemesterResolver {
     private(set) var total = 0
     /// Lookups of the last run the catalogue could not be reached for.
     private(set) var failed = 0
+    /// The run going on, or just failed, was asked for by the user ("Refresh periods").
+    private(set) var forced = false
     private var running: Task<Void, Never>?
+
+    /// The list shows the catalogue panel: a run with something to do, or a user-asked run that failed.
+    var showsPanel: Bool { (isRunning && total > 0) || (forced && failed > 0) }
+
+    func dismissFailure() {
+        failed = 0
+        forced = false
+    }
 
     init(context: ModelContext) {
         self.context = context
@@ -53,7 +63,11 @@ final class SemesterResolver {
     private func run(force: Bool) async {
         isRunning = true
         failed = 0
-        defer { isRunning = false }
+        forced = force
+        defer {
+            isRunning = false
+            if failed == 0 { forced = false }
+        }
         let now = Date.now
         guard let courses = try? context.fetch(FetchDescriptor<Course>()) else { return }
         let due = courses.filter { c in

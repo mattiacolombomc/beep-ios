@@ -19,6 +19,7 @@ struct SyncCoursesView: View {
             case .all: break
             case .current: if c.isAcademicYear && !c.isCurrentYear { return false }
             case .past: if !c.isAcademicYear || c.isCurrentYear { return false }
+            case .year(let year): if AcademicYear.startYear(c.categoryName) != year { return false }
             }
             return c.matches(query)
         }
