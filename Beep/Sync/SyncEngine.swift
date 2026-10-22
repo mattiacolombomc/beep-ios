@@ -58,6 +58,8 @@ final class SyncEngine {
     /// its work there, which made the whole sync (parsing and upserting every course) block the UI.
     private let storeTask: Task<IndexActor, Never>
     private var running: Task<Report, Never>?
+    /// Spotlight rebuild of the last sync; cancelled when the next one starts to index.
+    private var spotlightTask: Task<Void, Never>?
 
     init(container: ModelContainer, downloads: DownloadManager) {
         self.context = container.mainContext
@@ -173,8 +175,13 @@ final class SyncEngine {
             lastSyncAt = .now
             phase = .idle
             if userID != nil {
-                let container = context.container
-                Task.detached(priority: .utility) { await SpotlightIndexer.reindex(container: container) }
+                // Snapshot on the store actor (serialised with its deletes), index from plain values:
+                // the detached task holds no model, so a background suspension can't leave it with
+                // faults that the next sync invalidates (crash in 0.2.0 (16)).
+                spotlightTask?.cancel()
+                if let entries = try? await store.spotlightEntries() {
+                    spotlightTask = Task.detached(priority: .utility) { await SpotlightIndexer.reindex(entries: entries) }
+                }
                 semesters.resolveDue()
             }
             WidgetCenter.shared.reloadAllTimelines()

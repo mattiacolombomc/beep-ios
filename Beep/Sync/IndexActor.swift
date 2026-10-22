@@ -61,6 +61,32 @@ actor IndexActor {
         if modelContext.hasChanges { try modelContext.save() }
     }
 
+    /// Snapshot of the non-archived courses and their files for Spotlight, as plain values: taken
+    /// here so it can never interleave with this context's deletes, and read with the relationships
+    /// prefetched so no fault fires later on a row another sync has removed.
+    func spotlightEntries() throws -> SpotlightIndexer.Entries {
+        var entries = SpotlightIndexer.Entries()
+        let courses = try modelContext.fetch(FetchDescriptor<Course>(sortBy: [SortDescriptor(\.id)]))
+        var active: [Int: Course] = [:]
+        for c in courses where !c.isArchived {
+            active[c.id] = c
+            entries.courses.append(.init(
+                id: c.id, title: c.title,
+                description: [c.code, c.professors, c.categoryName].compactMap { $0 }.joined(separator: " · "),
+                keywords: [c.monogram, c.code, c.categoryName].compactMap { $0 }))
+        }
+        var files = FetchDescriptor<FileItem>(sortBy: [SortDescriptor(\.key)])
+        files.relationshipKeyPathsForPrefetching = [\.course, \.module]
+        for f in try modelContext.fetch(files) {
+            guard let c = f.course, active[c.id] != nil else { continue }
+            entries.files.append(.init(
+                key: f.key, filename: f.filename, fileExtension: f.fileExtension,
+                description: [c.title, f.module?.name].compactMap { $0 }.joined(separator: " › "),
+                courseTitle: c.title, keywords: [c.monogram, c.title], modified: f.timemodified))
+        }
+        return entries
+    }
+
     func upsertNotifications(_ dtos: [NotificationDTO]) throws -> Int {
         try indexer.upsertNotifications(dtos)
     }
