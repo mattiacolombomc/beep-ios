@@ -8,9 +8,22 @@ struct CoursesHomeView: View {
     @Environment(AppRouter.self) private var router
     @State private var selection: Int?
     @State private var path = NavigationPath()
+    /// Both columns from the start: with `.automatic` a regular-width portrait window (iPad, the
+    /// inner panel of iPhone Duo) opened on an empty "Pick a course" with the list hidden.
+    @State private var columns = NavigationSplitViewVisibility.all
+    @State private var width: CGFloat = 0
+
+    /// Below this width the system lays the list over the detail instead of beside it (the Duo's
+    /// inner panel in portrait is 669 pt; an 11" iPad in portrait, 834 pt, gets two columns).
+    private static let overlayWidth: CGFloat = 760
 
     var body: some View {
         content
+            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
+            .onChange(of: selection) { _, _ in updateColumns() }
+            // A rotation changes the layout mode: wide again shows both columns, narrow keeps the
+            // detail alone (or re-opens the list the system dismissed while rotating).
+            .onChange(of: width) { _, _ in updateColumns() }
             .onChange(of: router.pending, initial: true) { _, dest in
                 guard case .course(let id) = dest else { return }
                 if sizeClass == .regular { selection = id } else { path = NavigationPath([id]) }
@@ -18,20 +31,29 @@ struct CoursesHomeView: View {
             }
     }
 
+    /// Wide: both columns. Narrow (the list lays over the detail): the list only while nothing is
+    /// picked, so choosing a course from the overlay closes it.
+    private func updateColumns() {
+        let wanted: NavigationSplitViewVisibility = width >= Self.overlayWidth || selection == nil ? .all : .detailOnly
+        if columns != wanted { columns = wanted }
+    }
+
     @ViewBuilder
     private var content: some View {
         if sizeClass == .regular {
-            NavigationSplitView {
+            NavigationSplitView(columnVisibility: $columns) {
                 CoursesListView(selection: $selection, isSplit: true)
                     .navigationSplitViewColumnWidth(min: 340, ideal: 400, max: 520)
             } detail: {
-                if let selection {
-                    NavigationStack {
+                // One stack for both: the placeholder alone had no navigation bar, so after
+                // hiding the list with the system toggle there was no button to bring it back.
+                NavigationStack {
+                    if let selection {
                         CourseDetailView(courseID: selection)
                             .courseRoutes()
+                    } else {
+                        ContentUnavailableView("Pick a course", systemImage: "graduationcap", description: Text("Its material, announcements and files show up here."))
                     }
-                } else {
-                    ContentUnavailableView("Pick a course", systemImage: "graduationcap", description: Text("Its material, announcements and files show up here."))
                 }
             }
         } else {
@@ -277,10 +299,22 @@ struct CoursesListView: View {
         .largeNavigationTitle()
         #if os(macOS)
         // Not `.searchable`: on the Mac it is a toolbar item, and each keystroke rebuilt the toolbar.
+        // The filters sit next to the list they apply to, not in the toolbar: a sidebar column's
+        // toolbar items leave with the column, and re-tiling the toolbar stalled every collapse.
         .safeAreaInset(edge: .top, spacing: 0) {
-            SidebarSearchField(text: $query, prompt: String(localized: "Course, code or professor"))
-                .padding(.horizontal, Theme.Spacing.s + 2)
-                .padding(.vertical, Theme.Spacing.s)
+            HStack(spacing: Theme.Spacing.s) {
+                SidebarSearchField(text: $query, prompt: String(localized: "Course, code or professor"))
+                // A glass pull-down button the height of the field, indicator shown (HIG: a
+                // pull-down button looks different from a push button).
+                CoursesFilterMenu { router.showCatalog = true }
+                    .labelStyle(.iconOnly)
+                    .menuStyle(.button)
+                    .buttonStyle(.glass)
+                    .controlSize(.large)
+                    .fixedSize()
+            }
+            .padding(.horizontal, Theme.Spacing.s + 2)
+            .padding(.vertical, Theme.Spacing.s)
         }
         #else
         .searchable(text: $query, prompt: "Course, code or professor")

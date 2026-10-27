@@ -5,9 +5,11 @@ import SwiftUI
 /// what a section cannot use is disabled in place (HIG: "keep consistent groupings and
 /// placement"). Each item reads only what it shows, so a section switch updates a few small
 /// views instead of making AppKit re-tile the toolbar. Search, Select and "…" act on the screen
-/// on top of the visible section (`WindowToolbarModel`).
+/// on top of the visible section (`WindowToolbarModel`). The course list's toggle sits at the
+/// leading edge of the content, after the sidebar, as in Finder and Mail.
 struct MainToolbar: ToolbarContent {
     var body: some ToolbarContent {
+        ToolbarItem(placement: .navigation) { SidebarButton() }
         ToolbarItem(placement: .principal) { SectionPicker() }
         ToolbarItem(placement: .primaryAction) { SearchSlot() }
         ToolbarSpacer(.fixed, placement: .primaryAction)
@@ -18,17 +20,6 @@ struct MainToolbar: ToolbarContent {
         ToolbarItem(placement: .primaryAction) { SettingsButton() }
         ToolbarSpacer(.fixed, placement: .primaryAction)
         ToolbarItem(placement: .primaryAction) { SyncButton() }
-    }
-}
-
-/// The part of the toolbar above the course list: declared by the sidebar column so it sits over
-/// the sidebar, and always present (disabled outside Courses) like the rest of the toolbar.
-struct SidebarToolbar: ToolbarContent {
-    let courses: CourseSelection
-
-    var body: some ToolbarContent {
-        ToolbarItem(placement: .primaryAction) { FilterSlot() }
-        ToolbarItem(placement: .primaryAction) { SidebarButton(courses: courses) }
     }
 }
 
@@ -57,10 +48,12 @@ private struct SectionPicker: View {
     }
 }
 
-/// Shows or hides the course list. The split view's own toggle is removed: it belonged to the
-/// Courses section and left the toolbar with the section.
+/// Shows or hides the course list. It lives in the window toolbar, not in the sidebar column:
+/// a column's items leave with the column, so the toolbar re-tiled on every collapse (a
+/// visible stall) and nothing was left to bring the list back. The split view's own toggle is
+/// removed: it belonged to the Courses section and left the toolbar with the section.
 private struct SidebarButton: View {
-    let courses: CourseSelection
+    @Environment(CourseSelection.self) private var courses
     @Environment(AppRouter.self) private var router
     var body: some View {
         Button("Course List", systemImage: "sidebar.left") {
@@ -68,15 +61,6 @@ private struct SidebarButton: View {
         }
         .help("Show or hide the course list")
         .disabled(router.selectedTab != .courses)
-    }
-}
-
-/// The course list's filters; they only apply to the Courses section.
-private struct FilterSlot: View {
-    @Environment(AppRouter.self) private var router
-    var body: some View {
-        CoursesFilterMenu { router.showCatalog = true }
-            .disabled(router.selectedTab != .courses)
     }
 }
 

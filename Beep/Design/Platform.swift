@@ -171,6 +171,7 @@ struct SidebarSearchField: NSViewRepresentable {
 
     func makeNSView(context: Context) -> NSSearchField {
         let field = NSSearchField()
+        field.controlSize = .large
         field.placeholderString = prompt
         field.sendsSearchStringImmediately = true
         field.delegate = context.coordinator

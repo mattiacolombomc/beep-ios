@@ -32,7 +32,9 @@ struct MainTabs: View {
                 break // consumed by CoursesHomeView
             }
         }
-        .tabViewStyle(.sidebarAdaptable)
+        // Tab bar only: the adaptable style adds a second sidebar (the tabs) next to the course
+        // list's own, and its bar overlapped the list's toolbar once opened and closed.
+        .tabViewStyle(.tabBarOnly)
         .tabBarMinimizeBehavior(.onScrollDown)
         .filePresenters()
         .sheet(isPresented: $router.showSettings) { SettingsView() }

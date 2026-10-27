@@ -24,9 +24,9 @@ enum HTMLDocument {
         var parts: [String] = []
         if let title { parts.append("<h1>\(title)</h1>") }
         if let meta { parts.append("<p class=meta>\(meta)</p>") }
-        parts.append("<div class=content>\(bodyHTML)</div>")
+        parts.append("<div class=content>\(linkified(bodyHTML))</div>")
         for s in extraSections {
-            parts.append("<hr><h3>\(s.heading)</h3><p class=meta>\(s.meta)</p><div class=content>\(s.html)</div>")
+            parts.append("<hr><h3>\(s.heading)</h3><p class=meta>\(s.meta)</p><div class=content>\(linkified(s.html))</div>")
         }
         return """
         <!doctype html><html><head><meta charset=utf-8>
@@ -46,6 +46,97 @@ enum HTMLDocument {
         hr { border: 0; border-top: 1px solid -apple-system-separator; margin: 20px 0; }
         </style></head><body>\(parts.joined())</body></html>
         """
+    }
+
+    /// Plain URLs and e-mail addresses in the text become links (professors paste them as text);
+    /// tags, attributes, existing links, scripts, styles and comments are left as they are.
+    /// WebKit's data detectors do this on iOS only: the Mac showed a dead spreadsheet URL.
+    nonisolated static func linkified(_ html: String) -> String {
+        guard let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue) else { return html }
+        var out = ""
+        out.reserveCapacity(html.utf8.count)
+        /// Closing tag that ends a region whose text is not touched.
+        var skipUntil: String?
+        var i = html.startIndex
+        while i < html.endIndex {
+            if html[i] == "<" {
+                let end: String.Index
+                if html[i...].hasPrefix("<!--") {
+                    end = html.range(of: "-->", range: i..<html.endIndex)?.upperBound ?? html.endIndex
+                } else {
+                    end = html[i...].firstIndex(of: ">").map { html.index(after: $0) } ?? html.endIndex
+                    let name = tagName(html[i..<end])
+                    if skipUntil == nil, ["a", "script", "style", "textarea"].contains(name) {
+                        skipUntil = "/" + name
+                    } else if skipUntil == name {
+                        skipUntil = nil
+                    }
+                }
+                out += html[i..<end]
+                i = end
+                continue
+            }
+            let end = html[i...].firstIndex(of: "<") ?? html.endIndex
+            let text = String(html[i..<end])
+            out += skipUntil == nil ? linkify(text, detector: detector) : text
+            i = end
+        }
+        return out
+    }
+
+    /// "a" for `<a href=…>`, "/a" for `</a>`, "br" for `<br/>`.
+    private nonisolated static func tagName(_ tag: Substring) -> String {
+        var name = tag.dropFirst()
+        if name.hasPrefix("/") { name = name.dropFirst() }
+        let body = name.prefix { $0.isLetter || $0.isNumber }
+        return (tag.hasPrefix("</") ? "/" : "") + body.lowercased()
+    }
+
+    /// A text node: entities decoded so the detector sees the real characters, matches wrapped,
+    /// the rest escaped again. A node without a match is returned untouched.
+    private nonisolated static func linkify(_ text: String, detector: NSDataDetector) -> String {
+        let plain = decodingEntities(text)
+        let matches = detector.matches(in: plain, range: NSRange(plain.startIndex..., in: plain))
+        guard !matches.isEmpty else { return text }
+        var out = ""
+        var last = plain.startIndex
+        for m in matches {
+            guard let range = Range(m.range, in: plain), let url = m.url else { continue }
+            out += escaped(plain[last..<range.lowerBound])
+            out += "<a href=\"\(escaped(url.absoluteString).replacingOccurrences(of: "\"", with: "&quot;"))\">\(escaped(plain[range]))</a>"
+            last = range.upperBound
+        }
+        out += escaped(plain[last...])
+        return out
+    }
+
+    private nonisolated static func decodingEntities(_ s: String) -> String {
+        var out = s
+        for (entity, char) in [("&lt;", "<"), ("&gt;", ">"), ("&quot;", "\""), ("&#39;", "'"), ("&apos;", "'"), ("&nbsp;", "\u{A0}"), ("&amp;", "&")] {
+            out = out.replacingOccurrences(of: entity, with: char)
+        }
+        return out
+    }
+
+    /// `<`, `>` and a bare `&` escaped; an `&` that starts an entity left in Moodle's text
+    /// (`&raquo;`) stays as it is.
+    private nonisolated static func escaped<S: StringProtocol>(_ s: S) -> String {
+        var out = ""
+        var i = s.startIndex
+        while i < s.endIndex {
+            let c = s[i]
+            switch c {
+            case "<": out += "&lt;"
+            case ">": out += "&gt;"
+            case "&":
+                let rest = s[s.index(after: i)...]
+                let body = rest.prefix { $0 == "#" || $0.isLetter || $0.isNumber }
+                out += !body.isEmpty && body.count <= 10 && rest.dropFirst(body.count).hasPrefix(";") ? "&" : "&amp;"
+            default: out.append(c)
+            }
+            i = s.index(after: i)
+        }
+        return out
     }
 
     /// Links open in the browser; the document's own load (and detected links' previews) go through.

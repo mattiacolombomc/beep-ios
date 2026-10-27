@@ -31,6 +31,8 @@ struct MacMainView: View {
         }
             .toolbar { MainToolbar() }
             .environment(toolbarModel)
+            // The window toolbar shows the course-list button while the sidebar is collapsed.
+            .environment(courseSelection)
             .filePresenters()
             .sheet(isPresented: $router.showNotifications) {
                 NotificationsView().frame(minWidth: 480, minHeight: 560)
@@ -126,9 +128,8 @@ private struct CoursesSplit: View {
         NavigationSplitView(columnVisibility: $selection.columns) {
             CoursesListView(selection: $selection.id, isSplit: true)
                 .navigationSplitViewColumnWidth(min: 300, ideal: 340, max: 460)
-                // Its own course-list button, present in every section (`SidebarToolbar`).
+                // The window toolbar has its own course-list button, present in every section.
                 .toolbar(removing: .sidebarToggle)
-                .toolbar { SidebarToolbar(courses: selection) }
         } detail: {
             if let id = selection.id {
                 // No `.id(id)`: recreating the stack per course removed and re-added its toolbar
