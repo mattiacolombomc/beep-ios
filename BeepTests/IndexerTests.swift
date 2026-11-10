@@ -139,7 +139,9 @@ struct IndexerTests {
         #expect(diff2.newFiles.count == 1)
         #expect(diff2.updatedFiles.count == 1)
         #expect(diff2.removedFiles.count == 1)
-        #expect(course.files.count == 4)
+        // The removed file is only marked: no row is deleted while a view may hold it.
+        #expect(course.files.count == 5)
+        #expect(course.liveFiles.count == 4)
         let ex02 = course.files.first { $0.filename == "ex02.pdf" }!
         #expect(ex02.isNew(relativeTo: course.lastSeenAt))
         #expect(course.files.first { $0.filename == "ex01.pdf" }!.filesize == 150)
@@ -175,5 +177,77 @@ struct IndexerTests {
         // The download address follows the live revision.
         let sol = try #require(course.files.first { $0.filename == "sol01.pdf" })
         #expect(sol.remoteURL.contains("mod_folder/content/1/Solutions/sol01.pdf"))
+    }
+
+    private func sections(dropping filename: String? = nil, droppingModule moduleID: Int? = nil) throws -> [SectionDTO] {
+        try MoodleClient.decode([SectionDTO].self, from: try fixture("course_contents")).map { s in
+            SectionDTO(id: s.id, name: s.name, section: s.section, summary: s.summary, visible: s.visible, uservisible: s.uservisible,
+                       modules: s.modules.filter { $0.id != moduleID }.map { m in
+                ModuleDTO(id: m.id, name: m.name, modname: m.modname, instance: m.instance, url: m.url, description: m.description,
+                          visible: m.visible, uservisible: m.uservisible, contents: m.contents?.filter { $0.filename != filename })
+            })
+        }
+    }
+
+    /// A file gone from WeBeep is marked, never deleted mid-session; the next sync does not
+    /// report it again, and it comes back as the same row if the teacher restores it.
+    @Test func aRemovedFileIsMarkedAndCanComeBack() throws {
+        let course = try seedCourses()
+        let t = { (n: TimeInterval) in Indexer(context: self.context, language: "it", now: { Date(timeIntervalSince1970: n) }) }
+        _ = try t(1_000).upsertContents(try sections(), for: course, token: "TOK")
+        let sol = try #require(course.files.first { $0.filename == "sol01.pdf" })
+        let id = sol.persistentModelID
+
+        let gone = try t(2_000).upsertContents(try sections(dropping: "sol01.pdf"), for: course, token: "TOK")
+        #expect(gone.removedFiles.count == 1)
+        #expect(sol.removedAt == Date(timeIntervalSince1970: 2_000))
+        #expect(!sol.isKeptRemoved)
+        #expect(course.files.count == 4 && course.liveFiles.count == 3)
+
+        let again = try t(3_000).upsertContents(try sections(dropping: "sol01.pdf"), for: course, token: "TOK")
+        #expect(again.removedFiles.isEmpty && again.newFiles.isEmpty)
+        #expect(sol.removedAt == Date(timeIntervalSince1970: 2_000))
+
+        let back = try t(4_000).upsertContents(try sections(), for: course, token: "TOK")
+        #expect(back.newFiles.count == 1)
+        let restored = try #require(course.files.first { $0.filename == "sol01.pdf" })
+        #expect(restored.persistentModelID == id)
+        #expect(restored.removedAt == nil)
+        #expect(restored.firstSeenAt == Date(timeIntervalSince1970: 4_000))
+        #expect(course.files.count == 4)
+    }
+
+    /// A module gone from WeBeep takes its files with it, and is restored with them.
+    @Test func aRemovedModuleIsMarkedWithItsFiles() throws {
+        let course = try seedCourses()
+        _ = try Indexer(context: context, language: "it", now: { Date(timeIntervalSince1970: 1_000) })
+            .upsertContents(try sections(), for: course, token: "TOK")
+        let folder = try #require(course.sections.flatMap(\.modules).first { $0.kind == .folder })
+        let count = folder.files.count
+        #expect(count > 0)
+
+        let diff = try Indexer(context: context, language: "it", now: { Date(timeIntervalSince1970: 2_000) })
+            .upsertContents(try sections(droppingModule: folder.id), for: course, token: "TOK")
+        #expect(diff.removedFiles.count == count)
+        #expect(folder.removedAt != nil)
+        #expect(folder.files.count == count && folder.liveFiles.isEmpty)
+        #expect(course.sections.flatMap(\.modules).contains { $0.id == folder.id })
+
+        _ = try Indexer(context: context, language: "it", now: { Date(timeIntervalSince1970: 3_000) })
+            .upsertContents(try sections(), for: course, token: "TOK")
+        #expect(folder.removedAt == nil)
+        #expect(folder.liveFiles.count == count)
+    }
+
+    /// The debug launch argument drops matching files from what WeBeep returned, nothing else.
+    @Test func simulatedRemovalDropsOnlyTheMatchingFiles() throws {
+        let all = try sections()
+        let names = { (s: [SectionDTO]) in s.flatMap(\.modules).flatMap { $0.contents ?? [] }.map(\.filename) }
+        let filtered = SimulatedRemoval.apply(all, needle: "SOL01")
+        #expect(names(all).contains("sol01.pdf"))
+        #expect(!names(filtered).contains("sol01.pdf"))
+        #expect(names(filtered).count == names(all).count - 1)
+        #expect(filtered.flatMap(\.modules).map(\.id) == all.flatMap(\.modules).map(\.id))
+        #expect(SimulatedRemoval.apply(all, needle: nil) == all)
     }
 }

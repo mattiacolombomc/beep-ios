@@ -6,7 +6,7 @@ struct RecentFilesView: View {
     /// Only the newest 300 files: the feed never needs the whole store, and a bounded
     /// query keeps every re-evaluation during a sync cheap.
     private static var recent: FetchDescriptor<FileItem> {
-        var d = FetchDescriptor<FileItem>(sortBy: [SortDescriptor(\.timemodified, order: .reverse)])
+        var d = FetchDescriptor<FileItem>(predicate: #Predicate { $0.removedAt == nil }, sortBy: [SortDescriptor(\.timemodified, order: .reverse)])
         d.fetchLimit = 300
         return d
     }

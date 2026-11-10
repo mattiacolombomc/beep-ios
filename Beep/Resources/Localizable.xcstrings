@@ -2188,6 +2188,36 @@
         }
       }
     },
+    "Hidden": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nascosti"
+          }
+        }
+      }
+    },
+    "In a group at the bottom": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In un gruppo in fondo"
+          }
+        }
+      }
+    },
+    "In place, labelled": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Al loro posto, con etichetta"
+          }
+        }
+      }
+    },
     "Its material, announcements and files show up here.": {
       "localizations": {
         "it": {
@@ -2204,6 +2234,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Adesso"
+          }
+        }
+      }
+    },
+    "Keep files removed from WeBeep": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conserva i file rimossi da WeBeep"
           }
         }
       }
@@ -2560,6 +2600,16 @@
         }
       }
     },
+    "No longer on WeBeep": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non più su WeBeep"
+          }
+        }
+      }
+    },
     "No notifications": {
       "localizations": {
         "it": {
@@ -2836,6 +2886,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Solo file nuovi"
+          }
+        }
+      }
+    },
+    "Only the files you had already downloaded.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo i file che avevi già scaricato."
           }
         }
       }
@@ -3226,6 +3286,26 @@
         }
       }
     },
+    "Removed files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File rimossi"
+          }
+        }
+      }
+    },
+    "Removed from WeBeep": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimossi da WeBeep"
+          }
+        }
+      }
+    },
     "Rename": {
       "localizations": {
         "it": {
@@ -3581,6 +3661,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostra o nascondi l'elenco dei corsi"
+          }
+        }
+      }
+    },
+    "Show removed files": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra i file rimossi"
           }
         }
       }
@@ -4536,6 +4626,26 @@
         }
       }
     },
+    "When a teacher removes a file from WeBeep, Beep keeps your copy and renames it on disk, so a new file with the same name cannot replace it.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando un docente rimuove un file da WeBeep, Beep conserva la tua copia e la rinomina su disco, così un nuovo file con lo stesso nome non può sostituirla."
+          }
+        }
+      }
+    },
+    "When a teacher removes a file from WeBeep, it leaves Beep. Your copy stays on disk, where a new file with the same name can replace it.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quando un docente rimuove un file da WeBeep, il file esce da Beep. La tua copia resta su disco, dove un nuovo file con lo stesso nome può sostituirla."
+          }
+        }
+      }
+    },
     "Where should your courses go?": {
       "localizations": {
         "it": {
@@ -4682,6 +4792,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "offline"
+          }
+        }
+      }
+    },
+    "removed": {
+      "comment": "Prefix of the name on disk of a file removed from WeBeep: [removed 2026-11-10] slides.pdf",
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "rimosso"
           }
         }
       }

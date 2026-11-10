@@ -73,6 +73,10 @@ private struct CourseContentView: View {
     @State private var options = CourseViewOptions()
     @State private var lastSeenAtOpen: Date?
     @State private var selection = FileSelection()
+    @AppStorage(RemovedContent.keepKey) private var keepsRemoved = true
+    @AppStorage(RemovedContent.displayKey) private var removedDisplaySetting: RemovedDisplay = .grouped
+    /// With keeping off, removed files are on their way out: never shown.
+    private var removedDisplay: RemovedDisplay { keepsRemoved ? removedDisplaySetting : .hidden }
 
     private var sort: FileSort { options.sort }
     private var onlyNew: Bool { options.onlyNew }
@@ -84,7 +88,7 @@ private struct CourseContentView: View {
         guard selection.isActive else { return [] }
         return isFiltering
             ? filtered
-            : course.files.sorted { a, b in
+            : course.liveFiles.sorted { a, b in
                 let sa = a.module?.section?.position ?? 0, sb = b.module?.section?.position ?? 0
                 if sa != sb { return sa < sb }
                 let ma = a.module?.position ?? 0, mb = b.module?.position ?? 0
@@ -96,7 +100,8 @@ private struct CourseContentView: View {
     var body: some View {
         // Filtered once per render and shared by the list and the selection bar.
         let filtered = isFiltering
-            ? FilteredFilesSection.files(of: course, query: query, scope: scope, sort: sort, onlyNew: onlyNew, lastSeen: lastSeenAtOpen)
+            ? FilteredFilesSection.files(of: course, query: query, scope: scope, sort: sort, onlyNew: onlyNew, lastSeen: lastSeenAtOpen,
+                                         includeRemoved: removedDisplay != .hidden)
             : []
         List {
             if !isFiltering {
@@ -119,10 +124,34 @@ private struct CourseContentView: View {
                 .listRowBackground(Color.clear)
             } else {
                 ForEach(course.sections.sorted { $0.position < $1.position }) { section in
-                    if !section.modules.isEmpty {
+                    let modules = section.modules.sorted { $0.position < $1.position }
+                    let live = modules.filter { $0.removedAt == nil }
+                    // Modules gone from WeBeep are shown only for the files still kept on disk.
+                    let removed = removedDisplay == .hidden ? [] : modules.filter { $0.showsAsRemoved }
+                    // A module that is still on WeBeep can have lost a file (a resource whose file
+                    // was replaced by one with another name): folders list theirs, the others go here.
+                    let strays = removedDisplay == .hidden ? [] : live.filter { $0.kind != .folder }.flatMap(\.keptRemovedFiles)
+                    if !live.isEmpty || !removed.isEmpty {
                         Section {
-                            ForEach(section.modules.sorted { $0.position < $1.position }) { module in
-                                ModuleRow(module: module, course: course, lastSeen: lastSeenAtOpen)
+                            if removedDisplay == .inline {
+                                ForEach(modules.filter { $0.removedAt == nil || $0.showsAsRemoved }) { module in
+                                    ModuleRow(module: module, course: course, lastSeen: lastSeenAtOpen, removedDisplay: removedDisplay)
+                                    if module.removedAt == nil, module.kind != .folder {
+                                        ForEach(module.keptRemovedFiles) { file in FileRow(file: file) }
+                                    }
+                                }
+                            } else {
+                                ForEach(live) { module in
+                                    ModuleRow(module: module, course: course, lastSeen: lastSeenAtOpen, removedDisplay: removedDisplay)
+                                }
+                                if !removed.isEmpty || !strays.isEmpty {
+                                    RemovedGroup(count: removed.count + strays.count) {
+                                        ForEach(removed) { module in
+                                            ModuleRow(module: module, course: course, lastSeen: lastSeenAtOpen, removedDisplay: removedDisplay)
+                                        }
+                                        ForEach(strays) { file in FileRow(file: file) }
+                                    }
+                                }
                             }
                         } header: {
                             Text(section.name)
@@ -163,7 +192,7 @@ private struct CourseContentView: View {
         .refreshable { await refresh() }
         #if os(macOS)
         .windowToolbar(search: search, prompt: "Search in this course", selection: selection,
-                       canSelect: !course.files.isEmpty, course: options)
+                       canSelect: !course.liveFiles.isEmpty, course: options)
         #else
         .modifier(CourseToolbar(course: course, options: options, selection: selection))
         #endif
@@ -216,11 +245,13 @@ private struct CourseHeader: View {
     @Bindable var course: Course
     let lastSeen: Date?
     @Environment(SyncEngine.self) private var sync
-    private var missing: Int { course.files.reduce(0) { $0 + (($1.isDownloaded && !$1.hasUpdate) ? 0 : 1) } }
+    /// Files removed from WeBeep are not part of the course's numbers.
+    private var files: [FileItem] { course.liveFiles }
+    private var missing: Int { files.reduce(0) { $0 + (($1.isDownloaded && !$1.hasUpdate) ? 0 : 1) } }
 
-    private var totalSize: Int { course.files.reduce(0) { $0 + $1.filesize } }
-    private var newCount: Int { course.files.reduce(0) { $0 + ($1.isNew(relativeTo: lastSeen) ? 1 : 0) } }
-    private var downloaded: Int { course.files.reduce(0) { $0 + ($1.isDownloaded ? 1 : 0) } }
+    private var totalSize: Int { files.reduce(0) { $0 + $1.filesize } }
+    private var newCount: Int { files.reduce(0) { $0 + ($1.isNew(relativeTo: lastSeen) ? 1 : 0) } }
+    private var downloaded: Int { files.reduce(0) { $0 + ($1.isDownloaded ? 1 : 0) } }
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.m) {
@@ -240,7 +271,7 @@ private struct CourseHeader: View {
                 Spacer(minLength: 0)
             }
             HStack(spacing: Theme.Spacing.l) {
-                Stat(value: "\(course.files.count)", label: "files")
+                Stat(value: "\(files.count)", label: "files")
                 Stat(value: "\(newCount)", label: "new", highlighted: newCount > 0)
                 Stat(value: totalSize == 0 ? "0 KB" : ByteCountFormatter.string(fromByteCount: Int64(totalSize), countStyle: .file), label: "total")
                 Stat(value: "\(downloaded)", label: "offline")
@@ -291,9 +322,11 @@ struct FilteredFilesSection: View {
     let query: String
     let lastSeen: Date?
 
-    static func files(of course: Course, query: String, scope: FileTypeScope, sort: FileSort, onlyNew: Bool, lastSeen: Date?) -> [FileItem] {
+    static func files(of course: Course, query: String, scope: FileTypeScope, sort: FileSort, onlyNew: Bool, lastSeen: Date?,
+                      includeRemoved: Bool = false) -> [FileItem] {
         let q = query.trimmingCharacters(in: .whitespaces).lowercased()
         var list = course.files.filter { f in
+            guard !f.isRemoved || (includeRemoved && f.isKeptRemoved) else { return false }
             guard scope.matches(f.fileExtension) else { return false }
             if onlyNew && !f.isNew(relativeTo: lastSeen) { return false }
             guard !q.isEmpty else { return true }
@@ -372,7 +405,7 @@ private struct CourseToolbar: ViewModifier {
                 } else {
                     Menu {
                         Button("Select", systemImage: "checkmark.circle") { selection.begin() }
-                            .disabled(course.files.isEmpty)
+                            .disabled(course.liveFiles.isEmpty)
                         Divider()
                         Picker("Sort", selection: $options.sort) {
                             ForEach(FileSort.allCases) { Text($0.label).tag($0) }

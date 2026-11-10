@@ -132,10 +132,12 @@ struct GlobalSearchView: View {
     static func files(matching q: String, scope: FileTypeScope, in context: ModelContext) -> [FileItem] {
         let limit = 200
         var d = FetchDescriptor<FileItem>(
+            // Files removed from WeBeep are found only while a copy is kept on disk (state 3 = downloaded).
             predicate: #Predicate { file in
-                file.filename.localizedStandardContains(q)
-                    || file.filepath.localizedStandardContains(q)
-                    || (file.module.flatMap { $0.name.localizedStandardContains(q) } ?? false)
+                (file.removedAt == nil || file.stateRaw == 3)
+                    && (file.filename.localizedStandardContains(q)
+                        || file.filepath.localizedStandardContains(q)
+                        || (file.module.flatMap { $0.name.localizedStandardContains(q) } ?? false))
             },
             sortBy: [SortDescriptor(\.timemodified, order: .reverse)])
         // The type scope is an extension check: fetch a margin, filter, keep the first `limit`.

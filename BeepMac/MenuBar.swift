@@ -25,7 +25,7 @@ struct MenuBarContent: View {
     @Query private var courses: [Course]
 
     private static var latestDescriptor: FetchDescriptor<FileItem> {
-        var d = FetchDescriptor<FileItem>(sortBy: [SortDescriptor(\.timemodified, order: .reverse)])
+        var d = FetchDescriptor<FileItem>(predicate: #Predicate { $0.removedAt == nil }, sortBy: [SortDescriptor(\.timemodified, order: .reverse)])
         d.fetchLimit = 6
         return d
     }

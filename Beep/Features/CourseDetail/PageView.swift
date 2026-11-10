@@ -7,7 +7,7 @@ struct PageView: View {
     @Environment(\.openURL) private var openURL
 
     private var indexURL: URL? {
-        module.files.first { $0.filename.lowercased().hasSuffix(".html") }.flatMap { URL(string: $0.remoteURL) }
+        module.liveFiles.first { $0.filename.lowercased().hasSuffix(".html") }.flatMap { URL(string: $0.remoteURL) }
             ?? module.url.flatMap(URL.init(string:))
     }
 

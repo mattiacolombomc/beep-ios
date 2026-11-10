@@ -11,6 +11,8 @@ struct SettingsView: View {
     @AppStorage("settings.notifications") private var notifications = true
     @AppStorage("settings.refreshMinutes") private var refreshMinutes = 120.0
     @AppStorage("settings.backgroundWifiOnly") private var backgroundWifiOnly = false
+    @AppStorage(RemovedContent.keepKey) private var keepsRemoved = true
+    @AppStorage(RemovedContent.displayKey) private var removedDisplay: RemovedDisplay = .grouped
     @Environment(TokenRenewer.self) private var renewer
     @Environment(SyncEngine.self) private var sync
     #if os(macOS)
@@ -48,6 +50,7 @@ struct SettingsView: View {
             Form {
                 accountSection
                 syncSection
+                removedSection
                 periodsSection
                 storageSection
                 #if os(macOS)
@@ -123,6 +126,38 @@ struct SettingsView: View {
                     #endif
                 }
                 .padding(.vertical, Theme.Spacing.xs)
+            }
+        }
+    }
+
+    /// What to do with the files a teacher takes off WeBeep.
+    private var removedSection: some View {
+        Section {
+            Toggle(isOn: $keepsRemoved) {
+                Label {
+                    Text("Keep files removed from WeBeep")
+                    Text("Only the files you had already downloaded.")
+                } icon: {
+                    Image(systemName: "archivebox")
+                }
+            }
+            if keepsRemoved {
+                Picker(selection: $removedDisplay) {
+                    Text("In a group at the bottom").tag(RemovedDisplay.grouped)
+                    Text("In place, labelled").tag(RemovedDisplay.inline)
+                    Text("Hidden").tag(RemovedDisplay.hidden)
+                } label: {
+                    Label("Show removed files", systemImage: "eye")
+                }
+            }
+        } header: {
+            Text("Removed files")
+        } footer: {
+            // Two Text literals, not a ternary: a ternary of strings would skip the string catalog.
+            if keepsRemoved {
+                Text("When a teacher removes a file from WeBeep, Beep keeps your copy and renames it on disk, so a new file with the same name cannot replace it.")
+            } else {
+                Text("When a teacher removes a file from WeBeep, it leaves Beep. Your copy stays on disk, where a new file with the same name can replace it.")
             }
         }
     }

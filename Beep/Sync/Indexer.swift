@@ -84,7 +84,13 @@ nonisolated struct Indexer {
         var oldSections = Dictionary(uniqueKeysWithValues: course.sections.map { ($0.id, $0) })
         var oldModules: [Int: CourseModule] = [:]
         for s in course.sections { for m in s.modules { oldModules[m.id] = m } }
-        var oldFiles = Dictionary(uniqueKeysWithValues: course.files.map { ($0.key, $0) })
+        // Files already marked as removed are not "old files": they must not be reported again.
+        // The ones still holding their key (not kept on disk) come back to life if the file returns.
+        var oldFiles: [String: FileItem] = [:]
+        var tombstones: [String: FileItem] = [:]
+        for file in course.files {
+            if file.removedAt == nil { oldFiles[file.key] = file } else { tombstones[file.key] = file }
+        }
 
         for (sIndex, sDTO) in sections.enumerated() {
             guard sDTO.uservisible ?? true else { continue }
@@ -96,6 +102,7 @@ nonisolated struct Indexer {
                 context.insert(section)
                 section.course = course
             }
+            section.removedAt = nil
             section.name = Multilang.resolve(sDTO.name, language: language)
             section.position = sIndex
             section.summary = sDTO.summary?.isEmpty == false ? sDTO.summary : nil
@@ -112,6 +119,7 @@ nonisolated struct Indexer {
                     context.insert(module)
                     module.section = section
                 }
+                module.removedAt = nil
                 module.name = Multilang.resolve(mDTO.name, language: language)
                 module.modname = mDTO.modname
                 module.instance = mDTO.instance
@@ -124,8 +132,14 @@ nonisolated struct Indexer {
                     let key = FileURLTokenizer.key(fileurl)
                     let modified = Date(timeIntervalSince1970: TimeInterval(cDTO.timemodified ?? 0))
                     let remote = FileURLTokenizer.tokenized(fileurl, type: cDTO.type, token: token)
-                    if let file = oldFiles.removeValue(forKey: key) {
-                        if file.timemodified < modified {
+                    let restored = oldFiles[key] == nil ? tombstones.removeValue(forKey: key) : nil
+                    if let file = oldFiles.removeValue(forKey: key) ?? restored {
+                        if restored != nil {
+                            // Back on WeBeep after a removal: the same row, news again.
+                            file.removedAt = nil
+                            file.firstSeenAt = stamp
+                            diff.newFiles.append(key)
+                        } else if file.timemodified < modified {
                             diff.updatedFiles.append(key)
                         }
                         file.filename = cDTO.filename
@@ -148,10 +162,13 @@ nonisolated struct Indexer {
             }
         }
 
-        for (_, s) in oldSections { context.delete(s) }
-        for (_, m) in oldModules { context.delete(m) }
+        // Gone from WeBeep. Nothing is deleted here: a view may be holding these rows, and reading
+        // a deleted SwiftData model is a fatal error (crash in 0.2.0 (21)). They are marked, the
+        // views skip them, and `RemovedContent` keeps the downloaded files and purges the rest at launch.
+        for (_, s) in oldSections where s.removedAt == nil { s.removedAt = stamp }
+        for (_, m) in oldModules where m.removedAt == nil { m.removedAt = stamp }
         for (key, f) in oldFiles {
-            context.delete(f)
+            f.removedAt = stamp
             diff.removedFiles.append(key)
         }
         course.lastIndexedAt = stamp

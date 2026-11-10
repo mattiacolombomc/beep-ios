@@ -5,19 +5,21 @@ struct ModuleRow: View {
     let module: CourseModule
     let course: Course
     let lastSeen: Date?
+    var removedDisplay: RemovedDisplay = .grouped
     @Environment(\.openURL) private var openURL
     @State private var expanded = false
 
     var body: some View {
         switch module.kind {
         case .resource:
-            if let file = module.files.first {
+            // A resource gone from WeBeep shows the copy kept on disk.
+            if let file = module.removedAt == nil ? module.liveFiles.first : module.keptRemovedFiles.first {
                 FileRow(file: file, isNew: file.isNew(relativeTo: lastSeen), title: module.name)
             } else {
                 GenericModuleRow(module: module, symbol: "doc")
             }
         case .folder:
-            FolderTree(module: module, lastSeen: lastSeen)
+            FolderTree(module: module, lastSeen: lastSeen, removedDisplay: removedDisplay)
         case .label:
             if let html = module.descriptionHTML {
                 HTMLText(html: html)
@@ -78,17 +80,57 @@ struct GenericModuleRow: View {
     }
 }
 
+/// Closed group at the bottom of a folder or section: what the teacher removed from WeBeep
+/// and Beep still has on disk.
+struct RemovedGroup<Content: View>: View {
+    let count: Int
+    @ViewBuilder var content: Content
+    @State private var isOpen = DemoData.showsRemovedSample
+
+    var body: some View {
+        DisclosureGroup(isExpanded: $isOpen) {
+            if isOpen { content }
+        } label: {
+            HStack(spacing: Theme.Spacing.m - 4) {
+                Image(systemName: "archivebox")
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+                    .frame(width: 32)
+                Text("Removed from WeBeep").foregroundStyle(.secondary)
+                Spacer(minLength: Theme.Spacing.s)
+                Text("\(count)")
+                    .font(.subheadline.monospacedDigit())
+                    .foregroundStyle(.tertiary)
+            }
+        }
+    }
+}
+
 /// Folder module: root files + one expandable group per sub-path.
 struct FolderTree: View {
     let module: CourseModule
     let lastSeen: Date?
+    var removedDisplay: RemovedDisplay = .grouped
     @Environment(SyncEngine.self) private var sync
     @Environment(FileOpener.self) private var opener
     @State private var expandedPaths: Set<String> = []
-    @State private var isOpen = false
+    @State private var isOpen = DemoData.showsRemovedSample
 
-    private var files: [FileItem] { module.files.sorted { $0.filename.localizedStandardCompare($1.filename) == .orderedAscending } }
-    private var newCount: Int { module.files.reduce(0) { $0 + ($1.isNew(relativeTo: lastSeen) ? 1 : 0) } }
+    /// Files listed in the folder: the ones on WeBeep, plus the kept removed ones when they are
+    /// shown in place. A folder that is itself gone from WeBeep lists what was kept of it.
+    private var listed: [FileItem] {
+        if module.removedAt != nil { return module.keptRemovedFiles }
+        return removedDisplay == .inline ? module.files.filter { !$0.isRemoved || $0.isKeptRemoved } : module.liveFiles
+    }
+    /// Kept removed files shown in their own group at the bottom.
+    private var removed: [FileItem] {
+        module.removedAt == nil && removedDisplay == .grouped ? Self.sorted(module.keptRemovedFiles) : []
+    }
+    private static func sorted(_ files: [FileItem]) -> [FileItem] {
+        files.sorted { $0.filename.localizedStandardCompare($1.filename) == .orderedAscending }
+    }
+    private var files: [FileItem] { Self.sorted(listed) }
+    private var newCount: Int { module.liveFiles.reduce(0) { $0 + ($1.isNew(relativeTo: lastSeen) ? 1 : 0) } }
 
     var body: some View {
         DisclosureGroup(isExpanded: $isOpen) {
@@ -108,9 +150,15 @@ struct FolderTree: View {
                         Label(path.trimmingCharacters(in: CharacterSet(charactersIn: "/")), systemImage: "folder")
                     }
                     .contextMenu {
-                        let inPath = module.files.filter { $0.filepath.hasPrefix(path) }
+                        let inPath = module.liveFiles.filter { $0.filepath.hasPrefix(path) }
                         SelectFolderButton(files: inPath)
                         Button { sync.downloads.enqueue(inPath) } label: { Label("Download folder", systemImage: "arrow.down.circle") }
+                    }
+                }
+                let gone = removed
+                if !gone.isEmpty {
+                    RemovedGroup(count: gone.count) {
+                        ForEach(gone) { file in FileRow(file: file) }
                     }
                 }
             }
@@ -130,15 +178,15 @@ struct FolderTree: View {
                         .padding(.horizontal, 7).padding(.vertical, 3)
                         .background(Color.accentColor, in: .capsule)
                 }
-                Text("\(module.files.count)")
+                Text("\(listed.count)")
                     .font(.subheadline.monospacedDigit())
                     .foregroundStyle(.tertiary)
             }
         }
         .animation(.spring(duration: 0.32, bounce: 0.18), value: isOpen)
         .contextMenu {
-            SelectFolderButton(files: module.files)
-            Button { sync.downloads.enqueue(module.files) } label: { Label("Download folder", systemImage: "arrow.down.circle") }
+            SelectFolderButton(files: module.liveFiles)
+            Button { sync.downloads.enqueue(module.liveFiles) } label: { Label("Download folder", systemImage: "arrow.down.circle") }
             #if os(macOS)
             if let dir = opener.directory(of: module) {
                 Button { opener.reveal(dir) } label: { Label("Show in Finder", systemImage: "folder") }

@@ -70,6 +70,8 @@ final class DownloadManager {
 
     /// Queue a file. `priority: true` jumps the queue (user tapped it).
     func enqueue(_ file: FileItem, priority: Bool = false, completion: ((Bool) -> Void)? = nil) {
+        // Gone from WeBeep: there is nothing to fetch any more.
+        guard !file.isRemoved else { completion?(false); return }
         if let completion { completions[file.key, default: []].append(completion) }
         guard inFlight[file.key] == nil else { return }
         if queue.contains(file.key) {
@@ -86,7 +88,7 @@ final class DownloadManager {
     /// `background: true` marks the batch as opportunistic: Wi-Fi only if the user asked for it.
     func enqueue(_ files: [FileItem], background: Bool = false) {
         if background, UserDefaults.standard.bool(forKey: "settings.backgroundWifiOnly") {
-            deferredKeys.formUnion(files.filter { !$0.isDownloaded || $0.hasUpdate }.map(\.key))
+            deferredKeys.formUnion(files.filter { !$0.isRemoved && (!$0.isDownloaded || $0.hasUpdate) }.map(\.key))
             return
         }
         for f in files where !f.isDownloaded || f.hasUpdate { enqueue(f) }

@@ -187,8 +187,38 @@ struct LocalFiles: Sendable {
         var parts = file.course?.folderDirectory.map(Self.sanitize) ?? ["Course"]
         if let module = file.module, module.kind == .folder { parts.append(Self.sanitize(module.name)) }
         for sub in file.filepath.split(separator: "/") where !sub.isEmpty { parts.append(Self.sanitize(String(sub))) }
-        parts.append(Self.sanitize(file.filename))
+        // A file removed from WeBeep keeps the name it was given on disk ("[removed 2026-11-10] x.pdf").
+        if file.isRemoved, let name = file.localRelativePath.map({ ($0 as NSString).lastPathComponent }) {
+            parts.append(name)
+        } else {
+            parts.append(Self.sanitize(file.filename))
+        }
         return parts.joined(separator: "/")
+    }
+
+    /// Renames the local copy of a file the teacher removed from WeBeep, so that a later file with
+    /// the same name is not written over it. Returns false when there is no local copy to keep.
+    func markRemoved(_ file: FileItem, label: String, on date: Date, timeZone: TimeZone = .current) -> Bool {
+        guard let rel = file.localRelativePath, let source = url(for: file) else { return false }
+        let day = date.formatted(Date.ISO8601FormatStyle(timeZone: timeZone).year().month().day().dateSeparator(.dash))
+        let directory = (rel as NSString).deletingLastPathComponent
+        let name = (rel as NSString).lastPathComponent as NSString
+        let base = name.deletingPathExtension, ext = name.pathExtension
+        // The same name can be removed twice on the same day.
+        for n in 1...999 {
+            let candidate = "[\(label) \(day)] \(n == 1 ? base : "\(base) \(n)")" + (ext.isEmpty ? "" : ".\(ext)")
+            let target = directory.isEmpty ? candidate : "\(directory)/\(candidate)"
+            let destination = root.appending(path: target)
+            if FileManager.default.fileExists(atPath: destination.path(percentEncoded: false)) { continue }
+            do {
+                try FileManager.default.moveItem(at: source, to: destination)
+                file.localRelativePath = target
+                return true
+            } catch {
+                return false
+            }
+        }
+        return false
     }
 
     /// Existing directory of a course edition, or nil when nothing was downloaded yet.

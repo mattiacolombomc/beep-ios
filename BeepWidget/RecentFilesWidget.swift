@@ -40,7 +40,7 @@ struct RecentFilesProvider: TimelineProvider {
             return RecentFileEntry(date: .now, items: [], newCount: 0, lastSync: lastSync)
         }
         let context = ModelContext(container)
-        var descriptor = FetchDescriptor<FileItem>(sortBy: [SortDescriptor(\.timemodified, order: .reverse)])
+        var descriptor = FetchDescriptor<FileItem>(predicate: #Predicate { $0.removedAt == nil }, sortBy: [SortDescriptor(\.timemodified, order: .reverse)])
         descriptor.fetchLimit = 8
         let files = (try? context.fetch(descriptor)) ?? []
         let courses = (try? context.fetch(FetchDescriptor<Course>())) ?? []

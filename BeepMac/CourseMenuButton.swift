@@ -57,7 +57,7 @@ struct CourseMenuButton: NSViewRepresentable {
                 return i
             }
             menu.autoenablesItems = false
-            menu.addItem(item("Select", "checkmark.circle", enabled: !course.files.isEmpty) { selection.begin() })
+            menu.addItem(item("Select", "checkmark.circle", enabled: !course.liveFiles.isEmpty) { selection.begin() })
             menu.addItem(.separator())
             let sort = NSMenuItem(title: String(localized: "Sort"), action: nil, keyEquivalent: "")
             let sortMenu = NSMenu()

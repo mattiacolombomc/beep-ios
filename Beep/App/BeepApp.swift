@@ -22,6 +22,7 @@ struct BeepApp: App {
             if !DemoData.isEnabled { FileKeyMigration.runIfNeeded(in: container.mainContext) }
             let downloads = DownloadManager(context: container.mainContext)
             self.downloads = downloads
+            if !DemoData.isEnabled { RemovedContent.cleanUpAtLaunch(in: container.mainContext, local: downloads.local) }
             let session = AppSession(tokenStore: TokenStore(service: DemoData.isEnabled ? "demo" : "com.mattiacolombo.Beep"))
             _session = State(initialValue: session)
             _sync = State(initialValue: SyncEngine(container: container, downloads: downloads))
@@ -40,6 +41,8 @@ struct BeepApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                // Debug launch: land on the course that carries the removed-files sample.
+                .task { if DemoData.showsRemovedSample { router.pending = .course(DemoData.removedSampleCourse) } }
                 .environment(session)
                 .environment(sync)
                 .environment(opener)

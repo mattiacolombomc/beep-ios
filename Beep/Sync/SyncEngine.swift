@@ -143,7 +143,10 @@ final class SyncEngine {
                 guard let (id, task) = inFlight.first else { break }
                 inFlight.removeValue(forKey: id)
                 do {
-                    let sections = try await task.value
+                    var sections = try await task.value
+                    #if DEBUG
+                    sections = SimulatedRemoval.apply(sections)
+                    #endif
                     if let result = try await store.upsertContents(sections, courseID: id, token: client.token, save: false) {
                         report.coursesIndexed += 1
                         // A course indexed for the first time is a baseline, not news:
@@ -154,6 +157,13 @@ final class SyncEngine {
                             if !result.diff.newFiles.isEmpty || !result.diff.updatedFiles.isEmpty { report.coursesWithNews.append(result.title) }
                         }
                         var queued = 0
+                        if !result.diff.removedFiles.isEmpty {
+                            // Keep the downloaded copies of what just left WeBeep (renamed on disk)
+                            // before a download of this course can write a file with the same name.
+                            try await store.save()
+                            lastSave = .now
+                            try? RemovedContent.settle(in: context, local: downloads.local)
+                        }
                         if !result.wantedKeys.isEmpty {
                             // The download queue fetches the files on the main context: they must be saved.
                             try await store.save()

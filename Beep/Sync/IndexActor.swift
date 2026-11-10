@@ -52,7 +52,7 @@ actor IndexActor {
         guard let course = try modelContext.fetch(descriptor).first else { return nil }
         let isFirstIndex = course.lastIndexedAt == nil
         let diff = try indexer.upsertContents(sections, for: course, token: token, save: save)
-        let wanted = course.syncEnabled ? course.files.filter { !$0.isDownloaded || $0.hasUpdate }.map(\.key) : []
+        let wanted = course.syncEnabled ? course.liveFiles.filter { !$0.isDownloaded || $0.hasUpdate }.map(\.key) : []
         return ContentResult(title: course.title, isFirstIndex: isFirstIndex, diff: diff, wantedKeys: wanted)
     }
 
@@ -78,7 +78,7 @@ actor IndexActor {
         var files = FetchDescriptor<FileItem>(sortBy: [SortDescriptor(\.key)])
         files.relationshipKeyPathsForPrefetching = [\.course, \.module]
         for f in try modelContext.fetch(files) {
-            guard let c = f.course, active[c.id] != nil else { continue }
+            guard !f.isRemoved, let c = f.course, active[c.id] != nil else { continue }
             entries.files.append(.init(
                 key: f.key, filename: f.filename, fileExtension: f.fileExtension,
                 description: [c.title, f.module?.name].compactMap { $0 }.joined(separator: " › "),

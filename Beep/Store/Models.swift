@@ -102,8 +102,11 @@ final class Course {
         }
     }
 
+    /// Files still on WeBeep: what counts, badges, downloads and selection work on.
+    var liveFiles: [FileItem] { files.filter { $0.removedAt == nil } }
+
     func recountNewFiles() {
-        newFilesCount = files.reduce(0) { $0 + ($1.isNew(relativeTo: lastSeenAt) ? 1 : 0) }
+        newFilesCount = files.reduce(0) { $0 + (!$1.isRemoved && $1.isNew(relativeTo: lastSeenAt) ? 1 : 0) }
     }
 }
 
@@ -113,6 +116,9 @@ final class CourseSection {
     var name: String
     var position: Int
     var summary: String?
+    /// Set when the section is gone from WeBeep. Rows are never deleted while the app runs
+    /// (a view may still hold them): `RemovedContent.purge` drops the empty ones at launch.
+    var removedAt: Date?
     var course: Course?
     @Relationship(deleteRule: .cascade, inverse: \CourseModule.section) var modules: [CourseModule] = []
 
@@ -133,6 +139,8 @@ final class CourseModule {
     var url: String?
     var descriptionHTML: String?
     var position: Int
+    /// Set when the module is gone from WeBeep; see `CourseSection.removedAt`.
+    var removedAt: Date?
     var section: CourseSection?
     @Relationship(deleteRule: .cascade, inverse: \FileItem.module) var files: [FileItem] = []
 
@@ -147,6 +155,14 @@ final class CourseModule {
     }
 
     var kind: ModuleKind { ModuleKind(rawValue: modname) ?? .other }
+    /// Files still on WeBeep.
+    var liveFiles: [FileItem] { files.filter { $0.removedAt == nil } }
+    /// Files the teacher removed from WeBeep that are still on disk.
+    var keptRemovedFiles: [FileItem] { files.filter(\.isKeptRemoved) }
+    /// A module gone from WeBeep is listed only for the downloaded files it still holds.
+    var showsAsRemoved: Bool {
+        removedAt != nil && (kind == .resource || kind == .folder) && files.contains(where: \.isKeptRemoved)
+    }
 }
 
 enum ModuleKind: String, Sendable {
@@ -174,6 +190,9 @@ final class FileItem {
     var downloadedTimemodified: Date?
     var firstSeenAt: Date
     var lastError: String?
+    /// Set when the file is gone from WeBeep. A downloaded one stays as a keepsake (renamed on
+    /// disk, key freed by `RemovedContent.settle`); the others are hidden and purged at launch.
+    var removedAt: Date?
     var course: Course?
     var module: CourseModule?
 
@@ -196,6 +215,9 @@ final class FileItem {
 
     var fileExtension: String { (filename as NSString).pathExtension.lowercased() }
     var isDownloaded: Bool { state == .downloaded && localRelativePath != nil }
+    var isRemoved: Bool { removedAt != nil }
+    /// Removed from WeBeep but still on disk: the only removed files the app shows.
+    var isKeptRemoved: Bool { removedAt != nil && isDownloaded }
     var hasUpdate: Bool {
         guard let d = downloadedTimemodified else { return false }
         return d < timemodified

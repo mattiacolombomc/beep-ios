@@ -15,6 +15,7 @@ struct FileRow: View {
 
     private var subtitle: String {
         var parts: [String] = []
+        if file.isRemoved { parts.append(String(localized: "No longer on WeBeep")) }
         if file.filesize > 0 { parts.append(ByteCountFormatter.string(fromByteCount: Int64(file.filesize), countStyle: .file)) }
         parts.append(file.timemodified.formatted(date: .abbreviated, time: .omitted))
         return parts.joined(separator: " · ")

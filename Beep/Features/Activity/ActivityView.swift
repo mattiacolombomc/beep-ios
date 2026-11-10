@@ -9,7 +9,7 @@ struct ActivityView: View {
     @Query(filter: #Predicate<FileItem> { $0.stateRaw == 4 }, sort: \FileItem.filename) private var failed: [FileItem]
     /// The 100 shown: fetching every downloaded file (hundreds) re-ran on each sync save.
     private static var recentDownloads: FetchDescriptor<FileItem> {
-        var d = FetchDescriptor<FileItem>(predicate: #Predicate { $0.stateRaw == 3 }, sortBy: [SortDescriptor(\.timemodified, order: .reverse)])
+        var d = FetchDescriptor<FileItem>(predicate: #Predicate { $0.stateRaw == 3 && $0.removedAt == nil }, sortBy: [SortDescriptor(\.timemodified, order: .reverse)])
         d.fetchLimit = 100
         return d
     }

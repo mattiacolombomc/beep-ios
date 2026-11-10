@@ -25,6 +25,10 @@ enum DemoData {
         session.enterDemo()
     }
 
+    /// Debug launch argument: seeds removed files and opens the folders, to look at the removed groups.
+    static var showsRemovedSample: Bool { ProcessInfo.processInfo.arguments.contains("-demoRemoved") }
+    static let removedSampleCourse = 41213
+
     @MainActor
     static func seed(into context: ModelContext) throws {
         let cats = [CategoryDTO(id: 1210, name: "2026-27", parent: 0), CategoryDTO(id: 1100, name: "2025-26", parent: 0),
@@ -65,6 +69,26 @@ enum DemoData {
         for course in all where course.isFavourite {
             course.lastSeenAt = Date.now.addingTimeInterval(-86_400 * 3)
             for (i, f) in course.files.enumerated() where i % 3 == 0 { f.firstSeenAt = Date.now.addingTimeInterval(-3600) }
+            course.recountNewFiles()
+        }
+        // Debug launch (`-demo -demoRemoved`): files the teacher took off WeBeep, kept on disk.
+        if showsRemovedSample, let course = all.first(where: { $0.id == removedSampleCourse }) {
+            let when = Date.now.addingTimeInterval(-86_400 * 2)
+            func keep(_ file: FileItem) {
+                file.state = .downloaded
+                file.localRelativePath = "Demo/\(file.filename)"
+                file.downloadedTimemodified = file.timemodified
+                file.removedAt = when
+            }
+            let modules = course.sections.sorted { $0.position < $1.position }
+                .flatMap { $0.modules.sorted { $0.position < $1.position } }
+            if let folder = modules.first(where: { $0.kind == .folder && $0.files.count > 1 }) {
+                folder.files.filter { $0.filepath == "/" }.sorted { $0.filename < $1.filename }.prefix(2).forEach(keep)
+            }
+            if let resource = modules.first(where: { $0.kind == .resource && !$0.files.isEmpty }) {
+                resource.removedAt = when
+                resource.files.forEach(keep)
+            }
             course.recountNewFiles()
         }
         // Sample announcements for the notifications screen.

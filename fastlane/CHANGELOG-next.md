@@ -2,14 +2,10 @@
 
 Testo da passare a `distribute_external` (`"changelog:…"`), iOS e Mac:
 
-Sincronizzazione: quando un docente modificava una cartella su WeBeep, Beep considerava nuovi tutti i file della cartella e li riscaricava tutti, anche quelli rimasti identici. Ora riconosce i file invariati: scarica solo quelli aggiunti o modificati davvero, e i pallini e le notifiche di "nuovi file" segnalano solo novità reali.
+File rimossi dai docenti: quando un docente toglie da WeBeep un file che avevi già scaricato, Beep ora lo conserva. Lo trovi in fondo alla cartella, nel gruppo "Rimossi da WeBeep", e su disco viene rinominato con la data (per esempio "[rimosso 2026-11-10] lezione 2.pdf"), così un nuovo file con lo stesso nome non lo sostituisce. In Impostazioni, sezione "File rimossi", puoi scegliere se conservarli e come mostrarli: in un gruppo in fondo, al loro posto con etichetta, oppure nascosti.
 
-Stabilità: risolta la causa principale di una chiusura improvvisa su Mac, che avveniva aprendo una cartella di un corso dopo che la sincronizzazione ne aveva ricreato i file.
+Stabilità: la sincronizzazione non elimina più elementi mentre li stai guardando. Era la causa di una chiusura improvvisa aprendo una cartella dopo che un docente ne aveva tolto dei file.
 
-Al primo avvio di questa versione Beep aggiorna una volta l'archivio locale: i file già scaricati restano scaricati.
+Files removed by teachers: when a teacher takes a file you had already downloaded off WeBeep, Beep now keeps it. You find it at the bottom of its folder, in the "Removed from WeBeep" group, and on disk it is renamed with the date (for example "[removed 2026-11-10] lecture 2.pdf"), so a new file with the same name cannot replace it. In Settings, under "Removed files", you choose whether to keep them and how to show them: in a group at the bottom, in place with a label, or hidden.
 
-Sync: when a teacher edited a folder on WeBeep, Beep treated every file in that folder as new and downloaded them all again, even the unchanged ones. It now recognises unchanged files: only files that were really added or modified are downloaded, and the "new files" badges and notifications report real news only.
-
-Stability: fixed the main cause of a sudden quit on Mac, which happened when opening a course folder after a sync had recreated its files.
-
-On the first launch of this version Beep updates its local library once: files you already downloaded stay downloaded.
+Stability: the sync no longer deletes items while you are looking at them. That caused a sudden quit when opening a folder after a teacher had removed files from it.
