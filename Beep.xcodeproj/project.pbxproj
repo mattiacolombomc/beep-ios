@@ -790,8 +790,6 @@
 			dependencies = (
 			);
 			name = BeepWidget;
-			packageProductDependencies = (
-			);
 			productName = BeepWidget;
 			productReference = FCB37E15497DFA26FCC7A2E2 /* BeepWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -809,8 +807,6 @@
 				CAA5BCA96C081AAB0B925B53 /* PBXTargetDependency */,
 			);
 			name = BeepTests;
-			packageProductDependencies = (
-			);
 			productName = BeepTests;
 			productReference = 87CAC2B1DEDF862FD7B242D6 /* BeepTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -827,8 +823,6 @@
 				F24E108B3E9FF58C4EEAFF0B /* PBXTargetDependency */,
 			);
 			name = BeepMacTests;
-			packageProductDependencies = (
-			);
 			productName = BeepMacTests;
 			productReference = 101593D0A00EBADCA25450DD /* BeepMacTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -847,8 +841,6 @@
 				1D64DFAE18F6E21CF37404B6 /* PBXTargetDependency */,
 			);
 			name = Beep;
-			packageProductDependencies = (
-			);
 			productName = Beep;
 			productReference = D5DDC33A2E7014A4565C4823 /* Beep.app */;
 			productType = "com.apple.product-type.application";
@@ -865,8 +857,6 @@
 			dependencies = (
 			);
 			name = BeepMac;
-			packageProductDependencies = (
-			);
 			productName = BeepMac;
 			productReference = 1DBC50D833C0B4E7AAACF5B1 /* BeepMac.app */;
 			productType = "com.apple.product-type.application";
@@ -1379,6 +1369,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattiacolombo.Beep;
 				PRODUCT_NAME = Beep;
 				SDKROOT = iphoneos;
@@ -1531,6 +1522,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mattiacolombo.Beep;
 				PRODUCT_NAME = Beep;
 				PROVISIONING_PROFILE_SPECIFIER = "Beep AppStore";
