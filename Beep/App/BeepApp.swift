@@ -18,6 +18,8 @@ struct BeepApp: App {
         do {
             let container = try StoreContainer.make(inMemory: DemoData.isEnabled)
             self.container = container
+            // Before the download queue or any view reads a file.
+            if !DemoData.isEnabled { FileKeyMigration.runIfNeeded(in: container.mainContext) }
             let downloads = DownloadManager(context: container.mainContext)
             self.downloads = downloads
             let session = AppSession(tokenStore: TokenStore(service: DemoData.isEnabled ? "demo" : "com.mattiacolombo.Beep"))

@@ -144,4 +144,36 @@ struct IndexerTests {
         #expect(ex02.isNew(relativeTo: course.lastSeenAt))
         #expect(course.files.first { $0.filename == "ex01.pdf" }!.filesize == 150)
     }
+
+    /// A teacher edits a folder: Moodle serves every file of it under a new revision segment.
+    /// Nothing changed for the untouched files, so nothing may be recreated or re-downloaded.
+    @Test func aFolderRevisionBumpKeepsTheSameFiles() throws {
+        let course = try seedCourses()
+        let json = try #require(String(data: try fixture("course_contents"), encoding: .utf8))
+        let sections = try MoodleClient.decode([SectionDTO].self, from: Data(json.utf8))
+        _ = try Indexer(context: context, language: "it", now: { Date(timeIntervalSince1970: 1_000) })
+            .upsertContents(sections, for: course, token: "TOK")
+        let before = Dictionary(uniqueKeysWithValues: course.files.map { ($0.filename, $0.persistentModelID) })
+        for f in course.files {
+            f.state = .downloaded
+            f.localRelativePath = "x/\(f.filename)"
+            f.downloadedTimemodified = f.timemodified
+        }
+
+        let bumped = json.replacingOccurrences(of: "mod_folder/content/0/", with: "mod_folder/content/1/")
+        #expect(bumped != json)
+        let sections2 = try MoodleClient.decode([SectionDTO].self, from: Data(bumped.utf8))
+        let diff = try Indexer(context: context, language: "it", now: { Date(timeIntervalSince1970: 2_000) })
+            .upsertContents(sections2, for: course, token: "TOK")
+
+        #expect(diff.newFiles.isEmpty)
+        #expect(diff.removedFiles.isEmpty)
+        #expect(diff.updatedFiles.isEmpty)
+        #expect(Dictionary(uniqueKeysWithValues: course.files.map { ($0.filename, $0.persistentModelID) }) == before)
+        #expect(course.files.allSatisfy { $0.isDownloaded && !$0.hasUpdate })
+        #expect(course.files.allSatisfy { !$0.isNew(relativeTo: course.lastSeenAt) })
+        // The download address follows the live revision.
+        let sol = try #require(course.files.first { $0.filename == "sol01.pdf" })
+        #expect(sol.remoteURL.contains("mod_folder/content/1/Solutions/sol01.pdf"))
+    }
 }

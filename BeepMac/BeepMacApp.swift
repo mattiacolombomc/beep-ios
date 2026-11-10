@@ -24,6 +24,8 @@ struct BeepMacApp: App {
             fatalError("Cannot open the local store: \(error)")
         }
         self.container = container
+        // Before the download queue or any view reads a file.
+        if !DemoData.isEnabled { FileKeyMigration.runIfNeeded(in: container.mainContext) }
         let downloads = DownloadManager(context: container.mainContext)
         let session = AppSession(tokenStore: TokenStore(service: DemoData.isEnabled ? "demo" : "com.mattiacolombo.Beep"))
         let sync = SyncEngine(container: container, downloads: downloads)

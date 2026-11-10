@@ -2,6 +2,11 @@ import Foundation
 import Observation
 import SwiftData
 import WidgetKit
+import os
+
+/// `log show --predicate 'subsystem == "com.mattiacolombo.Beep"' --last 1d`: what each sync did.
+/// Counts and course titles only, so the lines stay readable without a debugger attached.
+private nonisolated let syncLog = Logger(subsystem: "com.mattiacolombo.Beep", category: "sync")
 
 /// Orchestrates index refreshes (courses + contents) and hands new files to the
 /// DownloadManager for courses with auto-download on. Network and UI state live
@@ -107,6 +112,8 @@ final class SyncEngine {
 
     private func run(client: MoodleClient, userID: Int?, only courseID: Int?, trigger: Trigger) async -> Report {
         var report = Report()
+        let started = Date.now
+        syncLog.notice("sync start: trigger=\(String(describing: trigger), privacy: .public) scope=\(courseID.map { "course \($0)" } ?? "all", privacy: .public)")
         downloads.resetSessionCounters()
         if trigger != .background { downloads.flushDeferred() }
         do {
@@ -146,6 +153,7 @@ final class SyncEngine {
                             report.updatedFiles += result.diff.updatedFiles.count
                             if !result.diff.newFiles.isEmpty || !result.diff.updatedFiles.isEmpty { report.coursesWithNews.append(result.title) }
                         }
+                        var queued = 0
                         if !result.wantedKeys.isEmpty {
                             // The download queue fetches the files on the main context: they must be saved.
                             try await store.save()
@@ -153,12 +161,18 @@ final class SyncEngine {
                             let wanted = try files(withKeys: result.wantedKeys)
                             downloads.enqueue(wanted, background: trigger == .background)
                             report.queuedDownloads += wanted.count
+                            queued = wanted.count
+                        }
+                        let diff = result.diff
+                        if !diff.newFiles.isEmpty || !diff.updatedFiles.isEmpty || !diff.removedFiles.isEmpty || queued > 0 {
+                            syncLog.notice("course \(id, privacy: .public) \(result.title, privacy: .public): new=\(diff.newFiles.count, privacy: .public) updated=\(diff.updatedFiles.count, privacy: .public) removed=\(diff.removedFiles.count, privacy: .public) queued=\(queued, privacy: .public) firstIndex=\(result.isFirstIndex, privacy: .public)")
                         }
                     }
                 } catch MoodleError.invalidToken {
                     throw MoodleError.invalidToken
                 } catch {
                     report.errors.append("\(byID[id]?.title ?? "\(id)"): \(error)")
+                    syncLog.error("course \(id, privacy: .public) \(byID[id]?.title ?? "?", privacy: .public) failed: \(String(describing: error), privacy: .public)")
                 }
                 done += 1
                 if Date.now.timeIntervalSince(lastSave) > 2 {
@@ -187,14 +201,17 @@ final class SyncEngine {
             WidgetCenter.shared.reloadAllTimelines()
         } catch MoodleError.invalidToken {
             report.errors.append("invalidToken")
+            syncLog.error("sync failed: token rejected by WeBeep")
             phase = .failed(String(localized: "Session expired"))
             onInvalidToken?(trigger)
         } catch {
             report.errors.append(String(describing: error))
+            syncLog.error("sync failed: \(String(describing: error), privacy: .public)")
             phase = .failed(error.localizedDescription)
         }
         report.finishedAt = .now
         lastReport = report
+        syncLog.notice("sync end: \(Date.now.timeIntervalSince(started), format: .fixed(precision: 1), privacy: .public)s courses=\(report.coursesIndexed, privacy: .public) new=\(report.newFiles, privacy: .public) updated=\(report.updatedFiles, privacy: .public) queued=\(report.queuedDownloads, privacy: .public) announcements=\(report.newAnnouncements, privacy: .public) errors=\(report.errors.count, privacy: .public)")
         // Local notifications: only for background checks, only after onboarding's first full sync.
         if trigger == .background,
            UserDefaults.standard.bool(forKey: "settings.notifications"),
