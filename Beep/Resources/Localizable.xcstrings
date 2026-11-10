@@ -2388,12 +2388,32 @@
         }
       }
     },
+    "Mark all as seen": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Segna tutti come visti"
+          }
+        }
+      }
+    },
     "Mark all read": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Segna tutte lette"
+          }
+        }
+      }
+    },
+    "Mark as seen": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Segna come visto"
           }
         }
       }

@@ -24,6 +24,7 @@ struct RecentFilesView: View {
     var body: some View {
         NavigationStack {
             List {
+                MarkAllSeenRow()
                 if files.isEmpty {
                     ContentUnavailableView("Nothing yet", systemImage: "clock", description: Text("Once your courses are synced, the latest files from every course show up here."))
                         .listRowBackground(Color.clear)
@@ -49,6 +50,38 @@ struct RecentFilesView: View {
             .modifier(SelectionToolbar(selection: selection, canSelect: !files.isEmpty))
             #endif
             .onDisappear { selection.end() }
+        }
+    }
+}
+
+/// "Mark all as seen", shown while some course has new files. Its own view, so that the course
+/// query re-renders this row and not the whole feed.
+private struct MarkAllSeenRow: View {
+    @Query(filter: #Predicate<Course> { $0.newFilesCount > 0 }) private var courses: [Course]
+    @Environment(\.modelContext) private var modelContext
+
+    var body: some View {
+        let count = courses.reduce(0) { $0 + $1.newFilesCount }
+        if count > 0 {
+            Section {
+                Button {
+                    withAnimation(.snappy) { _ = try? Course.markAllSeen(in: modelContext) }
+                } label: {
+                    HStack(spacing: Theme.Spacing.m - 4) {
+                        Image(systemName: "checkmark.circle")
+                            .font(.title3)
+                            .foregroundStyle(.tint)
+                            .frame(width: 32)
+                        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                            Text("Mark all as seen")
+                            Text("\(count) new files").font(.subheadline).foregroundStyle(.secondary)
+                        }
+                        Spacer(minLength: 0)
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
         }
     }
 }

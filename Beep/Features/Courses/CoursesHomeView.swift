@@ -497,6 +497,7 @@ private struct StatusHeader: View {
     #endif
     let newCount: Int
     @Binding var onlyNew: Bool
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         let layout = isCompact ? AnyLayout(HStackLayout(spacing: Theme.Spacing.s)) : AnyLayout(HStackLayout(spacing: Theme.Spacing.m))
@@ -510,6 +511,11 @@ private struct StatusHeader: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel("\(newCount) new files")
+            // Long press, or right click on the Mac.
+            .contextMenu {
+                Button("Mark all as seen", systemImage: "checkmark.circle") { _ = try? Course.markAllSeen(in: modelContext) }
+                    .disabled(newCount == 0)
+            }
 
             StatusTile(symbol: syncSymbol, title: "Sync", value: syncValue, detail: syncDetail, tint: .secondary)
             if !isCompact {
@@ -583,6 +589,9 @@ struct CourseContextMenu: View {
     }
 
     var body: some View {
+        if course.newFilesCount > 0 {
+            Button("Mark as seen", systemImage: "checkmark.circle") { course.markSeen() }
+        }
         Toggle(isOn: $course.isFavourite) { Label("Favourite", systemImage: "star") }
         Toggle(isOn: $course.syncEnabled) { Label("Auto-download new files", systemImage: "arrow.down.circle") }
         if course.isAcademicYear && course.code != nil {

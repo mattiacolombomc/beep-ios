@@ -228,8 +228,7 @@ private struct CourseContentView: View {
             // Writing the course makes every list re-run its query. With no new files, moving
             // `lastSeenAt` forward changes nothing (no file lies between the two dates): skip it.
             if course.lastSeenAt == nil || course.newFilesCount > 0 {
-                course.lastSeenAt = .now
-                course.newFilesCount = 0
+                course.markSeen()
             }
             if course.lastIndexedAt == nil { await refresh() }
         }

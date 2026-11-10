@@ -250,4 +250,26 @@ struct IndexerTests {
         #expect(filtered.flatMap(\.modules).map(\.id) == all.flatMap(\.modules).map(\.id))
         #expect(SimulatedRemoval.apply(all, needle: nil) == all)
     }
+
+    /// "Mark all as seen" does for every course what opening it does.
+    @Test func markAllSeenClearsEveryCourse() throws {
+        let course = try seedCourses()
+        _ = try Indexer(context: context, language: "it", now: { Date(timeIntervalSince1970: 1_000) })
+            .upsertContents(try sections(dropping: "sol01.pdf"), for: course, token: "TOK")
+        _ = try Indexer(context: context, language: "it", now: { Date(timeIntervalSince1970: 2_000) })
+            .upsertContents(try sections(), for: course, token: "TOK")
+        try context.save()
+        #expect(course.newFilesCount == 1)
+
+        let changed = try Course.markAllSeen(in: context, at: Date(timeIntervalSince1970: 3_000))
+
+        #expect(changed == 1)
+        #expect(course.newFilesCount == 0)
+        #expect(course.liveFiles.allSatisfy { !$0.isNew(relativeTo: course.lastSeenAt) })
+        #expect(try Course.markAllSeen(in: context) == 0)
+        // A file that arrives later is new again.
+        course.liveFiles.first?.firstSeenAt = Date(timeIntervalSince1970: 4_000)
+        course.recountNewFiles()
+        #expect(course.newFilesCount == 1)
+    }
 }

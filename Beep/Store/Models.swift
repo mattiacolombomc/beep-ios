@@ -105,6 +105,21 @@ final class Course {
     /// Files still on WeBeep: what counts, badges, downloads and selection work on.
     var liveFiles: [FileItem] { files.filter { $0.removedAt == nil } }
 
+    /// What opening the course does: nothing in it is "new" any more.
+    func markSeen(at date: Date = .now) {
+        lastSeenAt = date
+        newFilesCount = 0
+    }
+
+    /// Clears the "new" state of every course that has some, in one save.
+    @discardableResult
+    static func markAllSeen(in context: ModelContext, at date: Date = .now) throws -> Int {
+        let courses = try context.fetch(FetchDescriptor<Course>(predicate: #Predicate { $0.newFilesCount > 0 }))
+        for course in courses { course.markSeen(at: date) }
+        if context.hasChanges { try context.save() }
+        return courses.count
+    }
+
     func recountNewFiles() {
         newFilesCount = files.reduce(0) { $0 + (!$1.isRemoved && $1.isNew(relativeTo: lastSeenAt) ? 1 : 0) }
     }
