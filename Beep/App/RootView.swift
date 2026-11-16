@@ -1,6 +1,17 @@
 import SwiftData
 import SwiftUI
 
+/// Keeps the number on the app icon equal to the unread WeBeep notifications: reading them in
+/// Beep takes the badge off at once. Its own view, so the query re-renders nothing else.
+private struct AppIconBadge: View {
+    @Query(filter: #Predicate<WebeepNotification> { !$0.read }) private var unread: [WebeepNotification]
+
+    var body: some View {
+        Color.clear
+            .onChange(of: unread.count, initial: true) { _, count in Notifier.setAppBadge(count) }
+    }
+}
+
 /// Auth gate: welcome/login when signed out, onboarding after the first login, then the main tabs.
 struct RootView: View {
     @Environment(AppSession.self) private var session
@@ -13,6 +24,7 @@ struct RootView: View {
     var body: some View {
         content
             .preferredColorScheme(Self.forcedScheme)
+            .background(AppIconBadge())
             .task {
                 guard !DemoData.isEnabled else { return }
                 if opener.migrateLayout(context: context) > 0 { layoutNoticePending = true }

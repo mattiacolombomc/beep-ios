@@ -22,7 +22,15 @@ enum Notifier {
         UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: "session-expired", content: content, trigger: nil))
     }
 
-    static func notifySyncResults(newFiles: Int, courses: [String], newAnnouncements: Int) {
+    /// The number on the app icon (Dock, Home Screen): the unread WeBeep notifications.
+    /// A notification can only set it; without this nothing ever lowered it again, so it stayed
+    /// on the icon after everything was read, until the app was restarted.
+    static func setAppBadge(_ count: Int) {
+        guard !DemoData.isEnabled else { return }
+        UNUserNotificationCenter.current().setBadgeCount(max(0, count)) { _ in }
+    }
+
+    static func notifySyncResults(newFiles: Int, courses: [String], newAnnouncements: Int, unreadAnnouncements: Int) {
         guard newFiles > 0 || newAnnouncements > 0 else { return }
         let content = UNMutableNotificationContent()
         var lines: [String] = []
@@ -39,7 +47,8 @@ enum Notifier {
         content.body = lines.joined(separator: " · ")
         content.sound = .default
         content.interruptionLevel = .passive
-        content.badge = NSNumber(value: newAnnouncements)
+        // The total still unread, not just the ones this sync brought.
+        content.badge = NSNumber(value: unreadAnnouncements)
         let request = UNNotificationRequest(identifier: "sync-\(Int(Date.now.timeIntervalSince1970))", content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request)
     }

@@ -2,10 +2,10 @@
 
 Testo da passare a `distribute_external` (`"changelog:…"`), iOS e Mac:
 
-Segna come visti: tieni premuta la tessera "Nuovi file" (tasto destro su Mac) per segnare tutti i corsi come visti in un colpo solo. La stessa azione è in cima alla vista Recenti quando ci sono file nuovi, e nel menu di ogni corso per segnare solo quello, senza aprirlo.
+Notifiche: il numero sull'icona di Beep (nel Dock su Mac, nella schermata Home su iPhone e iPad) ora segue le notifiche non lette. Quando le leggi sparisce subito, senza dover riavviare l'app.
 
-Da questa versione, inoltre: i file che un docente rimuove da WeBeep restano disponibili nel gruppo "Rimossi da WeBeep" se li avevi già scaricati, e la sincronizzazione riscarica solo i file davvero cambiati.
+Impostazioni: corretta in italiano la voce della cartella dei download, che compariva come "Scarica cartella".
 
-Mark as seen: press and hold the "New files" tile (right click on Mac) to mark every course as seen at once. The same action sits at the top of the Recent view when there are new files, and in each course's menu to mark just that one without opening it.
+Notifications: the number on Beep's icon (in the Dock on Mac, on the Home Screen on iPhone and iPad) now follows the unread notifications. It goes away as soon as you read them, with no need to restart the app.
 
-Also in this version: files a teacher removes from WeBeep stay available in the "Removed from WeBeep" group if you had downloaded them, and the sync downloads again only the files that really changed.
+Settings: fixed the Italian label of the downloads folder.

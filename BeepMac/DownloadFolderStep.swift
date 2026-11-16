@@ -60,7 +60,7 @@ struct DownloadFolderStep: View {
         }
         .frame(maxWidth: 520)
         .frame(maxWidth: .infinity)
-        .navigationTitle("Download folder")
+        .navigationTitle("Downloads folder")
         .fileImporter(isPresented: $picking, allowedContentTypes: [.folder]) { result in
             if case .success(let url) = result { folder.choose(url) }
         }

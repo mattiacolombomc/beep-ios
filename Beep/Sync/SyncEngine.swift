@@ -222,11 +222,15 @@ final class SyncEngine {
         report.finishedAt = .now
         lastReport = report
         syncLog.notice("sync end: \(Date.now.timeIntervalSince(started), format: .fixed(precision: 1), privacy: .public)s courses=\(report.coursesIndexed, privacy: .public) new=\(report.newFiles, privacy: .public) updated=\(report.updatedFiles, privacy: .public) queued=\(report.queuedDownloads, privacy: .public) announcements=\(report.newAnnouncements, privacy: .public) errors=\(report.errors.count, privacy: .public)")
+        // The icon badge follows the unread notifications even when no window is there to do it.
+        let unread = (try? context.fetchCount(FetchDescriptor<WebeepNotification>(predicate: #Predicate { !$0.read }))) ?? report.newAnnouncements
+        Notifier.setAppBadge(unread)
         // Local notifications: only for background checks, only after onboarding's first full sync.
         if trigger == .background,
            UserDefaults.standard.bool(forKey: "settings.notifications"),
            UserDefaults.standard.bool(forKey: "onboarding.done") {
-            Notifier.notifySyncResults(newFiles: report.newFiles + report.updatedFiles, courses: report.coursesWithNews, newAnnouncements: report.newAnnouncements)
+            Notifier.notifySyncResults(newFiles: report.newFiles + report.updatedFiles, courses: report.coursesWithNews,
+                                       newAnnouncements: report.newAnnouncements, unreadAnnouncements: unread)
         }
         #if os(iOS)
         if UserDefaults.standard.bool(forKey: "settings.backgroundRefresh") { BackgroundRefresh.schedule() }

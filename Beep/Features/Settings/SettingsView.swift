@@ -286,7 +286,7 @@ struct SettingsView: View {
                 }
             } label: {
                 Label {
-                    Text("Download folder")
+                    Text("Downloads folder")
                     Text(folder.url?.path(percentEncoded: false).abbreviatingHome ?? String(localized: "Not chosen"))
                         .truncationMode(.middle)
                         .lineLimit(1)

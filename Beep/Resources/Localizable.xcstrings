@@ -1756,6 +1756,17 @@
         }
       }
     },
+    "Downloads folder": {
+      "comment": "The folder where downloads are saved (a noun, not the action of downloading a folder)",
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cartella dei download"
+          }
+        }
+      }
+    },
     "Downloads now live in one folder per course, with a sub-folder for each academic year (and professor, when a course has two sections in the same year). Nothing was deleted.": {
       "localizations": {
         "it": {
