@@ -55,7 +55,10 @@ extension View {
         #if os(iOS)
         fullScreenCover(isPresented: isPresented, content: content)
         #else
-        sheet(isPresented: isPresented) { content().frame(minWidth: 520, idealWidth: 620, minHeight: 620, idealHeight: 720) }
+        // Wide enough for the login pages to lay out as desktop pages: below `LoginSite.desktopWidth`
+        // CieID and PosteID hide their QR code.
+        let width = CGFloat(LoginSite.desktopWidth) + 16
+        sheet(isPresented: isPresented) { content().frame(minWidth: width, idealWidth: width, minHeight: 620, idealHeight: 720) }
         #endif
     }
 

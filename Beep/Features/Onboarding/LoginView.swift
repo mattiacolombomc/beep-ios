@@ -3,16 +3,22 @@ import SwiftUI
 /// SSO login screen. Shows the WeBeep web login, with a manual-token fallback.
 struct LoginView: View {
     @Environment(AppSession.self) private var session
+    @Environment(\.dismiss) private var dismiss
     @State private var passport = LoginFlow.makePassport()
     @State private var progress: Double = 0
     @State private var isValidating = false
     @State private var showManualToken = false
     @State private var errorMessage: String?
+    #if os(iOS)
+    @AppStorage(LoginSite.cieDesktopKey) private var cieDesktop = LoginSite.cieDesktopDefault
+    @AppStorage(LoginSite.spidDesktopKey) private var spidDesktop = LoginSite.spidDesktopDefault
+    #endif
 
     var body: some View {
         NavigationStack {
             ZStack(alignment: .top) {
-                LoginWebView(passport: passport, onToken: handle, onProgress: { progress = $0 })
+                webView
+                    .id(passport) // a new passport is a new attempt: start again from the first page
                     .ignoresSafeArea(edges: .bottom)
                 if progress < 1 {
                     ProgressView(value: progress)
@@ -32,10 +38,19 @@ struct LoginView: View {
             .navigationTitle("WeBeep login")
             .inlineNavigationTitle()
             .toolbar {
-                ToolbarItem(placement: .trailingBar) {
+                // The login covers the whole screen (iOS) or is a sheet (macOS): without this there is no way out
+                // of a provider's error page.
+                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                ToolbarItem(placement: Self.menuPlacement) {
                     Menu {
                         Button("Enter token manually", systemImage: "key") { showManualToken = true }
                         Button("Reload", systemImage: "arrow.clockwise") { passport = LoginFlow.makePassport() }
+                        #if os(iOS)
+                        Section("Desktop site") {
+                            Toggle("CIE", isOn: $cieDesktop)
+                            Toggle("SPID", isOn: $spidDesktop)
+                        }
+                        #endif
                     } label: {
                         Label("More", systemImage: "ellipsis")
                     }
@@ -53,12 +68,32 @@ struct LoginView: View {
         }
     }
 
+    /// A macOS sheet shows only its cancel and confirm slots: an item in the window's primary slot never appears.
+    private static var menuPlacement: ToolbarItemPlacement {
+        #if os(iOS)
+        .topBarTrailing
+        #else
+        .confirmationAction
+        #endif
+    }
+
+    private var webView: LoginWebView {
+        #if os(iOS)
+        LoginWebView(passport: passport, cieDesktop: cieDesktop, spidDesktop: spidDesktop, onToken: handle, onProgress: { progress = $0 })
+        #else
+        LoginWebView(passport: passport, onToken: handle, onProgress: { progress = $0 })
+        #endif
+    }
+
     private func handle(_ creds: LoginFlow.Credentials) {
         guard !isValidating else { return }
         isValidating = true
         Task {
             do {
                 try await session.signIn(withToken: creds.token, privateToken: creds.privateToken)
+                // Normally the screen that opened the login goes away once signed in and takes this with it.
+                // Closing here as well keeps the login from staying open when that screen remains.
+                dismiss()
             } catch {
                 errorMessage = error.localizedDescription
                 isValidating = false

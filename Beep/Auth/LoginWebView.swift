@@ -6,6 +6,9 @@ import WebKit
 /// moodlemobile://token=… which WebKit refuses to open; we catch it in the policy delegate.
 struct LoginWebView: PlatformViewRepresentable {
     let passport: String
+    /// iPhone and iPad only: ask CIE, or every other provider, for the desktop page (see `LoginSite`).
+    var cieDesktop = LoginSite.cieDesktopDefault
+    var spidDesktop = LoginSite.spidDesktopDefault
     let onToken: (LoginFlow.Credentials) -> Void
     let onProgress: (Double) -> Void
 
@@ -13,7 +16,9 @@ struct LoginWebView: PlatformViewRepresentable {
 
     #if os(iOS)
     func makeUIView(context: Context) -> WKWebView { makeWebView(context.coordinator) }
-    func updateUIView(_ uiView: WKWebView, context: Context) {}
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        context.coordinator.apply(cieDesktop: cieDesktop, spidDesktop: spidDesktop, to: uiView)
+    }
     #else
     func makeNSView(context: Context) -> WKWebView { makeWebView(context.coordinator) }
     func updateNSView(_ nsView: WKWebView, context: Context) {}
@@ -22,6 +27,10 @@ struct LoginWebView: PlatformViewRepresentable {
     private func makeWebView(_ coordinator: Coordinator) -> WKWebView {
         let config = WKWebViewConfiguration()
         config.websiteDataStore = .nonPersistent()
+        #if os(iOS)
+        config.userContentController.addUserScript(
+            WKUserScript(source: LoginSite.viewportScript, injectionTime: .atDocumentEnd, forMainFrameOnly: true))
+        #endif
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = coordinator
         webView.isInspectable = true
@@ -34,8 +43,26 @@ struct LoginWebView: PlatformViewRepresentable {
         private let parent: LoginWebView
         private var observation: NSKeyValueObservation?
         private var launched = false
+        private var cieDesktop: Bool
+        private var spidDesktop: Bool
 
-        init(_ parent: LoginWebView) { self.parent = parent }
+        init(_ parent: LoginWebView) {
+            self.parent = parent
+            cieDesktop = parent.cieDesktop
+            spidDesktop = parent.spidDesktop
+        }
+
+        #if os(iOS)
+        /// A changed setting reloads the page on screen, when it is one the setting applies to.
+        func apply(cieDesktop: Bool, spidDesktop: Bool, to webView: WKWebView) {
+            guard cieDesktop != self.cieDesktop || spidDesktop != self.spidDesktop else { return }
+            let before = webView.url.flatMap { LoginSite.wantsDesktop($0, cie: self.cieDesktop, spid: self.spidDesktop) }
+            self.cieDesktop = cieDesktop
+            self.spidDesktop = spidDesktop
+            let after = webView.url.flatMap { LoginSite.wantsDesktop($0, cie: cieDesktop, spid: spidDesktop) }
+            if before != after { webView.reload() }
+        }
+        #endif
 
         func observe(_ webView: WKWebView) {
             observation = webView.observe(\.estimatedProgress, options: [.new]) { [parent] _, change in
@@ -44,13 +71,24 @@ struct LoginWebView: PlatformViewRepresentable {
             }
         }
 
-        func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
-            guard let url = navigationAction.request.url else { return .allow }
+        func webView(
+            _ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences
+        ) async -> (WKNavigationActionPolicy, WKWebpagePreferences) {
+            guard let url = navigationAction.request.url else { return (.allow, preferences) }
             if let creds = LoginFlow.parseCallback(url, passport: parent.passport) {
                 parent.onToken(creds)
-                return .cancel
+                return (.cancel, preferences)
             }
-            return .allow
+            #if os(iOS)
+            if navigationAction.targetFrame?.isMainFrame != false {
+                let desktop = LoginSite.wantsDesktop(url, cie: cieDesktop, spid: spidDesktop)
+                if let desktop { preferences.preferredContentMode = desktop ? .desktop : .mobile }
+                // On iPad the phone version must also say it is an iPhone.
+                let asPhone = desktop == false && UIDevice.current.userInterfaceIdiom == .pad
+                webView.customUserAgent = asPhone ? LoginSite.phoneUserAgent : nil
+            }
+            #endif
+            return (.allow, preferences)
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {

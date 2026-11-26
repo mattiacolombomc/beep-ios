@@ -13,6 +13,10 @@ struct SettingsView: View {
     @AppStorage("settings.backgroundWifiOnly") private var backgroundWifiOnly = false
     @AppStorage(RemovedContent.keepKey) private var keepsRemoved = true
     @AppStorage(RemovedContent.displayKey) private var removedDisplay: RemovedDisplay = .grouped
+    #if os(iOS)
+    @AppStorage(LoginSite.cieDesktopKey) private var cieDesktop = LoginSite.cieDesktopDefault
+    @AppStorage(LoginSite.spidDesktopKey) private var spidDesktop = LoginSite.spidDesktopDefault
+    #endif
     @Environment(TokenRenewer.self) private var renewer
     @Environment(SyncEngine.self) private var sync
     #if os(macOS)
@@ -65,6 +69,9 @@ struct SettingsView: View {
                     }
                     .onChange(of: launchAtLogin) { _, on in launchAtLogin = LaunchAtLogin.set(on) }
                 }
+                #endif
+                #if os(iOS)
+                loginSection
                 #endif
                 sessionSection
                 #if DEBUG
@@ -161,6 +168,24 @@ struct SettingsView: View {
             }
         }
     }
+
+    #if os(iOS)
+    /// Which version of the CIE and SPID pages the WeBeep login opens. The Mac always gets the desktop one.
+    private var loginSection: some View {
+        Section {
+            Toggle(isOn: $cieDesktop) {
+                Label("Desktop site for CIE", systemImage: "qrcode")
+            }
+            Toggle(isOn: $spidDesktop) {
+                Label("Desktop site for SPID", systemImage: "qrcode")
+            }
+        } header: {
+            Text("WeBeep login")
+        } footer: {
+            Text("The desktop site of a sign-in page shows a QR code to scan with the provider's app. The mobile site is the one made for phones, where some providers offer a button that opens their app.")
+        }
+    }
+    #endif
 
     private var syncSection: some View {
         Section("Sync") {

@@ -2,10 +2,14 @@
 
 Testo da passare a `distribute_external` (`"changelog:…"`), iOS e Mac:
 
-Notifiche: il numero sull'icona di Beep (nel Dock su Mac, nella schermata Home su iPhone e iPad) ora segue le notifiche non lette. Quando le leggi sparisce subito, senza dover riavviare l'app.
+Accesso con CIE e SPID su iPhone e iPad: la pagina CIE ora mostra il codice QR da inquadrare con l'app CieID. Le pagine SPID restano in versione mobile, con il collegamento che apre l'app del provider (per esempio PosteID), ora anche su iPad. Puoi cambiare versione dal menu ••• della schermata di accesso o in Impostazioni › Accesso WeBeep.
 
-Impostazioni: corretta in italiano la voce della cartella dei download, che compariva come "Scarica cartella".
+Sul Mac la finestra di accesso è più larga: prima era così stretta che CIE e PosteID nascondevano il codice QR.
 
-Notifications: the number on Beep's icon (in the Dock on Mac, on the Home Screen on iPhone and iPad) now follows the unread notifications. It goes away as soon as you read them, with no need to restart the app.
+La schermata di accesso ora ha il pulsante Annulla, per uscire quando il provider mostra un errore, e Ricarica riparte dall'inizio. Sul Mac il menu ••• ora è visibile.
 
-Settings: fixed the Italian label of the downloads folder.
+Sign-in with CIE and SPID on iPhone and iPad: the CIE page now shows the QR code to scan with the CieID app. SPID pages stay on the mobile site, with the link that opens the provider's app (PosteID, for example), now on iPad too. You can switch from the ••• menu of the sign-in screen or in Settings › WeBeep login.
+
+On the Mac the sign-in window is wider: it used to be so narrow that CIE and PosteID hid the QR code.
+
+The sign-in screen now has a Cancel button, to leave when the provider shows an error, and Reload starts again from the first page. On the Mac the ••• menu is now visible.

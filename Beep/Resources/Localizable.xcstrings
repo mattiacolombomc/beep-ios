@@ -4877,6 +4877,66 @@
           }
         }
       }
+    },
+    "Desktop site": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sito desktop"
+          }
+        }
+      }
+    },
+    "CIE": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CIE"
+          }
+        }
+      }
+    },
+    "SPID": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SPID"
+          }
+        }
+      }
+    },
+    "Desktop site for CIE": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sito desktop per CIE"
+          }
+        }
+      }
+    },
+    "Desktop site for SPID": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sito desktop per SPID"
+          }
+        }
+      }
+    },
+    "The desktop site of a sign-in page shows a QR code to scan with the provider's app. The mobile site is the one made for phones, where some providers offer a button that opens their app.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La versione desktop di una pagina di accesso mostra un codice QR da inquadrare con l'app del provider. La versione mobile è quella pensata per i telefoni: alcuni provider vi offrono un pulsante che apre la loro app."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
